@@ -2,7 +2,7 @@ FROM node:20-alpine AS deps
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY backend/package.json backend/package-lock.json ./
 
 RUN npm ci
 
@@ -12,8 +12,10 @@ WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
 
-COPY . .
-COPY ../onchain ./onchain
+COPY backend/package.json backend/tsconfig.json ./
+COPY backend/prisma ./prisma
+COPY backend ./
+COPY onchain ./onchain
 
 RUN npm run db:generate
 RUN npm run build
