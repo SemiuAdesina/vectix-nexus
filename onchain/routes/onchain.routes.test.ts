@@ -29,6 +29,7 @@ describe('Onchain Routes', () => {
 
       const result = await onchainVerification.onChainVerification.storeSecurityDecision({
         id: 'log1',
+        type: 'security_decision',
         agentId: 'agent1',
         decision: 'approved',
         reason: 'Test reason',

@@ -27,7 +27,7 @@ router.post('/onchain/circuit-breaker/check', async (req: Request, res: Response
 
 router.get('/onchain/circuit-breaker/state/:agentId', async (req: Request, res: Response) => {
   try {
-    const { agentId } = req.params;
+    const agentId = req.params.agentId as string;
     const state = await circuitBreakerService.getBreakerState(agentId);
     res.json({ success: true, state });
   } catch (error) {

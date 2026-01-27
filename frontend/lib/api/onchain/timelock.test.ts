@@ -30,8 +30,10 @@ describe('timelock', () => {
 
       const result = await timelock.createTimeLock({
         agentId: 'agent1',
-        transaction: 'tx123',
+        type: 'trade',
+        transactionData: { txId: 'tx123' },
         executeAt: new Date(),
+        cancelWindow: 3600,
       });
       expect(result).toEqual(mockResponse);
     });

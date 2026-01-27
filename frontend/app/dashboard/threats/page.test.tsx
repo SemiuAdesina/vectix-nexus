@@ -91,7 +91,7 @@ describe('ThreatIntelligencePage', () => {
         severity: 'high' as const,
         description: 'Test threat',
         confidence: 80,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date(),
       },
     ];
 

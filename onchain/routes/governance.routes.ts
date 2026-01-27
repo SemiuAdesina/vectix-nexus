@@ -40,7 +40,7 @@ router.get('/onchain/governance/proposals', async (req: Request, res: Response) 
 
 router.get('/onchain/governance/proposal/:id', async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const proposal = await governanceService.getProposal(id);
     if (!proposal) {
       return res.status(404).json({ success: false, error: 'Proposal not found' });

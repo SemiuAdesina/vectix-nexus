@@ -12,11 +12,9 @@ vi.mock('./config', () => ({
   API_ENDPOINTS: {
     agents: {
       balance: (id: string) => `/api/agents/${id}/balance`,
-      withdrawRequest: (id: string) => `/api/agents/${id}/withdraw/request`,
-      withdrawConfirm: (id: string) => `/api/agents/${id}/withdraw/confirm`,
     },
     auth: {
-      wallet: '/api/auth/wallet',
+      wallet: '/api/user/wallet',
     },
   },
 }));
@@ -48,26 +46,8 @@ describe('wallet', () => {
     });
   });
 
-  describe('requestWithdrawal', () => {
-    it('requests withdrawal', async () => {
-      const mockResponse = {
-        success: true,
-        message: 'Withdrawal requested',
-        expiresAt: new Date().toISOString(),
-        tokenHint: 'abc123',
-      };
-      (global.fetch as Mock).mockResolvedValue({
-        ok: true,
-        json: async () => mockResponse,
-      } as Response);
-
-      const result = await wallet.requestWithdrawal('agent1', 'wallet123');
-      expect(result).toEqual(mockResponse);
-    });
-  });
-
-  describe('confirmWithdrawal', () => {
-    it('confirms withdrawal', async () => {
+  describe('withdrawAgentFunds', () => {
+    it('withdraws agent funds', async () => {
       const mockResult = {
         success: true,
         signature: 'sig123',
@@ -78,7 +58,7 @@ describe('wallet', () => {
         json: async () => mockResult,
       } as Response);
 
-      const result = await wallet.confirmWithdrawal('agent1', 'token123');
+      const result = await wallet.withdrawAgentFunds('agent1', 'wallet123');
       expect(result).toEqual(mockResult);
     });
   });
@@ -95,24 +75,4 @@ describe('wallet', () => {
     });
   });
 
-  describe('getUserWallet', () => {
-    it('fetches user wallet', async () => {
-      (global.fetch as Mock).mockResolvedValue({
-        ok: true,
-        json: async () => ({ walletAddress: 'wallet123' }),
-      } as Response);
-
-      const walletAddress = await wallet.getUserWallet();
-      expect(walletAddress).toBe('wallet123');
-    });
-
-    it('returns null on failure', async () => {
-      (global.fetch as Mock).mockResolvedValue({
-        ok: false,
-      } as Response);
-
-      const walletAddress = await wallet.getUserWallet();
-      expect(walletAddress).toBeNull();
-    });
-  });
 });

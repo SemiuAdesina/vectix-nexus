@@ -11,13 +11,13 @@
     "moduleResolution": "node",
     "types": ["node"],
     "typeRoots": ["../backend/node_modules/@types", "../node_modules/@types"],
-    "baseUrl": "../backend",
+    "baseUrl": ".",
     "paths": {
-      "vitest": ["./node_modules/vitest"]
+      "vitest": ["../backend/node_modules/vitest"]
     }
   },
   "include": [
     "**/*.ts"
   ],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "exclude": ["node_modules", "dist"]
 }

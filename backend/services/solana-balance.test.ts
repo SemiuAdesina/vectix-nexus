@@ -1,24 +1,67 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
+
+const mockGetBalance = vi.fn();
+const mockGetLatestBlockhash = vi.fn().mockResolvedValue({
+  blockhash: 'blockhash123',
+  lastValidBlockHeight: 100,
+});
+const mockSendRawTransaction = vi.fn().mockResolvedValue('signature123');
+const mockConfirmTransaction = vi.fn().mockResolvedValue({});
+
+class MockConnection {
+  getBalance = mockGetBalance;
+  getLatestBlockhash = mockGetLatestBlockhash;
+  sendRawTransaction = mockSendRawTransaction;
+  confirmTransaction = mockConfirmTransaction;
+}
 
 vi.mock('@solana/web3.js', () => ({
-  Connection: vi.fn().mockImplementation(() => ({
-    getBalance: vi.fn(),
-  })),
-  PublicKey: vi.fn().mockImplementation((address) => ({ toBase58: () => address })),
+  Connection: MockConnection,
+  PublicKey: class MockPublicKey {
+    private address: string;
+    constructor(address: string) {
+      this.address = address;
+    }
+    toBase58() {
+      return this.address;
+    }
+    toString() {
+      return this.address;
+    }
+  },
   LAMPORTS_PER_SOL: 1_000_000_000,
+  Transaction: class MockTransaction {
+    recentBlockhash = '';
+    feePayer: any = null;
+    add() {
+      return this;
+    }
+    sign() {}
+    serialize() {
+      return Buffer.from('test');
+    }
+  },
+  SystemProgram: { transfer: vi.fn() },
+  Keypair: {
+    fromSecretKey: vi.fn().mockReturnValue({
+      publicKey: { toBase58: () => 'sourcePublicKey' },
+    }),
+  },
+}));
+
+vi.mock('./solana.encryption', () => ({
+  decryptPrivateKey: vi.fn().mockReturnValue('[1,2,3,4,5,6,7,8]'),
 }));
 
 describe('solana-balance', () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   describe('getWalletBalance', () => {
     it('returns wallet balance', async () => {
+      mockGetBalance.mockResolvedValue(1_000_000_000);
       const { getWalletBalance } = await import('./solana-balance');
-      const mockConnection = {
-        getBalance: vi.fn().mockResolvedValue(1_000_000_000),
-      };
-      (Connection as any).mockImplementation(() => mockConnection);
 
       const balance = await getWalletBalance('wallet123');
       expect(balance.sol).toBe(1);
@@ -28,23 +71,12 @@ describe('solana-balance', () => {
 
   describe('withdrawFunds', () => {
     it('withdraws funds successfully', async () => {
-      const { withdrawFunds } = await import('./solana-balance');
+      mockGetBalance.mockResolvedValue(2_000_000_000);
       process.env.WALLET_MASTER_SECRET = 'test-secret';
-      
-      const mockConnection = {
-        getBalance: vi.fn().mockResolvedValue(2_000_000_000),
-        getLatestBlockhash: vi.fn().mockResolvedValue({
-          blockhash: 'blockhash123',
-          lastValidBlockHeight: 100,
-        }),
-        sendRawTransaction: vi.fn().mockResolvedValue('signature123'),
-        confirmTransaction: vi.fn().mockResolvedValue({}),
-      };
-      (Connection as any).mockImplementation(() => mockConnection);
 
-      const encryptedKey = 'test-encrypted-key';
+      const { withdrawFunds } = await import('./solana-balance');
       const result = await withdrawFunds({
-        encryptedPrivateKey: encryptedKey,
+        encryptedPrivateKey: 'test-encrypted-key',
         destinationAddress: 'dest123',
       });
 

@@ -41,7 +41,7 @@ router.post('/onchain/log', async (req: Request, res: Response) => {
 
 router.get('/onchain/verify/:proof', async (req: Request, res: Response) => {
   try {
-    const { proof } = req.params;
+    const proof = req.params.proof as string;
     const result = await onChainVerification.verifyCertificate(proof);
     
     res.json({

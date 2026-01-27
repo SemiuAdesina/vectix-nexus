@@ -45,6 +45,8 @@ export class RuleEngine {
         return this.checkMarketCap(rule, req);
       case 'MAX_PORTFOLIO_CONCENTRATION':
         return this.checkConcentration(rule, req);
+      case 'MIN_TRUST_SCORE':
+        return this.checkTrustScore(rule, req);
       default:
         return null;
     }
@@ -120,6 +122,19 @@ export class RuleEngine {
   }
 
   private checkConcentration(rule: SupervisorRule, _req: TradeRequest): RuleViolation | null {
+    return null;
+  }
+
+  private checkTrustScore(rule: SupervisorRule, req: TradeRequest): RuleViolation | null {
+    const minScore = rule.params.minScore as number;
+    if (req.trustScore !== undefined && req.trustScore < minScore) {
+      return {
+        ruleId: rule.id,
+        ruleType: rule.type,
+        message: `Trust score ${req.trustScore} below minimum ${minScore}`,
+        severity: 'block',
+      };
+    }
     return null;
   }
 

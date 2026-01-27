@@ -20,9 +20,12 @@ describe('circuit-breaker', () => {
       } as Response);
 
       const result = await circuitBreaker.initializeCircuitBreaker('agent1', {
-        volumeThreshold: 1000000,
-        priceChangeThreshold: 10,
-        tradeCountThreshold: 100,
+        maxVolume: 1000000,
+        maxPriceChange: 10,
+        maxTradesPerPeriod: 100,
+        failureThreshold: 3,
+        resetTimeout: 60000,
+        pauseDuration: 300000,
       });
       expect(result).toEqual(mockResponse);
     });

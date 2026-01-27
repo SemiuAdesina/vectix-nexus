@@ -36,7 +36,7 @@ describe('agents', () => {
         json: async () => mockResponse,
       } as Response);
 
-      const result = await agents.deployAgent({ name: 'Test Agent', config: {} });
+      const result = await agents.deployAgent({ characterJson: { name: 'Test Agent' } });
       expect(result).toEqual(mockResponse);
     });
 
@@ -47,7 +47,7 @@ describe('agents', () => {
         json: async () => ({ error: 'Invalid request' }),
       } as Response);
 
-      await expect(agents.deployAgent({ name: '', config: {} })).rejects.toThrow('Invalid request');
+      await expect(agents.deployAgent({ characterJson: {} })).rejects.toThrow('Invalid request');
     });
   });
 

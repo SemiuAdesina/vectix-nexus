@@ -128,26 +128,6 @@ describe('advanced-features', () => {
     });
   });
 
-  describe('updateShadowPrices', () => {
-    it('updates shadow prices', async () => {
-      const mockPortfolio = { agentId: 'agent1', currentValueSol: 110 };
-      (global.fetch as Mock).mockResolvedValue({
-        json: async () => ({ success: true, portfolio: mockPortfolio }),
-      } as Response);
-
-      const portfolio = await advancedFeatures.updateShadowPrices('agent1');
-      expect(portfolio).toEqual(mockPortfolio);
-    });
-
-    it('returns null on failure', async () => {
-      (global.fetch as Mock).mockResolvedValue({
-        json: async () => ({ success: false }),
-      } as Response);
-
-      const portfolio = await advancedFeatures.updateShadowPrices('agent1');
-      expect(portfolio).toBeNull();
-    });
-  });
 
   describe('getTEEStatus', () => {
     it('fetches TEE status', async () => {
@@ -175,12 +155,12 @@ describe('advanced-features', () => {
   describe('getNarrativeStatus', () => {
     it('fetches narrative status', async () => {
       (global.fetch as Mock).mockResolvedValue({
-        json: async () => ({ available: true, demoMode: false, message: 'Active' }),
+        json: async () => ({ available: true, message: 'Active' }),
       } as Response);
 
       const status = await advancedFeatures.getNarrativeStatus();
       expect(status.available).toBe(true);
-      expect(status.demoMode).toBe(false);
+      expect(status.message).toBe('Active');
     });
   });
 

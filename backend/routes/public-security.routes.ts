@@ -43,7 +43,7 @@ function publicRateLimiter(req: Request, res: Response, next: () => void) {
 router.use(publicRateLimiter);
 
 router.get('/public/security/score/:tokenAddress', async (req: Request, res: Response) => {
-  const { tokenAddress } = req.params;
+  const tokenAddress = getParam(req, 'tokenAddress');
 
   if (!tokenAddress) {
     return res.status(400).json({ success: false, error: 'Token address required' });

@@ -5,7 +5,7 @@ vi.mock('../services/audit-trail', () => ({
   auditTrailService: {
     logSecurityEvent: vi.fn(),
     queryTrail: vi.fn(),
-    verifyTrail: vi.fn(),
+    verifyTrailIntegrity: vi.fn(),
     exportTrail: vi.fn(),
   },
 }));
@@ -59,12 +59,12 @@ describe('Audit Trail Routes', () => {
 
   describe('GET /onchain/audit-trail/verify', () => {
     it('verifies audit trail integrity', async () => {
-      vi.mocked(auditTrailService.auditTrailService.verifyTrail).mockResolvedValue({
+      vi.mocked(auditTrailService.auditTrailService.verifyTrailIntegrity).mockResolvedValue({
         valid: true,
         invalidEntries: [],
       });
 
-      const result = await auditTrailService.auditTrailService.verifyTrail();
+      const result = await auditTrailService.auditTrailService.verifyTrailIntegrity();
       expect(result.valid).toBe(true);
       expect(result.invalidEntries).toEqual([]);
     });

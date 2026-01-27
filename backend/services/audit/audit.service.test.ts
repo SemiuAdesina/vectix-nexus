@@ -56,16 +56,17 @@ describe('logAuditEvent', () => {
   });
 
   it('redacts sensitive data', async () => {
-    const consoleSpy = vi.spyOn(console, 'info');
+    let capturedLog = '';
+    vi.spyOn(console, 'info').mockImplementation((msg) => { capturedLog = msg; });
+    
     await logAuditEvent(
       'api_key.create',
       { userId: 'user-123' },
       { apiKey: 'secret-key-123', name: 'My Key' }
     );
 
-    const logCall = consoleSpy.mock.calls[0][0];
-    expect(logCall).toContain('[REDACTED]');
-    expect(logCall).not.toContain('secret-key-123');
+    expect(capturedLog).toContain('[REDACTED]');
+    expect(capturedLog).not.toContain('secret-key-123');
   });
 });
 

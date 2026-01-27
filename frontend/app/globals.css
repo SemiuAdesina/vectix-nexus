@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   :root {
@@ -33,7 +31,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   html {
@@ -44,7 +42,9 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     min-height: 100vh;
     line-height: 1.6;
@@ -52,30 +52,35 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    font-weight: 600;
+    letter-spacing: -0.025em;
     line-height: 1.2;
   }
 
   h1 {
-    @apply text-4xl md:text-5xl;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
     letter-spacing: -0.025em;
   }
 
   h2 {
-    @apply text-2xl md:text-3xl;
+    font-size: 1.5rem;
+    line-height: 2rem;
     letter-spacing: -0.02em;
   }
 
   h3 {
-    @apply text-xl md:text-2xl;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
   }
 
   p {
-    @apply text-base leading-relaxed;
+    font-size: 1rem;
+    line-height: 1.75rem;
   }
 
   small {
-    @apply text-sm;
+    font-size: 0.875rem;
   }
 }
 
@@ -85,15 +90,17 @@
   }
 
   .glass {
-    @apply bg-card border border-border;
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
   }
 
   .glass-strong {
-    @apply bg-card border border-border;
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
   }
 
   .accent-text {
-    @apply text-primary;
+    color: hsl(var(--primary));
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -101,11 +108,12 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background-color: transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-full;
+    background-color: hsl(var(--border));
+    border-radius: 9999px;
   }
 
   .scrollbar-thin {
@@ -120,17 +128,19 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-background;
+  background-color: hsl(var(--background));
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-secondary rounded-full;
+  background-color: hsl(var(--secondary));
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-muted-foreground/30;
+  background-color: hsl(var(--muted-foreground) / 0.3);
 }
 
 ::selection {
-  @apply bg-primary/20 text-foreground;
+  background-color: hsl(var(--primary) / 0.2);
+  color: hsl(var(--foreground));
 }

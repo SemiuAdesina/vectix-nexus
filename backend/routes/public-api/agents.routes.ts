@@ -25,28 +25,28 @@ router.get('/agents/:id', requireScope('read:agents'), requirePollingInterval(FR
 });
 
 router.get('/agents/:id/logs', requireScope('read:logs'), async (req: ApiAuthRequest, res: Response) => {
-  const agent = await prisma.agent.findFirst({ where: { id: req.params.id, userId: req.apiAuth!.userId } });
+  const agent = await prisma.agent.findFirst({ where: { id: getParam(req, 'id'), userId: req.apiAuth!.userId } });
   if (!agent) return res.status(404).json({ error: 'Agent not found' });
   const limit = req.apiAuth!.tier === 'free' ? 10 : 100;
   res.json({ logs: [], limit, message: 'Logs available when agent is deployed' });
 });
 
 router.post('/agents/:id/start', requireScope('write:control'), requireTier('pro'), async (req: ApiAuthRequest, res: Response) => {
-  const agent = await prisma.agent.findFirst({ where: { id: req.params.id, userId: req.apiAuth!.userId } });
+  const agent = await prisma.agent.findFirst({ where: { id: getParam(req, 'id'), userId: req.apiAuth!.userId } });
   if (!agent) return res.status(404).json({ error: 'Agent not found' });
   await prisma.agent.update({ where: { id: agent.id }, data: { status: 'starting' } });
   res.json({ success: true, message: 'Agent start initiated' });
 });
 
 router.post('/agents/:id/stop', requireScope('write:control'), requireTier('pro'), async (req: ApiAuthRequest, res: Response) => {
-  const agent = await prisma.agent.findFirst({ where: { id: req.params.id, userId: req.apiAuth!.userId } });
+  const agent = await prisma.agent.findFirst({ where: { id: getParam(req, 'id'), userId: req.apiAuth!.userId } });
   if (!agent) return res.status(404).json({ error: 'Agent not found' });
   await prisma.agent.update({ where: { id: agent.id }, data: { status: 'stopping' } });
   res.json({ success: true, message: 'Agent stop initiated' });
 });
 
 router.post('/agents/:id/restart', requireScope('write:control'), requireTier('pro'), async (req: ApiAuthRequest, res: Response) => {
-  const agent = await prisma.agent.findFirst({ where: { id: req.params.id, userId: req.apiAuth!.userId } });
+  const agent = await prisma.agent.findFirst({ where: { id: getParam(req, 'id'), userId: req.apiAuth!.userId } });
   if (!agent) return res.status(404).json({ error: 'Agent not found' });
   await prisma.agent.update({ where: { id: agent.id }, data: { status: 'restarting' } });
   res.json({ success: true, message: 'Agent restart initiated' });

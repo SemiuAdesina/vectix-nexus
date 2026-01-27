@@ -62,8 +62,8 @@ describe('GovernanceService', () => {
 
       expect(result).toBe(true);
       const updated = await service.getProposal(proposal.id);
-      expect(updated.votesFor).toBe(5);
-      expect(updated.votesAgainst).toBe(0);
+      expect(updated!.votesFor).toBe(5);
+      expect(updated!.votesAgainst).toBe(0);
     });
 
     it('prevents duplicate votes from same voter', async () => {
@@ -118,7 +118,7 @@ describe('GovernanceService', () => {
       });
 
       const updated = await service.getProposal(proposal.id);
-      expect(updated.status).toBe('passed');
+      expect(updated!.status).toBe('passed');
     });
   });
 

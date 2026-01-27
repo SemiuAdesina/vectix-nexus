@@ -31,7 +31,7 @@ describe('SidebarUser', () => {
     vi.clearAllMocks();
     vi.mocked(clerk.useClerk).mockReturnValue({
       signOut: mockSignOut,
-    } as ReturnType<typeof clerk.useClerk>);
+    } as unknown as ReturnType<typeof clerk.useClerk>);
     vi.mocked(clerk.useUser).mockReturnValue({
       user: mockUser,
       isLoaded: true,

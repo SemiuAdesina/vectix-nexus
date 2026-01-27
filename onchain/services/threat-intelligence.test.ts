@@ -91,7 +91,7 @@ describe('ThreatIntelligenceService', () => {
 
   describe('reportThreat', () => {
     it('creates a threat report', async () => {
-      const report: Omit<ThreatReport, 'id' | 'createdAt'> = {
+      const report: Omit<ThreatReport, 'id' | 'status' | 'createdAt'> = {
         reporter: 'reporter1',
         tokenAddress: 'token123',
         description: 'Suspicious activity detected',

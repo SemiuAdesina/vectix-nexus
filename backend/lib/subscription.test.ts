@@ -56,10 +56,10 @@ describe('subscription', () => {
             await expect(requireActiveSubscription('user-123')).rejects.toThrow('Active subscription required');
         });
 
-        it('allows access in dev mode without subscription', async () => {
+        it('throws error in dev mode without subscription', async () => {
             vi.stubEnv('NODE_ENV', 'development');
             vi.mocked(prisma.subscription.findFirst).mockResolvedValue(null);
-            await expect(requireActiveSubscription('user-123')).resolves.toBeUndefined();
+            await expect(requireActiveSubscription('user-123')).rejects.toThrow('Active subscription required');
         });
 
         it('passes when subscription is active', async () => {

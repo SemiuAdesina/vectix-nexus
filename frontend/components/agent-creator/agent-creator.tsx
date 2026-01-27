@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { generateCharacterConfig } from '@/lib/agent-creator/generate-character-config';
 import { mergeStrategyIntoConfig } from '@/lib/agent-creator/merge-strategy';
 import type { AgentCreatorFormData } from '@/lib/agent-creator/agent-creator.types';

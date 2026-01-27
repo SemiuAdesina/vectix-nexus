@@ -1,27 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { SecureEnclave } from './secure-enclave';
 import type { TEEConfig, SignRequest } from './tee.types';
-import * as enclaveCrypto from './enclave-crypto';
-import * as keyOps from './enclave-key-operations';
-
-vi.mock('./enclave-crypto', () => ({
-  encryptInEnclave: vi.fn((data: Uint8Array) => Buffer.from(data).toString('base64')),
-  decryptInEnclave: vi.fn((payload: string) => new Uint8Array(Buffer.from(payload, 'base64'))),
-  zeroMemory: vi.fn(),
-}));
-
-vi.mock('./enclave-key-operations', () => ({
-  signMessage: vi.fn(() => new Uint8Array([1, 2, 3])),
-  derivePublicKey: vi.fn(() => 'public-key-base64'),
-  generateAttestation: vi.fn(() => ({
-    provider: 'simulated',
-    enclaveId: 'test-enclave',
-    timestamp: new Date(),
-    signature: 'sig123',
-    measurements: {},
-    valid: true,
-  })),
-}));
 
 describe('SecureEnclave', () => {
   let enclave: SecureEnclave;
@@ -29,7 +8,6 @@ describe('SecureEnclave', () => {
 
   beforeEach(() => {
     enclave = new SecureEnclave(config);
-    vi.clearAllMocks();
   });
 
   describe('storeKey', () => {
@@ -39,13 +17,14 @@ describe('SecureEnclave', () => {
 
       expect(keyId).toBeDefined();
       expect(typeof keyId).toBe('string');
-      expect(enclaveCrypto.encryptInEnclave).toHaveBeenCalledWith(privateKey);
+      expect(keyId.startsWith('key-')).toBe(true);
     });
   });
 
   describe('sign', () => {
     it('signs a message with stored key', async () => {
-      const privateKey = new Uint8Array([1, 2, 3, 4]);
+      const privateKey = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]);
       const keyId = await enclave.storeKey('agent1', privateKey);
 
       const request: SignRequest = {
@@ -57,10 +36,10 @@ describe('SecureEnclave', () => {
       const response = await enclave.sign(request);
 
       expect(response.signature).toBeDefined();
-      expect(response.publicKey).toBe('public-key-base64');
+      expect(response.publicKey).toBeDefined();
+      expect(typeof response.publicKey).toBe('string');
       expect(response.attestation).toBeDefined();
-      expect(keyOps.signMessage).toHaveBeenCalled();
-      expect(enclaveCrypto.zeroMemory).toHaveBeenCalled();
+      expect(response.attestation.valid).toBe(true);
     });
 
     it('throws error for non-existent key', async () => {

@@ -1,0 +1,16 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allow placeholder values in documentation files"
+paths = [
+  '''ENV_REFERENCE\.md''',
+  '''\.env\.example''',
+  '''README\.md''',
+  '''ROADMAP\.md''',
+]
+regexes = [
+  '''32_byte_hex_key_for_aes_256_gcm''',
+  '''your_.*_key''',
+  '''your_.*_secret''',
+]

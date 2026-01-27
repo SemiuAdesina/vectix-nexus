@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -59,7 +59,9 @@ const config: Config = {
         },
         success: 'hsl(var(--success))',
         warning: 'hsl(var(--warning))',
-        border: 'hsl(var(--border))',
+        border: {
+          DEFAULT: 'hsl(var(--border))',
+        },
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
       },

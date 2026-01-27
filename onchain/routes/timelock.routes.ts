@@ -20,7 +20,7 @@ router.post('/onchain/timelock/create', async (req: Request, res: Response) => {
 
 router.post('/onchain/timelock/cancel/:id', async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const result = await timeLockService.cancelTimeLock(id);
     res.json({ success: result });
   } catch (error) {

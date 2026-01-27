@@ -72,8 +72,9 @@ describe('threats', () => {
       } as Response);
 
       const result = await threats.reportThreat({
-        type: 'suspicious_activity',
+        reporter: 'user1',
         description: 'Suspicious trading pattern',
+        severity: 'high',
         tokenAddress: 'token1',
       });
       expect(result).toEqual(mockResponse);

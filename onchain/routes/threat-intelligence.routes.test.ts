@@ -109,8 +109,8 @@ describe('Threat Intelligence Routes', () => {
       };
 
       const reportData = {
-        type: 'suspicious_transaction',
-        severity: 'medium',
+        reporter: 'user1',
+        severity: 'medium' as const,
         description: 'Reported suspicious activity',
       };
 

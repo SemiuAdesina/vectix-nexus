@@ -25,7 +25,8 @@ describe('governance', () => {
       const result = await governance.createGovernanceProposal({
         title: 'Test Proposal',
         description: 'Test description',
-        type: 'parameter_change',
+        type: 'parameter_update',
+        quorum: 10,
       });
       expect(result).toEqual(mockResponse);
     });
@@ -41,7 +42,8 @@ describe('governance', () => {
 
       const result = await governance.voteOnProposal('proposal1', {
         voter: 'user1',
-        vote: 'yes',
+        support: true,
+        weight: 1,
       });
       expect(result).toEqual(mockResponse);
     });
@@ -53,7 +55,7 @@ describe('governance', () => {
       } as Response);
 
       await expect(
-        governance.voteOnProposal('proposal1', { voter: 'user1', vote: 'yes' })
+        governance.voteOnProposal('proposal1', { voter: 'user1', support: true, weight: 1 })
       ).rejects.toThrow('Vote failed');
     });
   });

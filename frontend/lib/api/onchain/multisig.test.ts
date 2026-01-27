@@ -39,8 +39,8 @@ describe('multisig', () => {
       } as Response);
 
       const result = await multisig.createMultiSigProposal('multisig1', {
-        action: 'transfer',
-        target: 'target1',
+        type: 'withdrawal',
+        tokenAddress: 'target1',
         amount: 100,
       });
       expect(result).toEqual(mockResponse);

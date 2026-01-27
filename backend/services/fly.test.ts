@@ -5,15 +5,14 @@ global.fetch = vi.fn();
 describe('fly', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    delete process.env.FLY_API_TOKEN;
+    vi.resetModules();
   });
 
   describe('createFlyMachine', () => {
-    it('creates machine in mock mode when token not set', async () => {
+    it('throws error when FLY_API_TOKEN not set', async () => {
+      delete process.env.FLY_API_TOKEN;
       const { createFlyMachine } = await import('./fly');
-      const result = await createFlyMachine('{"name":"test"}');
-      expect(result.id).toMatch(/^mock-machine-/);
-      expect(result.state).toBe('started');
+      await expect(createFlyMachine('{"name":"test"}')).rejects.toThrow('FLY_API_TOKEN');
     });
 
     it('creates machine via API when token is set', async () => {
@@ -37,10 +36,10 @@ describe('fly', () => {
   });
 
   describe('getMachineIP', () => {
-    it('returns mock IP when token not set', async () => {
+    it('throws error when FLY_API_TOKEN not set', async () => {
+      delete process.env.FLY_API_TOKEN;
       const { getMachineIP } = await import('./fly');
-      const ip = await getMachineIP('machine1');
-      expect(ip).toBe('10.0.0.1');
+      await expect(getMachineIP('machine1')).rejects.toThrow('FLY_API_TOKEN');
     });
 
     it('returns IP from API when token is set', async () => {
