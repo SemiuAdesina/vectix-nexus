@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                    String             @id @default(cuid())
+  email                 String             @unique
+  name                  String?
+  walletAddress         String?
+  referralCode          String?            @unique
+  referredById          String?
+  totalReferralEarnings Float              @default(0)
+  turboModeEnabled      Boolean            @default(false)
+  sanctionStatus        String             @default("clean")
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  agents                Agent[]
+  apiKeys               ApiKey[]
+  referralPayouts       ReferralPayout[]
+  createdStrategies     Strategy[]         @relation("StrategyAuthor")
+  purchasedStrategies   StrategyPurchase[]
+  subscriptions         Subscription[]
+  referredBy            User?              @relation("Referrals", fields: [referredById], references: [id])
+  referrals             User[]             @relation("Referrals")
+  webhooks              Webhook[]
+}
+
+model Subscription {
+  id                   String    @id @default(cuid())
+  userId               String
+  plan                 String
+  status               String
+  stripePriceId        String?
+  stripeSubscriptionId String?   @unique
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Agent {
+  id                   String    @id @default(cuid())
+  userId               String
+  name                 String
+  characterConfig      String
+  machineId            String?   @unique
+  status               String    @default("stopped")
+  walletAddress        String?
+  encryptedSecrets     String?
+  strategyId           String?
+  whitelistedWallet    String?
+  whitelistLockedUntil DateTime?
+  mevProtectionEnabled Boolean   @default(false)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  strategy             Strategy? @relation(fields: [strategyId], references: [id])
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Strategy {
+  id            String             @id @default(cuid())
+  name          String
+  description   String
+  priceUsd      Int                @default(0)
+  configJson    String
+  authorId      String
+  category      String
+  icon          String?
+  featured      Boolean            @default(false)
+  verified      Boolean            @default(false)
+  purchaseCount Int                @default(0)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  agents        Agent[]
+  author        User               @relation("StrategyAuthor", fields: [authorId], references: [id])
+  purchases     StrategyPurchase[]
+}
+
+model StrategyPurchase {
+  id              String   @id @default(cuid())
+  userId          String
+  strategyId      String
+  pricePaid       Int
+  stripePaymentId String?
+  createdAt       DateTime @default(now())
+  strategy        Strategy @relation(fields: [strategyId], references: [id])
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, strategyId])
+}
+
+model ReferralPayout {
+  id           String   @id @default(cuid())
+  userId       String
+  amount       Float
+  sourceUserId String
+  sourceTxHash String?
+  status       String   @default("pending")
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ApiKey {
+  id           String    @id @default(cuid())
+  userId       String
+  name         String
+  keyHash      String    @unique
+  keyPrefix    String
+  scopes       String
+  tier         String    @default("free")
+  requestCount Int       @default(0)
+  lastUsedAt   DateTime?
+  expiresAt    DateTime?
+  revokedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Webhook {
+  id        String   @id @default(cuid())
+  userId    String
+  url       String
+  events    String
+  secret    String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ApiRequestLog {
+  id        String   @id @default(cuid())
+  apiKeyId  String
+  endpoint  String
+  method    String
+  status    Int
+  createdAt DateTime @default(now())
+}
+
+model BugReport {
+  id               String   @id @default(cuid())
+  title            String
+  description      String
+  severity         String
+  category         String
+  stepsToReproduce String
+  impact           String
+  reporterEmail    String?
+  reporterWallet   String?
+  status           String   @default("pending")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}

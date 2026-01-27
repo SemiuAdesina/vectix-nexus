@@ -1,0 +1,89 @@
+import { describe, it, expect, vi, beforeEach, type Mock, type MockedFunction } from 'vitest';
+import * as subscription from './subscription';
+
+global.fetch = vi.fn() as MockedFunction<typeof fetch>;
+
+vi.mock('./auth', () => ({
+  getAuthHeaders: vi.fn().mockResolvedValue({ 'Content-Type': 'application/json' }),
+  getBackendUrl: vi.fn().mockReturnValue('http://localhost:3001'),
+}));
+
+vi.mock('./config', () => ({
+  API_ENDPOINTS: {
+    subscription: {
+      status: '/api/subscription/status',
+      checkout: '/api/stripe/create-checkout',
+      pricing: '/api/pricing',
+      billingPortal: '/api/stripe/billing-portal',
+    },
+  },
+}));
+
+describe('subscription', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('getSubscriptionStatus', () => {
+    it('fetches subscription status', async () => {
+      const mockStatus = { active: true, plan: 'pro', currentPeriodEnd: new Date().toISOString() };
+      (global.fetch as Mock).mockResolvedValue({
+        ok: true,
+        json: async () => mockStatus,
+      } as Response);
+
+      const status = await subscription.getSubscriptionStatus();
+      expect(status).toEqual(mockStatus);
+    });
+
+    it('throws error on failure', async () => {
+      (global.fetch as Mock).mockResolvedValue({
+        ok: false,
+        status: 500,
+      } as Response);
+
+      await expect(subscription.getSubscriptionStatus()).rejects.toThrow();
+    });
+  });
+
+  describe('createCheckoutSession', () => {
+    it('creates checkout session', async () => {
+      (global.fetch as Mock).mockResolvedValue({
+        ok: true,
+        json: async () => ({ url: 'https://checkout.stripe.com/session123' }),
+      } as Response);
+
+      const url = await subscription.createCheckoutSession('pro');
+      expect(url).toBe('https://checkout.stripe.com/session123');
+    });
+  });
+
+  describe('getPricingPlans', () => {
+    it('fetches pricing plans', async () => {
+      const mockPlans = {
+        free: { name: 'Free', price: 0 },
+        pro: { name: 'Pro', price: 29 },
+      };
+      (global.fetch as Mock).mockResolvedValue({
+        ok: true,
+        json: async () => ({ plans: mockPlans }),
+      } as Response);
+
+      const plans = await subscription.getPricingPlans();
+      expect(plans).toEqual(mockPlans);
+    });
+  });
+
+  describe('openBillingPortal', () => {
+    it('opens billing portal', async () => {
+      const mockUrl = 'https://billing.stripe.com/portal123';
+      (global.fetch as Mock).mockResolvedValue({
+        ok: true,
+        json: async () => ({ url: mockUrl }),
+      } as Response);
+
+      await expect(subscription.openBillingPortal()).resolves.not.toThrow();
+      expect(global.fetch).toHaveBeenCalled();
+    });
+  });
+});

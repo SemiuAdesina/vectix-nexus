@@ -1,0 +1,169 @@
+openapi: 3.0.3
+info:
+  title: Vectix Public API
+  version: 1.0.0
+  description: |
+    Developer API for Vectix AI trading agents.
+    
+    ## Tiers
+    - **Free**: 100 req/day, read-only, paper trading
+    - **Pro**: 10,000 req/day, full control, live trading
+
+servers:
+  - url: https://api.vectix.com/v1
+  - url: http://localhost:3002/v1
+
+security:
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+  
+  schemas:
+    Agent:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        status: { type: string, enum: [stopped, starting, running, stopping, crashed] }
+        walletAddress: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+
+    TradeRequest:
+      type: object
+      required: [action, token, amount]
+      properties:
+        action: { type: string, enum: [buy, sell] }
+        token: { type: string }
+        amount: { type: number }
+        mode: { type: string, enum: [paper, live], default: paper }
+
+    Error:
+      type: object
+      properties:
+        error: { type: string }
+
+paths:
+  /agents:
+    get:
+      summary: List agents
+      tags: [Agents]
+      security: [{ ApiKeyAuth: [] }]
+      x-scopes: [read:agents]
+      responses:
+        200:
+          description: List of agents
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  agents: { type: array, items: { $ref: '#/components/schemas/Agent' } }
+
+  /agents/{id}:
+    get:
+      summary: Get agent details
+      tags: [Agents]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        200:
+          description: Agent details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  agent: { $ref: '#/components/schemas/Agent' }
+
+  /agents/{id}/start:
+    post:
+      summary: Start agent (Pro only)
+      tags: [Control]
+      x-scopes: [write:control]
+      x-tier: pro
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        200: { description: Agent start initiated }
+        403: { description: Pro subscription required }
+
+  /agents/{id}/stop:
+    post:
+      summary: Stop agent (Pro only)
+      tags: [Control]
+      x-scopes: [write:control]
+      x-tier: pro
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        200: { description: Agent stop initiated }
+
+  /agents/{id}/restart:
+    post:
+      summary: Restart agent (Pro only)
+      tags: [Control]
+      x-scopes: [write:control]
+      x-tier: pro
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        200: { description: Agent restart initiated }
+
+  /agents/{id}/trade:
+    post:
+      summary: Execute trade (Pro for live, Free for paper)
+      tags: [Trading]
+      x-scopes: [write:trade]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TradeRequest' }
+      responses:
+        200: { description: Trade executed }
+        403: { description: Live trading requires Pro }
+
+  /agents/{id}/logs:
+    get:
+      summary: Get agent logs
+      tags: [Agents]
+      x-scopes: [read:logs]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        200:
+          description: Agent logs (Free=10 lines, Pro=100)
+
+  /market/trending:
+    get:
+      summary: Trending tokens (Free=15min delay)
+      tags: [Market]
+      x-scopes: [read:market]
+      responses:
+        200:
+          description: Trending token data

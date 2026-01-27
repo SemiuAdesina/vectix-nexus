@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: vectix-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vectix
+      POSTGRES_PASSWORD: vectix_dev_password
+      POSTGRES_DB: vectix_nexus
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vectix -d vectix_nexus"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: vectix-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://vectix:vectix_dev_password@postgres:5432/vectix_nexus
+      NODE_ENV: production
+    ports:
+      - "3002:3002"
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:

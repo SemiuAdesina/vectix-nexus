@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "types": ["node"],
+    "typeRoots": ["../backend/node_modules/@types", "../node_modules/@types"],
+    "baseUrl": "../backend",
+    "paths": {
+      "vitest": ["./node_modules/vitest"]
+    }
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

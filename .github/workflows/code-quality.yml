@@ -1,0 +1,65 @@
+name: Code Quality
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  check-formatting:
+    name: Check Code Formatting
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        directory: [frontend, backend]
+    defaults:
+      run:
+        working-directory: ./${{ matrix.directory }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ${{ matrix.directory }}/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: |
+          if [ -f "package.json" ] && grep -q '"prettier"' package.json; then
+            npm run format:check || npx prettier --check "**/*.{ts,tsx,js,jsx,json,css,md}"
+          else
+            echo "No formatting check configured"
+          fi
+
+  complexity-check:
+    name: Code Complexity Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install complexity-checker
+        run: npm install -g complexity-report
+
+      - name: Check complexity
+        run: |
+          find frontend backend onchain -name "*.ts" -o -name "*.tsx" | \
+          xargs cr --format json --output complexity-report.json || true
+
+      - name: Upload complexity report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: complexity-report
+          path: complexity-report.json
+          retention-days: 7
