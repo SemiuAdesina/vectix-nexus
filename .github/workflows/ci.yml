@@ -29,7 +29,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Run ESLint
         run: npm run lint
@@ -52,7 +52,7 @@ jobs:
           cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Run TypeScript type check
         run: npx tsc --noEmit
@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./onchain
+        working-directory: ./backend
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -75,11 +75,12 @@ jobs:
           cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
         working-directory: ./backend
 
       - name: Run TypeScript type check
-        run: npx tsc --noEmit
+        run: npx tsc --noEmit --project ../onchain/tsconfig.json
+        working-directory: ./backend
 
   test-frontend:
     name: Test Frontend
@@ -99,7 +100,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Run tests
         run: npm run test
@@ -136,7 +137,7 @@ jobs:
           cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Generate Prisma Client
         run: npm run db:generate
@@ -172,10 +173,12 @@ jobs:
           cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
+        working-directory: ./backend
 
       - name: Run onchain tests
         run: npx vitest run ../onchain
+        working-directory: ./backend
 
   build-frontend:
     name: Build Frontend
@@ -196,7 +199,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build application
         run: npm run build
@@ -229,7 +232,7 @@ jobs:
           cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Generate Prisma Client
         run: npm run db:generate
@@ -263,7 +266,7 @@ jobs:
           cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build onchain
         run: npx tsc --project ../onchain/tsconfig.json
