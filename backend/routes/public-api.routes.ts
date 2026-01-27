@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { apiKeyAuth, requireScope, requireTier, ApiAuthRequest } from '../middleware/api-auth.middleware';
 import { prisma } from '../lib/prisma';
+import { getParam } from '../lib/route-helpers';
 
 const router = Router();
 
@@ -16,7 +17,7 @@ router.get('/agents', requireScope('read:agents'), async (req: ApiAuthRequest, r
 
 router.get('/agents/:id', requireScope('read:agents'), async (req: ApiAuthRequest, res: Response) => {
   const agent = await prisma.agent.findFirst({
-    where: { id: req.params.id, userId: req.apiAuth!.userId },
+    where: { id: getParam(req, 'id'), userId: req.apiAuth!.userId },
     select: { id: true, name: true, status: true, walletAddress: true, createdAt: true, updatedAt: true },
   });
   if (!agent) return res.status(404).json({ error: 'Agent not found' });
@@ -25,7 +26,7 @@ router.get('/agents/:id', requireScope('read:agents'), async (req: ApiAuthReques
 
 router.get('/agents/:id/logs', requireScope('read:logs'), async (req: ApiAuthRequest, res: Response) => {
   const agent = await prisma.agent.findFirst({
-    where: { id: req.params.id, userId: req.apiAuth!.userId },
+    where: { id: getParam(req, 'id'), userId: req.apiAuth!.userId },
   });
   if (!agent) return res.status(404).json({ error: 'Agent not found' });
   
@@ -39,7 +40,7 @@ router.get('/agents/:id/logs', requireScope('read:logs'), async (req: ApiAuthReq
 
 router.post('/agents/:id/start', requireScope('write:control'), requireTier('pro'), async (req: ApiAuthRequest, res: Response) => {
   const agent = await prisma.agent.findFirst({
-    where: { id: req.params.id, userId: req.apiAuth!.userId },
+    where: { id: getParam(req, 'id'), userId: req.apiAuth!.userId },
   });
   if (!agent) return res.status(404).json({ error: 'Agent not found' });
   
@@ -53,7 +54,7 @@ router.post('/agents/:id/start', requireScope('write:control'), requireTier('pro
 
 router.post('/agents/:id/stop', requireScope('write:control'), requireTier('pro'), async (req: ApiAuthRequest, res: Response) => {
   const agent = await prisma.agent.findFirst({
-    where: { id: req.params.id, userId: req.apiAuth!.userId },
+    where: { id: getParam(req, 'id'), userId: req.apiAuth!.userId },
   });
   if (!agent) return res.status(404).json({ error: 'Agent not found' });
   

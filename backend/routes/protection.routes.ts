@@ -1,12 +1,13 @@
 import { Router, Request, Response } from 'express';
 import { toggleMevProtection, calculateTurboFee } from '../services/security/mev-protection.service';
 import { checkWalletSanctions, screenUserWallet } from '../services/security/sanctions.service';
+import { getParam } from '../lib/route-helpers';
 
 const router = Router();
 
 router.post('/agent/:agentId/mev-protection', async (req: Request, res: Response) => {
   try {
-    const { agentId } = req.params;
+    const agentId = getParam(req, 'agentId');
     const { enabled } = req.body;
 
     const result = await toggleMevProtection(agentId, enabled);

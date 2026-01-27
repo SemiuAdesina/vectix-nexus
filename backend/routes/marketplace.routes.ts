@@ -3,6 +3,7 @@ import { getUserIdFromRequest, getOrCreateUser } from '../lib/auth';
 import { prisma } from '../lib/prisma';
 import { DEFAULT_STRATEGIES } from '../data/default-strategies';
 import { createStrategyCheckout } from '../services/stripe';
+import { getParam } from '../lib/route-helpers';
 
 const router = Router();
 
@@ -28,7 +29,7 @@ router.get('/marketplace/strategies', async (req: Request, res: Response) => {
 router.get('/marketplace/strategies/:id', async (req: Request, res: Response) => {
   try {
     const strategy = await prisma.strategy.findUnique({
-      where: { id: req.params.id },
+      where: { id: getParam(req, 'id') },
       include: { author: { select: { id: true, name: true } } },
     });
     if (!strategy) return res.status(404).json({ success: false, error: 'Strategy not found' });
@@ -44,7 +45,7 @@ router.post('/marketplace/strategies/:id/purchase', async (req: Request, res: Re
     if (!authResult) return res.status(401).json({ success: false, error: 'Unauthorized' });
     
     const { userId, user } = authResult;
-    const { id } = req.params;
+    const id = getParam(req, 'id');
     
     const strategy = await prisma.strategy.findUnique({ where: { id } });
     if (!strategy) return res.status(404).json({ success: false, error: 'Strategy not found' });

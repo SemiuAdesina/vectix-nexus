@@ -5,12 +5,13 @@ import {
   getAffiliateStats,
   recordReferralEarning,
 } from '../services/affiliate/affiliate.service';
+import { getParam } from '../lib/route-helpers';
 
 const router = Router();
 
 router.get('/affiliate/stats/:userId', async (req: Request, res: Response) => {
   try {
-    const { userId } = req.params;
+    const userId = getParam(req, 'userId');
     const stats = await getAffiliateStats(userId);
     res.json({ success: true, ...stats });
   } catch (error) {

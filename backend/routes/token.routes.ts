@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { getUserIdFromRequest } from '../lib/auth';
 import { prisma } from '../lib/prisma';
 import { Keypair, Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
+import { getParam } from '../lib/route-helpers';
 
 const router = Router();
 
@@ -22,7 +23,7 @@ router.post('/agents/:id/launch-token', async (req: Request, res: Response) => {
     const userId = await getUserIdFromRequest(req);
     if (!userId) return res.status(401).json({ success: false, error: 'Unauthorized' });
 
-    const { id } = req.params;
+    const id = getParam(req, 'id');
     const { tokenName, symbol, imageUrl } = req.body as LaunchTokenRequest;
 
     if (!tokenName || !symbol) {
@@ -82,7 +83,7 @@ router.get('/agents/:id/token', async (req: Request, res: Response) => {
     const userId = await getUserIdFromRequest(req);
     if (!userId) return res.status(401).json({ success: false, error: 'Unauthorized' });
 
-    const { id } = req.params;
+    const id = getParam(req, 'id');
     const agent = await prisma.agent.findFirst({ where: { id, userId } });
     if (!agent) return res.status(404).json({ success: false, error: 'Agent not found' });
 

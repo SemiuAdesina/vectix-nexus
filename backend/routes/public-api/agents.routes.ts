@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { requireScope, requireTier, requirePollingInterval, ApiAuthRequest } from '../../middleware/api-auth.middleware';
 import { prisma } from '../../lib/prisma';
+import { getParam } from '../../lib/route-helpers';
 
 const router = Router();
 
@@ -16,7 +17,7 @@ router.get('/agents', requireScope('read:agents'), requirePollingInterval(FREE_T
 
 router.get('/agents/:id', requireScope('read:agents'), requirePollingInterval(FREE_TIER_POLLING_INTERVAL_MS), async (req: ApiAuthRequest, res: Response) => {
   const agent = await prisma.agent.findFirst({
-    where: { id: req.params.id, userId: req.apiAuth!.userId },
+    where: { id: getParam(req, 'id'), userId: req.apiAuth!.userId },
     select: { id: true, name: true, status: true, walletAddress: true, createdAt: true, updatedAt: true },
   });
   if (!agent) return res.status(404).json({ error: 'Agent not found' });

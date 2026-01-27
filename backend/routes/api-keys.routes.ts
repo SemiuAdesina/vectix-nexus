@@ -3,6 +3,7 @@ import { getOrCreateUser } from '../lib/auth';
 import { createApiKey, listApiKeys, revokeApiKey } from '../services/api-keys/api-key.service';
 import { createWebhook, listWebhooks, deleteWebhook, WebhookEvent } from '../services/api-keys/webhook.service';
 import { ApiScope, SCOPE_DESCRIPTIONS, FREE_TIER_SCOPES, PRO_TIER_SCOPES, RATE_LIMITS } from '../services/api-keys/api-key.types';
+import { getParam } from '../lib/route-helpers';
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.delete('/api-keys/:id', async (req: Request, res: Response) => {
   const auth = await getOrCreateUser(req);
   if (!auth) return res.status(401).json({ error: 'Unauthorized' });
   
-  const revoked = await revokeApiKey(auth.userId, req.params.id);
+  const revoked = await revokeApiKey(auth.userId, getParam(req, 'id'));
   if (!revoked) return res.status(404).json({ error: 'API key not found' });
   
   res.json({ success: true });
@@ -70,7 +71,7 @@ router.delete('/webhooks/:id', async (req: Request, res: Response) => {
   const auth = await getOrCreateUser(req);
   if (!auth) return res.status(401).json({ error: 'Unauthorized' });
   
-  const deleted = await deleteWebhook(auth.userId, req.params.id);
+  const deleted = await deleteWebhook(auth.userId, getParam(req, 'id'));
   if (!deleted) return res.status(404).json({ error: 'Webhook not found' });
   
   res.json({ success: true });

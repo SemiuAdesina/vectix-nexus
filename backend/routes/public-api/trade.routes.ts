@@ -7,6 +7,7 @@ import { auditTrailService } from '../../../onchain/services/audit-trail';
 import { threatIntelligenceService } from '../../../onchain/services/threat-intelligence';
 import { analyzeToken } from '../../services/security/token-security';
 import { RuleEngine } from '../../services/supervisor/rule-engine';
+import { getParam } from '../../lib/route-helpers';
 
 const router = Router();
 
@@ -18,7 +19,7 @@ interface TradeRequest {
 }
 
 router.post('/agents/:id/trade', requireScope('write:trade'), async (req: ApiAuthRequest, res: Response) => {
-  const agent = await prisma.agent.findFirst({ where: { id: req.params.id, userId: req.apiAuth!.userId } });
+  const agent = await prisma.agent.findFirst({ where: { id: getParam(req, 'id'), userId: req.apiAuth!.userId } });
   if (!agent) return res.status(404).json({ error: 'Agent not found' });
 
   const { action, token, amount, mode = 'paper' } = req.body as TradeRequest;

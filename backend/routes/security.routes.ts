@@ -1,10 +1,11 @@
 import { Router, Request, Response } from 'express';
+import { getParam } from '../lib/route-helpers';
 import { analyzeToken, shouldAutoReject, getSafeTrending, getAllTrending } from '../services/security';
 
 const router = Router();
 
 router.get('/security/analyze/:tokenAddress', async (req: Request, res: Response) => {
-  const { tokenAddress } = req.params;
+  const tokenAddress = getParam(req, 'tokenAddress');
 
   if (!tokenAddress) {
     res.status(400).json({ success: false, error: 'Token address required' });

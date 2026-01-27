@@ -9,7 +9,8 @@ const ruleEngine = new RuleEngine();
 const shadowManager = new ShadowPortfolioManager();
 
 router.get('/preflight/stats/:agentId', (req: Request, res: Response) => {
-  const stats = getPreflightGuard().getStats(req.params.agentId);
+  const agentId = Array.isArray(req.params.agentId) ? req.params.agentId[0] : req.params.agentId;
+  const stats = getPreflightGuard().getStats(agentId);
   res.json({ success: true, stats });
 });
 
@@ -23,7 +24,8 @@ router.get('/supervisor/rules', (_req: Request, res: Response) => {
 });
 
 router.put('/supervisor/rules/:ruleId', (req: Request, res: Response) => {
-  ruleEngine.updateRule(req.params.ruleId, req.body);
+  const ruleId = Array.isArray(req.params.ruleId) ? req.params.ruleId[0] : req.params.ruleId;
+  ruleEngine.updateRule(ruleId, req.body);
   res.json({ success: true, message: 'Rule updated' });
 });
 
@@ -40,12 +42,14 @@ router.post('/shadow/trade', (req: Request, res: Response) => {
 });
 
 router.get('/shadow/report/:agentId', (req: Request, res: Response) => {
-  const report = shadowManager.generateReport(req.params.agentId);
+  const agentId = Array.isArray(req.params.agentId) ? req.params.agentId[0] : req.params.agentId;
+  const report = shadowManager.generateReport(agentId);
   res.json({ success: !!report, report });
 });
 
 router.post('/shadow/stop/:agentId', (req: Request, res: Response) => {
-  shadowManager.stopShadowMode(req.params.agentId);
+  const agentId = Array.isArray(req.params.agentId) ? req.params.agentId[0] : req.params.agentId;
+  shadowManager.stopShadowMode(agentId);
   res.json({ success: true, message: 'Shadow mode stopped' });
 });
 
@@ -62,7 +66,8 @@ router.post('/tee/store-key', async (req: Request, res: Response) => {
 
 router.delete('/tee/key/:keyId', async (req: Request, res: Response) => {
   const { agentId } = req.body;
-  const deleted = await getSecureEnclave().deleteKey(req.params.keyId, agentId);
+  const keyId = Array.isArray(req.params.keyId) ? req.params.keyId[0] : req.params.keyId;
+  const deleted = await getSecureEnclave().deleteKey(keyId, agentId);
   res.json({ success: deleted });
 });
 

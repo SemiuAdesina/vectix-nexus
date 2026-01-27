@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { getParam } from '../lib/route-helpers';
 import { analyzeToken } from '../services/security/token-security';
 import { globalRateLimiter } from '../middleware/security.middleware';
 

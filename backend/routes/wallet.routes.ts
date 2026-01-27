@@ -4,6 +4,7 @@ import { prisma } from '../lib/prisma';
 import { WalletManager } from '../services/solana';
 import { decryptSecrets } from '../services/secrets';
 import { getWalletBalance, withdrawFunds, validateWalletAddress } from '../services/solana-balance';
+import { getParam } from '../lib/route-helpers';
 
 const router = Router();
 
@@ -12,7 +13,7 @@ router.get('/agents/:id/balance', async (req: Request, res: Response) => {
     const userId = await getUserIdFromRequest(req);
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
-    const agent = await prisma.agent.findFirst({ where: { id: req.params.id, userId } });
+    const agent = await prisma.agent.findFirst({ where: { id: getParam(req, 'id'), userId } });
     if (!agent?.walletAddress) return res.status(404).json({ error: 'Agent or wallet not found' });
 
     const balance = await getWalletBalance(agent.walletAddress);
@@ -29,7 +30,7 @@ router.post('/agents/:id/withdraw', async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
     const agent = await prisma.agent.findFirst({
-      where: { id: req.params.id, userId },
+      where: { id: getParam(req, 'id'), userId },
       include: { user: true },
     });
 

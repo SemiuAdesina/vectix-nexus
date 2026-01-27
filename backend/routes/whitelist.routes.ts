@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { getParam } from '../lib/route-helpers';
 import {
   getWhitelistStatus,
   setWhitelistedWallet,
@@ -9,7 +10,7 @@ const router = Router();
 
 router.get('/agent/:agentId/whitelist', async (req: Request, res: Response) => {
   try {
-    const { agentId } = req.params;
+    const agentId = getParam(req, 'agentId');
     const status = await getWhitelistStatus(agentId);
 
     if (!status) {
@@ -25,7 +26,7 @@ router.get('/agent/:agentId/whitelist', async (req: Request, res: Response) => {
 
 router.post('/agent/:agentId/whitelist', async (req: Request, res: Response) => {
   try {
-    const { agentId } = req.params;
+    const agentId = getParam(req, 'agentId');
     const { walletAddress } = req.body;
 
     if (!walletAddress) {
@@ -43,7 +44,7 @@ router.post('/agent/:agentId/whitelist', async (req: Request, res: Response) => 
 
 router.post('/agent/:agentId/whitelist/check', async (req: Request, res: Response) => {
   try {
-    const { agentId } = req.params;
+    const agentId = getParam(req, 'agentId');
     const { destinationWallet } = req.body;
 
     const result = await checkWithdrawalAllowed(agentId, destinationWallet);
