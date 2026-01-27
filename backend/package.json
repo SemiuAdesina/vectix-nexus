@@ -17,7 +17,7 @@
   "dependencies": {
     "@clerk/express": "^1.7.62",
     "@prisma/adapter-pg": "^7.2.0",
-    "@prisma/client": "^7.2.0",
+    "@prisma/client": "^7.3.0",
     "@solana/web3.js": "^1.98.4",
     "dotenv": "^16.4.1",
     "express": "^4.19.2",
