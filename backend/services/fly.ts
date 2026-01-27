@@ -26,14 +26,10 @@ const FLY_API_HOSTNAME = process.env.FLY_API_HOSTNAME || 'https://api.machines.d
 const DEFAULT_APP_NAME = process.env.FLY_APP_NAME || 'eliza-agent';
 const DEFAULT_IMAGE = process.env.FLY_IMAGE || 'registry.fly.io/eliza-agent:latest';
 
-function getAuthHeaders(): Record<string, string> | null {
+function getAuthHeaders(): Record<string, string> {
   const token = process.env.FLY_API_TOKEN;
   if (!token) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn('⚠️ FLY_API_TOKEN not found. Using MOCK Fly.io mode.');
-      return null;
-    }
-    throw new Error('FLY_API_TOKEN environment variable is required in production');
+    throw new Error('FLY_API_TOKEN environment variable is required');
   }
   return {
     Authorization: `Bearer ${token}`,
@@ -46,18 +42,6 @@ export async function createFlyMachine(
   appName: string = DEFAULT_APP_NAME
 ): Promise<FlyMachineResponse> {
   const headers = getAuthHeaders();
-
-  if (!headers) {
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    return {
-      id: `mock-machine-${Math.random().toString(36).substring(7)}`,
-      name: `mock-agent-${Math.random().toString(36).substring(7)}`,
-      state: 'started',
-      region: 'lax',
-      private_ip: '10.0.0.1',
-      config: { env: { MOCK: 'true' } }
-    };
-  }
 
   const machineConfig: FlyMachineConfig = {
     image: DEFAULT_IMAGE,
@@ -98,11 +82,6 @@ export async function getMachineIP(
   appName: string = DEFAULT_APP_NAME
 ): Promise<string | null> {
   const headers = getAuthHeaders();
-
-  if (!headers) {
-    return '10.0.0.1';
-  }
-
   const url = `${FLY_API_HOSTNAME}/v1/apps/${appName}/machines/${machineId}`;
 
   const response = await fetch(url, {

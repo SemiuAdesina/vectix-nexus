@@ -5,15 +5,6 @@ import {
   SupervisorDecision,
   DEFAULT_RULES,
 } from './supervisor.types';
-import {
-  checkMaxPosition,
-  checkMinLiquidity,
-  checkMaxDailyTrades,
-  checkMaxLoss,
-  checkMarketCap,
-  checkConcentration,
-  checkTrustScore,
-} from './rule-checkers';
 
 export class RuleEngine {
   private rules: Map<string, SupervisorRule> = new Map();
@@ -43,22 +34,93 @@ export class RuleEngine {
   private checkRule(rule: SupervisorRule, req: TradeRequest): RuleViolation | null {
     switch (rule.type) {
       case 'MAX_POSITION_SIZE':
-        return checkMaxPosition(rule, req);
+        return this.checkMaxPosition(rule, req);
       case 'MIN_LIQUIDITY':
-        return checkMinLiquidity(rule, req);
+        return this.checkMinLiquidity(rule, req);
       case 'MAX_DAILY_TRADES':
-        return checkMaxDailyTrades(rule, req);
+        return this.checkMaxDailyTrades(rule, req);
       case 'MAX_LOSS_PER_TRADE':
-        return checkMaxLoss(rule, req);
+        return this.checkMaxLoss(rule, req);
       case 'REQUIRED_MARKET_CAP':
-        return checkMarketCap(rule, req);
+        return this.checkMarketCap(rule, req);
       case 'MAX_PORTFOLIO_CONCENTRATION':
-        return checkConcentration(rule, req);
-      case 'MIN_TRUST_SCORE':
-        return checkTrustScore(rule, req);
+        return this.checkConcentration(rule, req);
       default:
         return null;
     }
+  }
+
+  private checkMaxPosition(rule: SupervisorRule, req: TradeRequest): RuleViolation | null {
+    const maxPercent = rule.params.maxPercent as number;
+    const positionPercent = (req.amountSol / req.portfolioValueSol) * 100;
+
+    if (positionPercent > maxPercent) {
+      return {
+        ruleId: rule.id,
+        ruleType: rule.type,
+        message: `Position size ${positionPercent.toFixed(1)}% exceeds max ${maxPercent}%`,
+        severity: 'block',
+      };
+    }
+    return null;
+  }
+
+  private checkMinLiquidity(rule: SupervisorRule, req: TradeRequest): RuleViolation | null {
+    const minUsd = rule.params.minUsd as number;
+    if (req.tokenLiquidity < minUsd) {
+      return {
+        ruleId: rule.id,
+        ruleType: rule.type,
+        message: `Token liquidity $${req.tokenLiquidity.toLocaleString()} below minimum $${minUsd.toLocaleString()}`,
+        severity: 'block',
+      };
+    }
+    return null;
+  }
+
+  private checkMaxDailyTrades(rule: SupervisorRule, req: TradeRequest): RuleViolation | null {
+    const maxTrades = rule.params.maxTrades as number;
+    if (req.dailyTradeCount >= maxTrades) {
+      return {
+        ruleId: rule.id,
+        ruleType: rule.type,
+        message: `Daily trade limit (${maxTrades}) reached`,
+        severity: 'block',
+      };
+    }
+    return null;
+  }
+
+  private checkMaxLoss(rule: SupervisorRule, req: TradeRequest): RuleViolation | null {
+    const maxLossPercent = rule.params.maxLossPercent as number;
+    const potentialLossPercent = (req.amountSol / req.portfolioValueSol) * 100;
+
+    if (potentialLossPercent > maxLossPercent) {
+      return {
+        ruleId: rule.id,
+        ruleType: rule.type,
+        message: `Potential loss ${potentialLossPercent.toFixed(1)}% exceeds max ${maxLossPercent}%`,
+        severity: 'warning',
+      };
+    }
+    return null;
+  }
+
+  private checkMarketCap(rule: SupervisorRule, req: TradeRequest): RuleViolation | null {
+    const minUsd = rule.params.minUsd as number;
+    if (req.tokenMarketCap < minUsd) {
+      return {
+        ruleId: rule.id,
+        ruleType: rule.type,
+        message: `Market cap $${req.tokenMarketCap.toLocaleString()} below minimum $${minUsd.toLocaleString()}`,
+        severity: 'block',
+      };
+    }
+    return null;
+  }
+
+  private checkConcentration(rule: SupervisorRule, _req: TradeRequest): RuleViolation | null {
+    return null;
   }
 
   updateRule(ruleId: string, updates: Partial<SupervisorRule>): void {

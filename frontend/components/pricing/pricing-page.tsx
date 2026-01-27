@@ -30,12 +30,7 @@ export function PricingPage() {
       window.location.href = url;
     } catch (error) {
       console.error('Failed to create checkout session:', error);
-      const message = error instanceof Error ? error.message : 'Failed to start subscription';
-      if (message.includes('fetch') || message.includes('connect')) {
-        alert('Backend not connected. Please start the backend server.');
-      } else {
-        alert(message);
-      }
+      alert('Backend not connected. Please start the backend server.');
     } finally {
       setSubscribing(null);
     }
@@ -53,14 +48,15 @@ export function PricingPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {Object.entries(DEFAULT_PLANS).map(([key, plan]) => (
             <div
               key={key}
-              className={`relative rounded-xl p-8 transition-all duration-200 ${key === 'pro'
-                ? 'glass border-2 border-primary'
-                : 'glass hover:border-primary/30'
-                }`}
+              className={`relative rounded-xl p-8 transition-all duration-200 ${
+                key === 'pro'
+                  ? 'glass border-2 border-primary'
+                  : 'glass hover:border-primary/30'
+              }`}
             >
               {key === 'pro' && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-background text-xs font-semibold uppercase tracking-wider flex items-center gap-1">

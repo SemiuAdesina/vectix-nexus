@@ -61,13 +61,13 @@ export default function BillingPage() {
 
   return (
     <div className="w-full">
-      <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold mb-1">Billing & Subscription</h1>
-        <p className="text-sm text-muted-foreground">Manage your subscription and payment methods</p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold mb-2">Billing & Subscription</h1>
+        <p className="text-muted-foreground">Manage your subscription and payment methods</p>
       </div>
 
-      <div className="glass rounded-xl p-4 sm:p-6 mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="glass rounded-xl p-6 mb-6">
+        <div className="flex items-center justify-between mb-6">
           <div>
             <p className="text-sm text-muted-foreground">Current Plan</p>
             <p className="text-xl font-bold flex items-center gap-2">
@@ -95,7 +95,7 @@ export default function BillingPage() {
 
       <div className="glass rounded-xl p-6 mb-6">
         <h3 className="font-semibold mb-4">Plan Features</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid md:grid-cols-2 gap-3">
           {features.map(feature => (
             <div key={feature} className="flex items-center gap-2 text-sm">
               <Check className="w-4 h-4 text-[hsl(var(--success))]" />
@@ -121,11 +121,11 @@ export default function BillingPage() {
 function NoSubscription() {
   return (
     <div className="w-full">
-      <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold mb-1">Billing & Subscription</h1>
-        <p className="text-sm text-muted-foreground">You don&apos;t have an active subscription</p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold mb-2">Billing & Subscription</h1>
+        <p className="text-muted-foreground">You dont have an active subscription</p>
       </div>
-      <div className="glass rounded-xl p-6 sm:p-8 text-center">
+      <div className="glass rounded-xl p-8 text-center">
         <Zap className="w-12 h-12 text-primary mx-auto mb-4" />
         <h2 className="text-xl font-bold mb-2">No Active Subscription</h2>
         <p className="text-muted-foreground mb-6">Subscribe to unlock AI agent deployment.</p>

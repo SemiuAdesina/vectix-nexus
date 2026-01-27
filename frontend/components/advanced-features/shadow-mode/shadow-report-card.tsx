@@ -6,10 +6,9 @@ import { ReportCard } from '@/lib/api/advanced-features';
 interface ShadowReportCardProps {
   report: ReportCard;
   onRestart: () => void;
-  onBack?: () => void;
 }
 
-export function ShadowReportCard({ report, onRestart, onBack }: ShadowReportCardProps) {
+export function ShadowReportCard({ report, onRestart }: ShadowReportCardProps) {
   const { metrics, recommendation } = report;
   const isPositive = metrics.totalPnlSol >= 0;
 
@@ -22,17 +21,13 @@ export function ShadowReportCard({ report, onRestart, onBack }: ShadowReportCard
   return (
     <div className="space-y-4">
       <div className={`rounded-lg border p-4 ${recommendationStyles[recommendation]}`}>
-        <div className="flex items-start gap-2">
-          <Trophy className="w-5 h-5 shrink-0 mt-0.5" />
-          <div className="min-w-0 flex-1 space-y-1">
-            <span className="font-semibold block text-sm sm:text-base">
-              {recommendation.replace(/_/g, ' ')}
-            </span>
-            <p className="text-xs sm:text-sm opacity-80 break-words leading-relaxed">
-              {report.summary}
-            </p>
-          </div>
+        <div className="flex items-center gap-2 mb-2">
+          <Trophy className="w-5 h-5" />
+          <span className="font-semibold">
+            {recommendation.replace(/_/g, ' ')}
+          </span>
         </div>
+        <p className="text-sm opacity-80">{report.summary}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -57,24 +52,12 @@ export function ShadowReportCard({ report, onRestart, onBack }: ShadowReportCard
         />
       </div>
 
-      <div className="flex gap-3">
-        {onBack && (
-          <button
-            onClick={onBack}
-            className="flex-1 h-10 rounded-lg border border-border bg-secondary hover:bg-secondary/80 text-sm font-medium transition-all"
-          >
-            Back
-          </button>
-        )}
-        <button
-          onClick={onRestart}
-          className={`h-10 rounded-lg border border-border bg-secondary hover:bg-secondary/80 text-sm font-medium transition-all ${
-            onBack ? 'flex-1' : 'w-full'
-          }`}
-        >
-          Start New Session
-        </button>
-      </div>
+      <button
+        onClick={onRestart}
+        className="w-full h-10 rounded-lg border border-border bg-secondary hover:bg-secondary/80 text-sm font-medium transition-all"
+      >
+        Start New Session
+      </button>
     </div>
   );
 }

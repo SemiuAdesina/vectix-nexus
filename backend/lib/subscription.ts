@@ -43,12 +43,7 @@ export async function checkSubscriptionStatus(userId: string): Promise<Subscript
 
 export async function requireActiveSubscription(userId: string): Promise<void> {
   const subscription = await checkSubscriptionStatus(userId);
-
   if (!subscription.hasActiveSubscription) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn('⚠️ No active subscription found, but allowing access in DEV mode.');
-      return;
-    }
     throw new Error('Active subscription required. Please upgrade your plan.');
   }
 }

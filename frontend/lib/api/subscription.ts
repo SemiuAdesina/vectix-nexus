@@ -1,19 +1,18 @@
 import { getAuthHeaders, getBackendUrl } from './auth';
-import { API_ENDPOINTS } from './config';
 import type { SubscriptionStatus, PricingPlan } from './types';
 
 const BACKEND_URL = getBackendUrl();
 
 export async function getSubscriptionStatus(): Promise<SubscriptionStatus> {
   const headers = await getAuthHeaders();
-  const response = await fetch(`${BACKEND_URL}${API_ENDPOINTS.subscription.status}`, { headers });
+  const response = await fetch(`${BACKEND_URL}/api/subscription/status`, { headers });
   if (!response.ok) throw new Error(`Failed to fetch subscription status: ${response.status}`);
   return response.json() as Promise<SubscriptionStatus>;
 }
 
 export async function createCheckoutSession(plan: 'hobby' | 'pro'): Promise<string> {
   const headers = await getAuthHeaders();
-  const response = await fetch(`${BACKEND_URL}${API_ENDPOINTS.subscription.checkout}`, {
+  const response = await fetch(`${BACKEND_URL}/api/stripe/create-checkout`, {
     method: 'POST',
     headers,
     body: JSON.stringify({ plan }),
@@ -29,7 +28,7 @@ export async function createCheckoutSession(plan: 'hobby' | 'pro'): Promise<stri
 }
 
 export async function getPricingPlans(): Promise<Record<string, PricingPlan>> {
-  const response = await fetch(`${BACKEND_URL}${API_ENDPOINTS.subscription.pricing}`);
+  const response = await fetch(`${BACKEND_URL}/api/pricing`);
   if (!response.ok) throw new Error(`Failed to fetch pricing: ${response.status}`);
   const data = (await response.json()) as { plans: Record<string, PricingPlan> };
   return data.plans;
@@ -37,7 +36,7 @@ export async function getPricingPlans(): Promise<Record<string, PricingPlan>> {
 
 export async function openBillingPortal(): Promise<void> {
   const headers = await getAuthHeaders();
-  const response = await fetch(`${BACKEND_URL}${API_ENDPOINTS.subscription.billingPortal}`, {
+  const response = await fetch(`${BACKEND_URL}/api/stripe/billing-portal`, {
     method: 'POST',
     headers,
   });
@@ -50,3 +49,4 @@ export async function openBillingPortal(): Promise<void> {
   const data = (await response.json()) as { url: string };
   window.location.href = data.url;
 }
+

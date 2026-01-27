@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { getBackendUrl, getAuthHeaders } from '@/lib/api/auth';
-import { API_ENDPOINTS } from '@/lib/api/config';
 import { Rocket, Loader2, Check, AlertCircle, Gem } from 'lucide-react';
 
 interface TokenLauncherProps {
@@ -34,7 +33,7 @@ export function TokenLauncher({ agentId, agentName }: TokenLauncherProps) {
     setResult(null);
     try {
       const headers = await getAuthHeaders();
-      const response = await fetch(`${getBackendUrl()}${API_ENDPOINTS.agents.launchToken(agentId)}`, {
+      const response = await fetch(`${getBackendUrl()}/api/agents/${agentId}/launch-token`, {
         method: 'POST', headers, body: JSON.stringify({ tokenName, symbol }),
       });
       const data = await response.json();
@@ -57,18 +56,16 @@ export function TokenLauncher({ agentId, agentName }: TokenLauncherProps) {
       </div>
 
       <div className="glass rounded-lg p-6 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Token Name</Label>
-            <Input value={tokenName} onChange={(e) => setTokenName(e.target.value)} placeholder="My Agent Token"
-              className="bg-secondary border-border h-11" />
-          </div>
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Token Name</Label>
+          <Input value={tokenName} onChange={(e) => setTokenName(e.target.value)} placeholder="My Agent Token"
+            className="bg-secondary border-border h-11" />
+        </div>
 
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Symbol</Label>
-            <Input value={symbol} onChange={(e) => setSymbol(e.target.value)} placeholder="$AGENT"
-              className="bg-secondary border-border h-11 font-mono" />
-          </div>
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Symbol</Label>
+          <Input value={symbol} onChange={(e) => setSymbol(e.target.value)} placeholder="$AGENT"
+            className="bg-secondary border-border h-11 font-mono" />
         </div>
 
         <div className="p-4 rounded-lg bg-secondary border border-border">

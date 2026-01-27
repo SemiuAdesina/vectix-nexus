@@ -35,81 +35,42 @@ export class LunarCrushClient {
   }
 
   async getTopCoins(limit = 50): Promise<LunarCrushCoin[]> {
-    if (!this.apiKey) {
-      console.warn('[LunarCrush] API key not configured');
-      return [];
-    }
+    if (!this.apiKey) return [];
     
-    try {
-      const url = `${this.baseUrl}/coins/list/v2?sort=galaxy_score&limit=${limit}`;
-      const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${this.apiKey}` },
-      });
-      
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error(`[LunarCrush] API error (${res.status}):`, errorText);
-        return [];
-      }
-      
-      const data = (await res.json()) as LunarCrushResponse;
-      return data.data || [];
-    } catch (error) {
-      console.error('[LunarCrush] Request failed:', error);
-      return [];
-    }
+    const url = `${this.baseUrl}/coins/list/v2?sort=galaxy_score&limit=${limit}`;
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${this.apiKey}` },
+    });
+    
+    if (!res.ok) return [];
+    const data = (await res.json()) as LunarCrushResponse;
+    return data.data || [];
   }
 
   async getCoinsByCategory(category: string): Promise<LunarCrushCoin[]> {
-    if (!this.apiKey) {
-      console.warn('[LunarCrush] API key not configured');
-      return [];
-    }
+    if (!this.apiKey) return [];
     
-    try {
-      const url = `${this.baseUrl}/coins/list/v2?sort=social_volume&categories=${category}`;
-      const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${this.apiKey}` },
-      });
-      
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error(`[LunarCrush] API error (${res.status}):`, errorText);
-        return [];
-      }
-      
-      const data = (await res.json()) as LunarCrushResponse;
-      return data.data || [];
-    } catch (error) {
-      console.error('[LunarCrush] Request failed:', error);
-      return [];
-    }
+    const url = `${this.baseUrl}/coins/list/v2?sort=social_volume&categories=${category}`;
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${this.apiKey}` },
+    });
+    
+    if (!res.ok) return [];
+    const data = (await res.json()) as LunarCrushResponse;
+    return data.data || [];
   }
 
   async getSocialMetrics(symbol: string): Promise<LunarCrushCoin | null> {
-    if (!this.apiKey) {
-      console.warn('[LunarCrush] API key not configured');
-      return null;
-    }
+    if (!this.apiKey) return null;
     
-    try {
-      const url = `${this.baseUrl}/coins/${symbol}/v1`;
-      const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${this.apiKey}` },
-      });
-      
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error(`[LunarCrush] API error (${res.status}):`, errorText);
-        return null;
-      }
-      
-      const data = (await res.json()) as { data: LunarCrushCoin };
-      return data.data || null;
-    } catch (error) {
-      console.error('[LunarCrush] Request failed:', error);
-      return null;
-    }
+    const url = `${this.baseUrl}/coins/${symbol}/v1`;
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${this.apiKey}` },
+    });
+    
+    if (!res.ok) return null;
+    const data = (await res.json()) as { data: LunarCrushCoin };
+    return data.data || null;
   }
 }
 

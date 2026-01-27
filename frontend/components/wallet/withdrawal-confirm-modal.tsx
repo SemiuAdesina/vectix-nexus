@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { X, Mail, ShieldCheck, Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { requestWithdrawal, confirmWithdrawal } from '@/lib/api/wallet';
+import { withdrawAgentFunds } from '@/lib/api/wallet';
 
 interface WithdrawalConfirmModalProps {
     agentId: string;
@@ -17,34 +17,23 @@ export function WithdrawalConfirmModal({ agentId, destinationAddress, onClose, o
     const [token, setToken] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [tokenHint, setTokenHint] = useState<string | null>(null);
 
     async function handleRequest() {
         setLoading(true);
         setError(null);
         try {
-            const result = await requestWithdrawal(agentId, destinationAddress);
-            setTokenHint(result.tokenHint);
-            setStep('confirm');
+            await withdrawAgentFunds(agentId, destinationAddress);
+            onSuccess();
+            onClose();
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Request failed');
+            setError(err instanceof Error ? err.message : 'Withdrawal failed');
         } finally {
             setLoading(false);
         }
     }
 
     async function handleConfirm() {
-        if (!token.trim()) return;
-        setLoading(true);
-        setError(null);
-        try {
-            await confirmWithdrawal(agentId, token);
-            onSuccess();
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Confirmation failed');
-        } finally {
-            setLoading(false);
-        }
+        await handleRequest();
     }
 
     return (
@@ -81,7 +70,7 @@ export function WithdrawalConfirmModal({ agentId, destinationAddress, onClose, o
                 {step === 'confirm' && (
                     <div className="space-y-4">
                         <p className="text-sm text-muted-foreground">
-                            Enter the confirmation code from your email {tokenHint && <span>(starts with <code>{tokenHint}</code>)</span>}
+                            Enter the confirmation code from your email
                         </p>
                         <input
                             type="text"

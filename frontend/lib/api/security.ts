@@ -1,7 +1,6 @@
 'use client';
 
-import { getAuthHeaders, getBackendUrl } from './auth';
-import { API_ENDPOINTS } from './config';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
 export interface RiskItem {
   id: string;
@@ -44,14 +43,11 @@ export interface SafeToken {
   marketCap: number;
 }
 
-const API_BASE = getBackendUrl();
-
 export async function analyzeToken(tokenAddress: string): Promise<{
   report: SecurityReport;
   trustScore: TrustScore;
 } | null> {
-  const headers = await getAuthHeaders();
-  const res = await fetch(`${API_BASE}${API_ENDPOINTS.security.analyze(tokenAddress)}`, { headers });
+  const res = await fetch(`${API_BASE}/api/security/analyze/${tokenAddress}`);
   const data = await res.json();
   return data.success ? { report: data.report, trustScore: data.trustScore } : null;
 }
@@ -62,10 +58,9 @@ export async function checkTradeSafety(tokenAddress: string, safetyMode = true):
   trustScore: number;
   trustGrade: string;
 }> {
-  const headers = await getAuthHeaders();
-  const res = await fetch(`${API_BASE}${API_ENDPOINTS.security.checkTrade}`, {
+  const res = await fetch(`${API_BASE}/api/security/check-trade`, {
     method: 'POST',
-    headers,
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ tokenAddress, safetyMode }),
   });
   const data = await res.json();
@@ -73,58 +68,14 @@ export async function checkTradeSafety(tokenAddress: string, safetyMode = true):
 }
 
 export async function getSafeTrending(minScore = 70): Promise<SafeToken[]> {
-  try {
-    const url = `${API_BASE}${API_ENDPOINTS.security.trendingSafe}?minScore=${minScore}`;
-    console.log('[getSafeTrending] Fetching from:', url);
-    const res = await fetch(url);
-    
-    if (!res.ok) {
-      console.error('[getSafeTrending] Response not OK:', res.status, res.statusText);
-      throw new Error(`Failed to fetch safe trending: ${res.status} ${res.statusText}`);
-    }
-    
-    const data = await res.json();
-    console.log('[getSafeTrending] Response:', { 
-      success: data.success, 
-      tokenCount: data.tokens?.length || 0,
-      filters: data.filters,
-      hasTokens: !!data.tokens,
-      tokensType: Array.isArray(data.tokens) ? 'array' : typeof data.tokens
-    });
-    if (!data.success) {
-      console.warn('[getSafeTrending] API returned success: false', data);
-    }
-    return Array.isArray(data.tokens) ? data.tokens : [];
-  } catch (error) {
-    console.error('[getSafeTrending] Error:', error);
-    throw error;
-  }
+  const res = await fetch(`${API_BASE}/api/security/trending/safe?minScore=${minScore}`);
+  const data = await res.json();
+  return data.tokens || [];
 }
 
 export async function getAllTrending(): Promise<SafeToken[]> {
-  try {
-    const url = `${API_BASE}${API_ENDPOINTS.security.trending}`;
-    console.log('[getAllTrending] Fetching from:', url);
-    const res = await fetch(url);
-    
-    if (!res.ok) {
-      console.error('[getAllTrending] Response not OK:', res.status, res.statusText);
-      throw new Error(`Failed to fetch trending: ${res.status} ${res.statusText}`);
-    }
-    
-    const data = await res.json();
-    console.log('[getAllTrending] Response:', { 
-      success: data.success, 
-      tokenCount: data.tokens?.length || 0,
-      hasTokens: !!data.tokens,
-      tokensType: Array.isArray(data.tokens) ? 'array' : typeof data.tokens
-    });
-    if (!data.success) {
-      console.warn('[getAllTrending] API returned success: false', data);
-    }
-    return Array.isArray(data.tokens) ? data.tokens : [];
-  } catch (error) {
-    console.error('[getAllTrending] Error:', error);
-    throw error;
-  }
+  const res = await fetch(`${API_BASE}/api/security/trending`);
+  const data = await res.json();
+  return data.tokens || [];
 }
+

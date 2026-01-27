@@ -4,7 +4,7 @@ export const DEFAULT_STRATEGIES = [
     description: 'Ultra-aggressive agent. Monitors new liquidity pools on Raydium. Buys within 30 seconds of launch.',
     priceUsd: 4900,
     category: 'meme',
-    icon: 'rocket',
+    icon: '🚀',
     featured: true,
     verified: true,
     configJson: JSON.stringify({
@@ -21,7 +21,7 @@ export const DEFAULT_STRATEGIES = [
     description: 'Low-risk yield farmer. Moves funds between USDC/USDT lending protocols to capture 5-10% APY.',
     priceUsd: 1900,
     category: 'defi',
-    icon: 'shield',
+    icon: '🛡️',
     featured: true,
     verified: true,
     configJson: JSON.stringify({
@@ -38,7 +38,7 @@ export const DEFAULT_STRATEGIES = [
     description: 'Spies on top profitable wallets on Solana. When they buy, you buy. Piggyback on the experts.',
     priceUsd: 9900,
     category: 'trading',
-    icon: 'whale',
+    icon: '🐋',
     featured: true,
     verified: true,
     configJson: JSON.stringify({
@@ -55,7 +55,7 @@ export const DEFAULT_STRATEGIES = [
     description: 'Follow successful traders and replicate their moves. Great for beginners learning the market.',
     priceUsd: 0,
     category: 'trading',
-    icon: 'copy',
+    icon: '📈',
     featured: false,
     verified: true,
     configJson: JSON.stringify({
@@ -72,7 +72,7 @@ export const DEFAULT_STRATEGIES = [
     description: 'Monitors Twitter, Discord, and Telegram for sentiment shifts. Trades based on social momentum.',
     priceUsd: 5900,
     category: 'social',
-    icon: 'social',
+    icon: '💬',
     featured: false,
     verified: true,
     configJson: JSON.stringify({
@@ -89,7 +89,7 @@ export const DEFAULT_STRATEGIES = [
     description: 'Long-term accumulation strategy. Auto-DCA on dips, never panic sells. For the patient investor.',
     priceUsd: 0,
     category: 'trading',
-    icon: 'gem',
+    icon: '💎',
     featured: false,
     verified: true,
     configJson: JSON.stringify({

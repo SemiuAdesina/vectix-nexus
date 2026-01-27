@@ -1,6 +1,5 @@
 import { TransactionSimulator, SimulationResult } from './transaction-simulator';
 import { Transaction, VersionedTransaction } from '@solana/web3.js';
-import { auditTrailService } from '../../../onchain/services/audit-trail';
 
 export interface PreflightRequest {
   agentId: string;
@@ -42,7 +41,7 @@ export class PreflightGuard {
       timestamp: new Date(),
     };
 
-    await this.recordDecision(request.agentId, decision);
+    this.recordDecision(request.agentId, decision);
     return decision;
   }
 
@@ -58,28 +57,11 @@ export class PreflightGuard {
     return `Approved with warnings: ${sim.riskFlags.map(f => f.message).join('; ')}`;
   }
 
-  private async recordDecision(agentId: string, decision: PreflightDecision): Promise<void> {
+  private recordDecision(agentId: string, decision: PreflightDecision): void {
     const agentHistory = this.history.get(agentId) || [];
     agentHistory.push(decision);
     if (agentHistory.length > 100) agentHistory.shift();
     this.history.set(agentId, agentHistory);
-
-    try {
-      await auditTrailService.logSecurityEvent({
-        agentId,
-        decision: decision.approved ? 'approved' : 'rejected',
-        reason: decision.reason,
-        metadata: {
-          action: decision.action,
-          simulation: {
-            success: decision.simulation.success,
-            riskFlags: decision.simulation.riskFlags.length,
-          },
-        },
-      });
-    } catch (error) {
-      console.error('Failed to log preflight decision to audit trail:', error);
-    }
   }
 
   getHistory(agentId: string): PreflightDecision[] {

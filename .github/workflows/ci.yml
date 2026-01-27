@@ -77,11 +77,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./backend
 
       - name: Run TypeScript type check
         run: npx tsc --noEmit --project ../onchain/tsconfig.json
-        working-directory: ./backend
 
   test-frontend:
     name: Test Frontend
@@ -139,23 +137,19 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./backend
 
       - name: Generate Prisma Client
         run: npm run db:generate
-        working-directory: ./backend
         env:
           DATABASE_URL: postgresql://vectix:vectix_test_password@localhost:5432/vectix_nexus_test
 
       - name: Run database migrations
         run: npx prisma migrate deploy
-        working-directory: ./backend
         env:
           DATABASE_URL: postgresql://vectix:vectix_test_password@localhost:5432/vectix_nexus_test
 
       - name: Run tests
         run: npm run test
-        working-directory: ./backend
         env:
           DATABASE_URL: postgresql://vectix:vectix_test_password@localhost:5432/vectix_nexus_test
           NODE_ENV: test
@@ -179,11 +173,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./backend
 
       - name: Run onchain tests
         run: npx vitest run ../onchain
-        working-directory: ./backend
 
   build-frontend:
     name: Build Frontend
@@ -238,15 +230,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./backend
 
       - name: Generate Prisma Client
         run: npm run db:generate
-        working-directory: ./backend
 
       - name: Build application
         run: npm run build
-        working-directory: ./backend
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -275,11 +264,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./backend
 
       - name: Build onchain
         run: npx tsc --project ../onchain/tsconfig.json
-        working-directory: ./backend
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

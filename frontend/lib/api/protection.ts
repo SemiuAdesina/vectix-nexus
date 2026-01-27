@@ -1,7 +1,6 @@
 'use client';
 
-import { getAuthHeaders, getBackendUrl } from './auth';
-import { API_ENDPOINTS } from './config';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
 export interface WhitelistStatus {
   agentId: string;
@@ -24,11 +23,8 @@ export interface TurboFees {
   profit: number;
 }
 
-const API_BASE = getBackendUrl();
-
 export async function getWhitelistStatus(agentId: string): Promise<WhitelistStatus | null> {
-  const headers = await getAuthHeaders();
-  const res = await fetch(`${API_BASE}${API_ENDPOINTS.agents.whitelist(agentId)}`, { headers });
+  const res = await fetch(`${API_BASE}/api/agent/${agentId}/whitelist`);
   const data = await res.json();
   return data.success ? data : null;
 }
@@ -38,27 +34,24 @@ export async function setWhitelistedWallet(agentId: string, walletAddress: strin
   lockedUntil?: string;
   message?: string;
 }> {
-  const headers = await getAuthHeaders();
-  const res = await fetch(`${API_BASE}${API_ENDPOINTS.agents.whitelist(agentId)}`, {
+  const res = await fetch(`${API_BASE}/api/agent/${agentId}/whitelist`, {
     method: 'POST',
-    headers,
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ walletAddress }),
   });
   return res.json();
 }
 
 export async function getAffiliateStats(userId: string): Promise<AffiliateStats | null> {
-  const headers = await getAuthHeaders();
-  const res = await fetch(`${API_BASE}${API_ENDPOINTS.affiliate.stats(userId)}`, { headers });
+  const res = await fetch(`${API_BASE}/api/affiliate/stats/${userId}`);
   const data = await res.json();
   return data.success ? data : null;
 }
 
 export async function generateReferralCode(userId: string): Promise<string | null> {
-  const headers = await getAuthHeaders();
-  const res = await fetch(`${API_BASE}${API_ENDPOINTS.affiliate.generateCode}`, {
+  const res = await fetch(`${API_BASE}/api/affiliate/generate-code`, {
     method: 'POST',
-    headers,
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userId }),
   });
   const data = await res.json();
@@ -66,10 +59,9 @@ export async function generateReferralCode(userId: string): Promise<string | nul
 }
 
 export async function applyReferralCode(userId: string, referralCode: string): Promise<boolean> {
-  const headers = await getAuthHeaders();
-  const res = await fetch(`${API_BASE}${API_ENDPOINTS.affiliate.applyCode}`, {
+  const res = await fetch(`${API_BASE}/api/affiliate/apply-code`, {
     method: 'POST',
-    headers,
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userId, referralCode }),
   });
   const data = await res.json();
@@ -77,10 +69,9 @@ export async function applyReferralCode(userId: string, referralCode: string): P
 }
 
 export async function toggleMevProtection(agentId: string, enabled: boolean): Promise<boolean> {
-  const headers = await getAuthHeaders();
-  const res = await fetch(`${API_BASE}${API_ENDPOINTS.agents.mevProtection(agentId)}`, {
+  const res = await fetch(`${API_BASE}/api/agent/${agentId}/mev-protection`, {
     method: 'POST',
-    headers,
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ enabled }),
   });
   const data = await res.json();
@@ -88,7 +79,7 @@ export async function toggleMevProtection(agentId: string, enabled: boolean): Pr
 }
 
 export async function getTurboFees(): Promise<TurboFees> {
-  const res = await fetch(`${API_BASE}${API_ENDPOINTS.turbo.fees}`);
+  const res = await fetch(`${API_BASE}/api/turbo/fees`);
   const data = await res.json();
   return data;
 }
@@ -97,11 +88,11 @@ export async function checkSanctions(walletAddress: string): Promise<{
   isSanctioned: boolean;
   riskLevel: string;
 }> {
-  const headers = await getAuthHeaders();
-  const res = await fetch(`${API_BASE}${API_ENDPOINTS.security.sanctions}`, {
+  const res = await fetch(`${API_BASE}/api/sanctions/check`, {
     method: 'POST',
-    headers,
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ walletAddress }),
   });
   return res.json();
 }
+

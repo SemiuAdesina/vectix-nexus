@@ -6,8 +6,7 @@ import { AgentLogs } from './agent-logs';
 import { AgentWallet } from './agent-wallet';
 import { TokenLauncher } from './token-launcher';
 import { AgentAdvancedPanel } from '@/components/advanced-features';
-import { getUserWallet } from '@/lib/api/client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X, ScrollText, Wallet, Coins, Settings, Bot, Shield } from 'lucide-react';
 
 interface AgentDetailProps {
@@ -27,15 +26,6 @@ const tabs: { id: Tab; label: string; icon: typeof ScrollText }[] = [
 
 export function AgentDetail({ agent, onClose }: AgentDetailProps) {
   const [activeTab, setActiveTab] = useState<Tab>('logs');
-  const [userPayoutWallet, setUserPayoutWallet] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    if (activeTab === 'wallet') {
-      getUserWallet().then((wallet) => {
-        if (wallet) setUserPayoutWallet(wallet);
-      });
-    }
-  }, [activeTab]);
 
   return (
     <div className="glass rounded-xl overflow-hidden">
@@ -59,10 +49,11 @@ export function AgentDetail({ agent, onClose }: AgentDetailProps) {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 px-4 py-3 text-sm font-medium transition-all flex items-center justify-center gap-2 ${activeTab === tab.id
-              ? 'text-foreground border-b-2 border-primary bg-primary/5'
-              : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-              }`}
+            className={`flex-1 px-4 py-3 text-sm font-medium transition-all flex items-center justify-center gap-2 ${
+              activeTab === tab.id
+                ? 'text-foreground border-b-2 border-primary bg-primary/5'
+                : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+            }`}
           >
             <tab.icon className="w-4 h-4" />
             <span className="hidden sm:inline">{tab.label}</span>
@@ -72,7 +63,7 @@ export function AgentDetail({ agent, onClose }: AgentDetailProps) {
 
       <div className="p-6">
         {activeTab === 'logs' && <AgentLogs agentId={agent.id} isRunning={agent.status === 'running'} />}
-        {activeTab === 'wallet' && <AgentWallet agentId={agent.id} walletAddress={agent.walletAddress} userPayoutWallet={userPayoutWallet} />}
+        {activeTab === 'wallet' && <AgentWallet agentId={agent.id} walletAddress={agent.walletAddress} />}
         {activeTab === 'token' && <TokenLauncher agentId={agent.id} agentName={agent.name} />}
         {activeTab === 'advanced' && <AgentAdvancedPanel agentId={agent.id} />}
         {activeTab === 'config' && (

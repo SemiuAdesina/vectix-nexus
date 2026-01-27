@@ -44,10 +44,12 @@ The platform protects users and the broader ecosystem through:
 - **AI Agent Deployment**: Deploy and manage customizable ElizaOS-based trading agents with full lifecycle control
 - **Secure Wallet Infrastructure**: Automated Solana wallet generation with AES-256-GCM encryption and PBKDF2 key derivation (600,000 iterations)
 - **Protected Trade Execution**: Automated and manual trading with MEV protection, transaction simulation, and multi-layer security checks
-- **Real-Time Monitoring**: Live performance analytics, shadow trading for strategy testing, and comprehensive risk assessment
+- **Real-Time Monitoring**: Live performance analytics, comprehensive risk assessment, and shadow mode paper trading with detailed performance reports
 - **Strategy Marketplace**: Purchase and deploy verified trading strategies from the integrated marketplace
 - **Developer API**: RESTful API with tiered rate limits, scope-based authorization, and comprehensive documentation
-- **On-Chain Security**: Immutable audit trails, circuit breakers, multi-signature wallets, and decentralized governance
+- **On-Chain Security**: Immutable audit trails, circuit breakers, multi-signature wallets, time-locked transactions, and decentralized governance
+- **Shadow Mode**: Risk-free paper trading with live market data for strategy testing
+- **TEE-Protected Keys**: Hardware-secured key storage via Phala Network and other TEE providers
 
 ### Key Differentiators
 
@@ -114,6 +116,13 @@ TRUSTED_ORIGINS=http://localhost:3000
 FRONTEND_URL=http://localhost:3000
 FLY_API_TOKEN=your-fly-token
 SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+
+# TEE Configuration (Optional - for hardware-secured key storage)
+TEE_PROVIDER=simulated
+# For Phala Network:
+# TEE_PROVIDER=phala
+# PHALA_API_KEY=your-phala-api-key
+# PHALA_ENDPOINT=https://api.phala.network
 ```
 
 **Frontend** (`frontend/.env.local`):
@@ -859,17 +868,54 @@ sequenceDiagram
 - `POST /api/affiliate/generate-code` - Generate referral code
 - `POST /api/affiliate/apply-code` - Apply referral code
 
+**Workflow**:
+
+```mermaid
+sequenceDiagram
+    participant USER as User
+    participant F as Frontend
+    participant B as Backend
+    participant DB as Database
+    
+    USER->>F: View Affiliate Page
+    F->>B: GET /api/affiliate/stats/:userId
+    B->>DB: Query Referral Stats
+    DB-->>B: Stats Data
+    B-->>F: Earnings & Referrals
+    
+    USER->>F: Generate Referral Code
+    F->>B: POST /api/affiliate/generate-code
+    B->>DB: Create/Update Referral Code
+    DB-->>B: Code Created
+    B-->>F: Referral Code
+    
+    USER->>F: Apply Referral Code
+    F->>B: POST /api/affiliate/apply-code
+    B->>DB: Validate Code
+    B->>DB: Link Referrer
+    B-->>F: Code Applied
+```
+
 ### Configuration
 
 #### Security
 
-**Purpose**: Advanced security features including MEV protection, whitelisting, and preflight guards.
+**Purpose**: Advanced security features including MEV protection, whitelisting, preflight guards, shadow mode paper trading, and TEE-protected key storage.
 
 **Endpoints**:
 - `GET /api/preflight/stats/:agentId` - Get preflight statistics
 - `POST /api/supervisor/evaluate` - Evaluate trade against rules
+- `GET /api/supervisor/rules` - Get supervisor rules
+- `PUT /api/supervisor/rules/:ruleId` - Update supervisor rule
 - `GET /api/agent/:id/mev-protection` - Get MEV protection status
 - `POST /api/agent/:id/mev-protection` - Toggle MEV protection
+- `POST /api/shadow/create` - Create shadow portfolio
+- `POST /api/shadow/trade` - Execute shadow trade
+- `GET /api/shadow/report/:agentId` - Get shadow mode report
+- `POST /api/shadow/stop/:agentId` - Stop shadow mode
+- `GET /api/tee/status` - Get TEE status
+- `POST /api/tee/store-key` - Store key in secure enclave
+- `DELETE /api/tee/key/:keyId` - Delete key from enclave
 
 **Workflow**:
 
@@ -912,9 +958,76 @@ sequenceDiagram
     end
 ```
 
+**Shadow Mode (Paper Trading) Workflow**:
+
+```mermaid
+sequenceDiagram
+    participant USER as User
+    participant F as Frontend
+    participant B as Backend
+    participant SHADOW as Shadow Portfolio Manager
+    participant MARKET as Market Data
+    
+    USER->>F: Start Shadow Mode
+    F->>B: POST /api/shadow/create
+    B->>SHADOW: Create Portfolio (starting SOL)
+    SHADOW-->>B: Portfolio Created
+    B-->>F: Portfolio Active
+    
+    Note over SHADOW,MARKET: Agent Executes Trades
+    SHADOW->>MARKET: Fetch Live Prices
+    MARKET-->>SHADOW: Current Prices
+    SHADOW->>SHADOW: Execute Trade (paper)
+    SHADOW->>SHADOW: Update Holdings
+    SHADOW->>SHADOW: Calculate PnL
+    
+    USER->>F: View Shadow Report
+    F->>B: GET /api/shadow/report/:agentId
+    B->>SHADOW: Generate Report
+    SHADOW-->>B: Performance Metrics
+    B-->>F: Report with Recommendations
+    
+    USER->>F: Stop Shadow Mode
+    F->>B: POST /api/shadow/stop/:agentId
+    B->>SHADOW: Stop Portfolio
+    SHADOW-->>B: Final Report
+    B-->>F: Report Generated
+```
+
+**TEE (Trusted Execution Environment) Workflow**:
+
+```mermaid
+sequenceDiagram
+    participant USER as User
+    participant F as Frontend
+    participant B as Backend
+    participant TEE as Secure Enclave
+    participant PHALA as Phala Network
+    
+    USER->>F: View TEE Status
+    F->>B: GET /api/tee/status
+    B->>TEE: Get Status
+    TEE->>PHALA: Verify Attestation
+    PHALA-->>TEE: Attestation Valid
+    TEE-->>B: Status (available, provider, keyCount)
+    B-->>F: TEE Status
+    
+    USER->>F: Store Key in TEE
+    F->>B: POST /api/tee/store-key
+    B->>TEE: Store Private Key
+    TEE->>TEE: Encrypt in Enclave
+    TEE->>PHALA: Generate Attestation
+    PHALA-->>TEE: Attestation Report
+    TEE-->>B: Key ID
+    B-->>F: Key Stored
+    
+    Note over TEE: Key never leaves enclave
+    Note over TEE: Signing operations in hardware
+```
+
 #### On-Chain
 
-**Purpose**: On-chain security features including circuit breakers, multi-signature wallets, governance, and audit trails.
+**Purpose**: On-chain security features including circuit breakers, multi-signature wallets, governance, time-locked transactions, and audit trails.
 
 **Endpoints**:
 - `GET /api/onchain/status` - Get on-chain system status
@@ -924,6 +1037,9 @@ sequenceDiagram
 - `POST /api/onchain/circuit-breaker/:agentId/reset` - Reset circuit breaker
 - `POST /api/onchain/multisig/create` - Create multi-signature wallet
 - `POST /api/onchain/multisig/sign` - Sign multi-signature transaction
+- `GET /api/onchain/timelock/:agentId` - Get pending time-locked transactions
+- `POST /api/onchain/timelock/create` - Create time-locked transaction
+- `POST /api/onchain/timelock/cancel/:id` - Cancel time-locked transaction
 - `GET /api/onchain/governance/proposals` - List governance proposals
 - `POST /api/onchain/governance/proposal` - Create proposal
 - `POST /api/onchain/governance/vote` - Vote on proposal
@@ -1010,6 +1126,44 @@ sequenceDiagram
 **Endpoints**:
 - `GET /api/onchain/audit-trail` - Get audit trail entries
 - `GET /api/onchain/audit-trail/:agentId` - Get agent-specific audit trail
+- `POST /api/onchain/audit-trail/verify` - Verify audit trail integrity
+- `POST /api/onchain/audit-trail/export` - Export audit trail (JSON/CSV)
+
+**Workflow**:
+
+```mermaid
+sequenceDiagram
+    participant USER as User
+    participant F as Frontend
+    participant B as Backend
+    participant AUDIT as Audit Trail Service
+    participant ONCHAIN as On-Chain Storage
+    participant DB as Database
+    
+    USER->>F: View Audit Trail
+    F->>B: GET /api/onchain/audit-trail
+    B->>AUDIT: Get Entries
+    AUDIT->>DB: Query Events
+    DB-->>AUDIT: Event List
+    AUDIT-->>B: Audit Entries
+    B-->>F: Display Events
+    
+    USER->>F: Verify Integrity
+    F->>B: POST /api/onchain/audit-trail/verify
+    B->>AUDIT: Verify Trail
+    AUDIT->>ONCHAIN: Check On-Chain Proofs
+    ONCHAIN-->>AUDIT: Verification Results
+    AUDIT-->>B: Integrity Status
+    B-->>F: Valid/Invalid Entries
+    
+    USER->>F: Export Audit Trail
+    F->>B: POST /api/onchain/audit-trail/export
+    B->>AUDIT: Export (format)
+    AUDIT->>DB: Query All Events
+    DB-->>AUDIT: Event Data
+    AUDIT-->>B: Formatted Export
+    B-->>F: Download File
+```
 
 #### Governance
 
@@ -1082,6 +1236,61 @@ sequenceDiagram
 - `GET /api/api-keys` - List API keys
 - `POST /api/api-keys` - Create API key
 - `DELETE /api/api-keys/:id` - Revoke API key
+
+#### Webhooks
+
+**Purpose**: Configure webhooks to receive real-time notifications for agent events.
+
+**Endpoints**:
+- `GET /api/webhooks` - List user webhooks
+- `POST /api/webhooks` - Create webhook
+- `DELETE /api/webhooks/:id` - Delete webhook
+
+**Supported Events**:
+- `agent.started` - Agent started successfully
+- `agent.stopped` - Agent stopped
+- `agent.crashed` - Agent crashed or encountered error
+- `trade.executed` - Trade executed successfully
+- `trade.failed` - Trade failed
+
+**Workflow**:
+
+```mermaid
+sequenceDiagram
+    participant USER as User
+    participant F as Frontend
+    participant B as Backend
+    participant WEBHOOK as User Webhook Server
+    
+    USER->>F: Configure Webhook
+    F->>B: POST /api/webhooks
+    B->>B: Generate Webhook Secret
+    B->>DB: Store Webhook Config
+    B-->>F: Webhook Created (with secret)
+    
+    Note over B,WEBHOOK: Agent Event Occurs
+    B->>B: Check Active Webhooks
+    B->>B: Generate HMAC Signature
+    B->>WEBHOOK: POST to Webhook URL
+    WEBHOOK->>WEBHOOK: Verify Signature
+    WEBHOOK-->>B: 200 OK
+    B->>DB: Log Delivery Status
+```
+
+**Webhook Payload Format**:
+```json
+{
+  "event": "trade.executed",
+  "timestamp": "2026-01-27T20:00:00Z",
+  "data": {
+    "agentId": "agent-123",
+    "action": "buy",
+    "token": "SOL",
+    "amount": 1.5,
+    "signature": "hmac-sha256-signature"
+  }
+}
+```
 
 #### Documentation
 
@@ -1240,6 +1449,23 @@ sequenceDiagram
 - Performance metrics tracking
 - Error logging and alerting
 
+**4. Shadow Mode (Paper Trading)**
+- Risk-free strategy testing with live market data
+- Real-time PnL tracking and performance metrics
+- Automated report generation with recommendations
+- Seamless transition from paper to live trading
+
+**5. TEE-Protected Key Storage**
+- Hardware-based secure enclave integration
+- Phala Network support for decentralized TEE
+- Attestation verification for key operations
+- Keys never exposed outside secure enclave
+
+**Code Locations**:
+- Shadow Mode: `backend/services/shadow/shadow-portfolio.ts`, `backend/services/shadow/shadow-metrics.ts`
+- TEE Service: `backend/services/tee/secure-enclave.ts`, `backend/services/tee/enclave-config.ts`
+- Phala Integration: `backend/services/tee/tee.types.ts` (supports Phala Network provider)
+
 ---
 
 ## Blockchain Security Pillars
@@ -1358,9 +1584,11 @@ graph TD
 
 - **Multi-Layer Protection**: Circuit breakers, threat intelligence, token analysis, supervisor rules, and preflight simulation
 - **Encryption Standards**: AES-256-GCM for private keys, PBKDF2 with 600,000 iterations for key derivation
+- **TEE-Protected Storage**: Hardware-secured key storage via Phala Network and other TEE providers
 - **Access Control**: Scope-based API permissions, rate limiting, and tier-based feature access
 - **Compliance Monitoring**: OFAC screening, AML monitoring, geo-blocking, and sanctions checking
 - **Audit Trails**: Immutable logging of all security-relevant events
+- **Shadow Mode**: Risk-free paper trading for strategy validation before live deployment
 
 **Security Layers**:
 
@@ -1581,6 +1809,11 @@ X-API-Key: vx_<api_key>
 | POST | `/api/onchain/governance/vote` | JWT | Vote on proposal |
 | POST | `/api/onchain/governance/execute` | JWT | Execute passed proposal |
 | GET | `/api/onchain/audit-trail` | JWT | Get audit trail |
+| POST | `/api/onchain/audit-trail/verify` | JWT | Verify audit trail integrity |
+| POST | `/api/onchain/audit-trail/export` | JWT | Export audit trail |
+| GET | `/api/onchain/timelock/:agentId` | JWT | Get pending time-locked transactions |
+| POST | `/api/onchain/timelock/create` | JWT | Create time-locked transaction |
+| POST | `/api/onchain/timelock/cancel/:id` | JWT | Cancel time-locked transaction |
 | POST | `/api/onchain/threats/detect` | JWT | Detect anomalies |
 | GET | `/api/onchain/threats/feed` | JWT | Get threat feed |
 | POST | `/api/onchain/threats/report` | JWT | Report threat |
@@ -1593,6 +1826,22 @@ X-API-Key: vx_<api_key>
 | GET | `/api/marketplace/strategies/:id` | JWT | Get strategy details |
 | POST | `/api/marketplace/strategies/:id/purchase` | JWT | Purchase strategy |
 | GET | `/api/marketplace/purchased` | JWT | Get purchased strategies |
+
+#### Advanced Features
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/preflight/stats/:agentId` | JWT | Get preflight statistics |
+| POST | `/api/supervisor/evaluate` | JWT | Evaluate trade against rules |
+| GET | `/api/supervisor/rules` | JWT | Get supervisor rules |
+| PUT | `/api/supervisor/rules/:ruleId` | JWT | Update supervisor rule |
+| POST | `/api/shadow/create` | JWT | Create shadow portfolio |
+| POST | `/api/shadow/trade` | JWT | Execute shadow trade |
+| GET | `/api/shadow/report/:agentId` | JWT | Get shadow mode report |
+| POST | `/api/shadow/stop/:agentId` | JWT | Stop shadow mode |
+| GET | `/api/tee/status` | JWT | Get TEE status |
+| POST | `/api/tee/store-key` | JWT | Store key in secure enclave |
+| DELETE | `/api/tee/key/:keyId` | JWT | Delete key from enclave |
 
 #### Public Security API
 
@@ -1687,6 +1936,7 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()
 | Data Type | Algorithm | Key Derivation | Purpose |
 |-----------|-----------|----------------|---------|
 | Private Keys | AES-256-GCM | PBKDF2 (600,000 iterations) | Wallet encryption |
+| TEE Keys | Hardware-Encrypted | Phala Network / TEE Provider | Secure enclave storage |
 | API Keys | SHA-256 | One-way hash | API key storage |
 | Webhooks | HMAC-SHA256 | Secret key | Webhook verification |
 | Passwords | PBKDF2-SHA512 | 600,000 iterations | Account security |
@@ -1721,6 +1971,9 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()
 - `STRIPE_WEBHOOK_SECRET` - Webhook signature verification
 - `FLY_API_TOKEN` - Fly.io API token
 - `SOLANA_RPC_URL` - Solana RPC endpoint
+- `TEE_PROVIDER` - TEE provider (simulated, phala, intel-sgx, aws-nitro, azure, google-cloud)
+- `PHALA_API_KEY` - Phala Network API key (if using Phala)
+- `PHALA_ENDPOINT` - Phala Network endpoint (default: https://api.phala.network)
 
 **Required Frontend Variables**:
 - `NEXT_PUBLIC_API_URL` - Backend API URL
@@ -1780,6 +2033,9 @@ All features documented in this README have been verified as implemented in the 
 - Account lockout (`backend/services/security/account-lockout.service.ts`) - Implemented
 - Token security analysis (`backend/services/security/token-security.ts`) - Implemented
 - Supervisor AI rule engine (`backend/services/supervisor/rule-engine.ts`) - Implemented
+- Shadow mode paper trading (`backend/services/shadow/shadow-portfolio.ts`) - Implemented
+- TEE secure enclave (`backend/services/tee/secure-enclave.ts`) - Implemented
+- Phala Network integration (`backend/services/tee/enclave-config.ts`) - Implemented
 
 **API Features**:
 - Public security score API (`backend/routes/public-security.routes.ts`) - Implemented

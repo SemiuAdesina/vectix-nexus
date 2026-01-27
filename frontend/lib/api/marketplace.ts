@@ -1,5 +1,4 @@
 import { getBackendUrl, getAuthHeaders } from './auth';
-import { API_ENDPOINTS } from './config';
 
 export interface Strategy {
   id: string;
@@ -15,14 +14,12 @@ export interface Strategy {
   author: { id: string; name: string | null };
 }
 
-const BACKEND_URL = getBackendUrl();
-
 export async function getStrategies(options?: { category?: string; featured?: boolean }): Promise<Strategy[]> {
   const params = new URLSearchParams();
   if (options?.category) params.append('category', options.category);
   if (options?.featured) params.append('featured', 'true');
 
-  const response = await fetch(`${BACKEND_URL}${API_ENDPOINTS.marketplace.strategies}?${params}`, {
+  const response = await fetch(`${getBackendUrl()}/api/marketplace/strategies?${params}`, {
     headers: await getAuthHeaders(),
   });
 
@@ -31,7 +28,7 @@ export async function getStrategies(options?: { category?: string; featured?: bo
 }
 
 export async function getStrategy(id: string): Promise<Strategy | null> {
-  const response = await fetch(`${BACKEND_URL}${API_ENDPOINTS.marketplace.strategyDetail(id)}`, {
+  const response = await fetch(`${getBackendUrl()}/api/marketplace/strategies/${id}`, {
     headers: await getAuthHeaders(),
   });
 
@@ -40,7 +37,7 @@ export async function getStrategy(id: string): Promise<Strategy | null> {
 }
 
 export async function getPurchasedStrategies(): Promise<Strategy[]> {
-  const response = await fetch(`${BACKEND_URL}${API_ENDPOINTS.marketplace.purchased}`, {
+  const response = await fetch(`${getBackendUrl()}/api/marketplace/purchased`, {
     headers: await getAuthHeaders(),
   });
 
@@ -57,10 +54,11 @@ export interface PurchaseResult {
 }
 
 export async function purchaseStrategy(id: string): Promise<PurchaseResult> {
-  const response = await fetch(`${BACKEND_URL}${API_ENDPOINTS.marketplace.purchase(id)}`, {
+  const response = await fetch(`${getBackendUrl()}/api/marketplace/strategies/${id}/purchase`, {
     method: 'POST',
     headers: await getAuthHeaders(),
   });
 
   return response.json();
 }
+

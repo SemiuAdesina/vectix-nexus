@@ -1,5 +1,5 @@
 export interface TEEConfig {
-  provider: 'phala' | 'intel-sgx' | 'aws-nitro' | 'azure' | 'google-cloud' | 'simulated';
+  provider: 'phala' | 'intel-sgx' | 'aws-nitro' | 'simulated' | 'azure' | 'google-cloud';
   enclaveId?: string;
   attestationUrl?: string;
   apiKey?: string;

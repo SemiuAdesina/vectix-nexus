@@ -1,4 +1,4 @@
-import { getApiBaseUrl } from './config';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3002';
 
 interface ClerkClient {
   session?: {
@@ -35,5 +35,5 @@ export async function getAuthHeaders(): Promise<Record<string, string>> {
 }
 
 export function getBackendUrl(): string {
-  return getApiBaseUrl();
+  return BACKEND_URL;
 }

@@ -3,7 +3,6 @@ import { getPreflightGuard } from '../services/simulation/preflight-guard';
 import { RuleEngine } from '../services/supervisor/rule-engine';
 import { ShadowPortfolioManager } from '../services/shadow/shadow-portfolio';
 import { getSecureEnclave } from '../services/tee/secure-enclave';
-import { fetchTokenByAddress } from '../services/security/dexscreener-client';
 
 const router = Router();
 const ruleEngine = new RuleEngine();
@@ -48,45 +47,6 @@ router.get('/shadow/report/:agentId', (req: Request, res: Response) => {
 router.post('/shadow/stop/:agentId', (req: Request, res: Response) => {
   shadowManager.stopShadowMode(req.params.agentId);
   res.json({ success: true, message: 'Shadow mode stopped' });
-});
-
-router.post('/shadow/update-prices/:agentId', async (req: Request, res: Response) => {
-  try {
-    const portfolio = shadowManager.getPortfolio(req.params.agentId);
-    if (!portfolio || !portfolio.isActive) {
-      return res.status(404).json({ success: false, error: 'Portfolio not found or inactive' });
-    }
-
-    const priceMap = new Map<string, number>();
-    const tokenAddresses = Array.from(portfolio.holdings.keys());
-
-    // Fetch live prices from DexScreener for all holdings
-    const pricePromises = tokenAddresses.map(async (address) => {
-      try {
-        const tokenData = await fetchTokenByAddress(address);
-        if (tokenData && tokenData.priceUsd > 0) {
-          // Convert USD price to SOL price (approximate, using $100/SOL)
-          const solPrice = tokenData.priceUsd / 100;
-          return [address, solPrice] as [string, number];
-        }
-      } catch (error) {
-        console.error(`Failed to fetch price for ${address}:`, error);
-      }
-      return null;
-    });
-
-    const prices = await Promise.all(pricePromises);
-    for (const price of prices) {
-      if (price) priceMap.set(price[0], price[1]);
-    }
-
-    shadowManager.updatePrices(req.params.agentId, priceMap);
-    const updatedPortfolio = shadowManager.getPortfolio(req.params.agentId);
-    res.json({ success: true, portfolio: updatedPortfolio });
-  } catch (error) {
-    console.error('Error updating shadow prices:', error);
-    res.status(500).json({ success: false, error: 'Failed to update prices' });
-  }
 });
 
 router.get('/tee/status', async (_req: Request, res: Response) => {

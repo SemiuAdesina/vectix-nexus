@@ -102,14 +102,12 @@ export function validateSecrets(secrets: AgentSecrets): { valid: boolean; errors
     errors.push('At least one AI provider API key (OpenAI or Anthropic) is required');
   }
 
-  if (process.env.NODE_ENV === 'production') {
-    if (secrets.openaiApiKey && !secrets.openaiApiKey.startsWith('sk-')) {
-      errors.push('Invalid OpenAI API key format');
-    }
+  if (secrets.openaiApiKey && !secrets.openaiApiKey.startsWith('sk-')) {
+    errors.push('Invalid OpenAI API key format');
+  }
 
-    if (secrets.anthropicApiKey && !secrets.anthropicApiKey.startsWith('sk-ant-')) {
-      errors.push('Invalid Anthropic API key format');
-    }
+  if (secrets.anthropicApiKey && !secrets.anthropicApiKey.startsWith('sk-ant-')) {
+    errors.push('Invalid Anthropic API key format');
   }
 
   if (secrets.twitterUsername && !secrets.twitterPassword) {

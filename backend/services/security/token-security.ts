@@ -2,22 +2,15 @@ import { SecurityReport } from './security.types';
 import { fetchRugCheckData } from './rugcheck-client';
 import { fetchTokenByAddress } from './dexscreener-client';
 import { calculateTrustScore } from './trust-score';
-import { securityScanningService } from '../../../onchain/services/security-scanning';
 
 export async function analyzeToken(tokenAddress: string): Promise<{
   report: SecurityReport;
   trustScore: ReturnType<typeof calculateTrustScore>;
 } | null> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
-  
-  try {
-    const [rugCheckData, marketData] = await Promise.all([
-      fetchRugCheckData(tokenAddress),
-      fetchTokenByAddress(tokenAddress),
-    ]);
-    
-    clearTimeout(timeoutId);
+  const [rugCheckData, marketData] = await Promise.all([
+    fetchRugCheckData(tokenAddress),
+    fetchTokenByAddress(tokenAddress),
+  ]);
 
   const liquidityUsd = marketData?.liquidityUsd || 0;
   const tokenAgeHours = 48;
@@ -45,36 +38,11 @@ export async function analyzeToken(tokenAddress: string): Promise<{
       creatorBalance: 0,
     };
 
-    const result = { report, trustScore: calculateTrustScore(report) };
-    
-    try {
-      await securityScanningService.scanToken(tokenAddress);
-    } catch (error) {
-      console.error('Failed to update security scan:', error);
-    }
-    
-    return result;
+    return { report, trustScore: calculateTrustScore(report) };
   }
 
   const report = createHeuristicReport(tokenAddress, liquidityUsd, tokenAgeHours);
-  const result = { report, trustScore: calculateTrustScore(report) };
-  
-  try {
-    await securityScanningService.scanToken(tokenAddress);
-  } catch (error) {
-    console.error('Failed to update security scan:', error);
-  }
-  
-  return result;
-  } catch (error) {
-    clearTimeout(timeoutId);
-    if (error instanceof Error && error.name === 'AbortError') {
-      console.error('Token analysis timeout:', tokenAddress);
-      const report = createHeuristicReport(tokenAddress, 0, 0);
-      return { report, trustScore: calculateTrustScore(report) };
-    }
-    throw error;
-  }
+  return { report, trustScore: calculateTrustScore(report) };
 }
 
 function createHeuristicReport(

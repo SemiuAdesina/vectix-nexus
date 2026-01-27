@@ -61,7 +61,7 @@ export const ApiKeyCreateSchema = z.object({
 
 export const WebhookSchema = z.object({
   url: z.string().url().max(2048).refine(
-    (url) => url.startsWith('https://'),
+    (url: string) => url.startsWith('https://'),
     'Webhook URL must use HTTPS'
   ),
   events: z.array(z.string().max(50)).min(1).max(20),
@@ -71,7 +71,7 @@ export const StrategyCreateSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().min(1).max(1000),
   priceUsd: z.number().int().min(0).max(10000).default(0),
-  configJson: z.union([z.string().max(50000), z.record(z.unknown())]),
+  configJson: z.union([z.string().max(50000), z.record(z.string(), z.unknown())]),
   category: z.enum(['momentum', 'arbitrage', 'yield', 'social', 'custom']),
   icon: z.string().max(50).optional(),
 });
@@ -103,8 +103,8 @@ export function validateRequest<T>(
   if (result.success) {
     return { success: true, data: result.data };
   }
-  const errorMessage = result.error.errors
-    .map(e => `${e.path.join('.')}: ${e.message}`)
+  const errorMessage = result.error.issues
+    .map((e) => `${e.path.map(p => String(p)).join('.')}: ${e.message}`)
     .join(', ');
   return { success: false, error: errorMessage };
 }

@@ -13,5 +13,5 @@ export type {
 } from './types';
 
 export { deployAgent, getAgents, getAgent, startAgent, stopAgent, restartAgent, deleteAgent, getAgentStatus, getAgentLogs } from './agents';
-export { getAgentBalance, requestWithdrawal, confirmWithdrawal, updateUserWallet, getUserWallet } from './wallet';
+export { getAgentBalance, withdrawAgentFunds, updateUserWallet } from './wallet';
 export { getSubscriptionStatus, createCheckoutSession, getPricingPlans, openBillingPortal } from './subscription';

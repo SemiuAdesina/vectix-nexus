@@ -20,17 +20,17 @@ export default function AnalysisPage() {
 
   return (
     <div className="w-full">
-      <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold mb-1">Market Analysis</h1>
-        <p className="text-sm text-muted-foreground">Analyze token safety with real-time security data</p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold mb-2">Market Analysis</h1>
+        <p className="text-muted-foreground">Analyze token safety with real-time security data</p>
       </div>
 
-      <div className="glass rounded-xl p-4 sm:p-6 mb-6">
-        <h2 className="font-semibold mb-4 flex items-center gap-2 text-sm sm:text-base">
+      <div className="glass rounded-xl p-6 mb-8">
+        <h2 className="font-semibold mb-4 flex items-center gap-2">
           <Shield className="w-5 h-5 text-primary" />
           Token Security Scanner
         </h2>
-        <form onSubmit={handleAnalyze} className="flex flex-col sm:flex-row gap-3">
+        <form onSubmit={handleAnalyze} className="flex gap-3">
           <div className="relative flex-1">
             <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -38,10 +38,10 @@ export default function AnalysisPage() {
               placeholder="Enter Solana token address"
               value={tokenAddress}
               onChange={(e) => setTokenAddress(e.target.value)}
-              className="w-full h-11 sm:h-12 pl-11 pr-4 rounded-lg bg-secondary border border-border text-sm"
+              className="w-full h-12 pl-11 pr-4 rounded-lg bg-secondary border border-border text-sm"
             />
           </div>
-          <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={!tokenAddress.trim()}>
+          <Button type="submit" size="lg" disabled={!tokenAddress.trim()}>
             Analyze Token
           </Button>
         </form>
@@ -50,7 +50,7 @@ export default function AnalysisPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
+      <div className="grid lg:grid-cols-3 gap-6 mb-8">
         <FeatureCard
           icon={<Shield />}
           title="Trust Score"

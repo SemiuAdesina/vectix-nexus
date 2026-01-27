@@ -32,15 +32,9 @@ export interface RugCheckResult {
 
 export async function fetchRugCheckData(tokenAddress: string): Promise<RugCheckResult | null> {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
-    
     const response = await fetch(`${RUGCHECK_BASE}/tokens/${tokenAddress}/report`, {
       headers: { 'Accept': 'application/json' },
-      signal: controller.signal,
     });
-    
-    clearTimeout(timeoutId);
 
     if (!response.ok) {
       return null;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { generateCharacterConfig } from '@/lib/agent-creator/generate-character-config';
 import { mergeStrategyIntoConfig } from '@/lib/agent-creator/merge-strategy';
 import type { AgentCreatorFormData } from '@/lib/agent-creator/agent-creator.types';
@@ -9,7 +9,7 @@ import { SecretsForm } from './secrets-form';
 import { ReviewStep } from './review-step';
 import { AgentSecrets, deployAgent } from '@/lib/api/client';
 import type { Strategy } from '@/lib/api/marketplace';
-import { Settings, Key, Rocket } from 'lucide-react';
+import { Settings, Key, Rocket, ChevronRight } from 'lucide-react';
 
 type Step = 'config' | 'secrets' | 'review';
 
@@ -62,44 +62,30 @@ export function AgentCreator() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="text-center mb-6 sm:mb-10">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Create Your AI Agent</h1>
-        <p className="text-sm sm:text-base text-muted-foreground">Configure, connect, and deploy in minutes</p>
+      <div className="text-center mb-10">
+        <h1 className="text-3xl font-bold mb-2">Create Your AI Agent</h1>
+        <p className="text-muted-foreground">Configure, connect, and deploy in minutes</p>
       </div>
 
-      {/* Modern Step Indicator */}
-      <div className="flex items-center justify-center mb-8 sm:mb-10">
-        {steps.map((s, i) => {
-          const stepIndex = steps.findIndex(st => st.id === step);
-          const isActive = step === s.id;
-          const isCompleted = i < stepIndex;
-          const isClickable = s.id === 'config' || generatedJson;
-
-          return (
-            <div key={s.id} className="flex items-center">
-              <button
-                onClick={() => isClickable && setStep(s.id)}
-                disabled={!isClickable}
-                className={`relative flex flex-col items-center group ${!isClickable ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-              >
-                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-300 ${isActive ? 'bg-primary text-background shadow-lg shadow-primary/30 scale-110' :
-                  isCompleted ? 'bg-primary/20 text-primary' : 'bg-secondary text-muted-foreground'
-                  } ${isClickable && !isActive ? 'group-hover:bg-primary/10' : ''}`}>
-                  <s.icon className="w-5 h-5" />
-                </div>
-                <span className={`mt-2 text-xs sm:text-sm font-medium transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground'
-                  }`}>{s.label}</span>
-              </button>
-              {i < steps.length - 1 && (
-                <div className={`w-8 sm:w-16 h-0.5 mx-1 sm:mx-2 transition-colors ${i < stepIndex ? 'bg-primary' : 'bg-border'
-                  }`} />
-              )}
-            </div>
-          );
-        })}
+      <div className="flex justify-center mb-10">
+        {steps.map((s, i) => (
+          <div key={s.id} className="flex items-center">
+            <button
+              onClick={() => (s.id === 'config' || generatedJson) && setStep(s.id)}
+              disabled={s.id !== 'config' && !generatedJson}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
+                step === s.id ? 'bg-primary text-background' : 'text-muted-foreground hover:text-foreground'
+              } ${s.id !== 'config' && !generatedJson ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              <s.icon className="w-4 h-4" />
+              <span className="text-sm font-medium hidden sm:inline">{s.label}</span>
+            </button>
+            {i < steps.length - 1 && <ChevronRight className="w-4 h-4 text-border mx-2" />}
+          </div>
+        ))}
       </div>
 
-      <div className="glass rounded-xl p-4 sm:p-8">
+      <div className="glass rounded-xl p-8">
         {step === 'config' && (
           <ConfigForm formData={formData} onFormDataChange={setFormData} onSubmit={handleGenerateJson} selectedStrategy={selectedStrategy} onStrategySelect={setSelectedStrategy} />
         )}

@@ -30,9 +30,8 @@ function calcSharpe(returns: number[]): number {
 }
 
 export function getRecommendation(m: PerformanceMetrics): 'GO_LIVE' | 'CONTINUE_TESTING' | 'NEEDS_ADJUSTMENT' {
-  if (m.totalTrades === 0) return 'CONTINUE_TESTING';
   if (m.totalPnlPercent > 5 && m.winRate > 50 && m.sharpeRatio > 0.5) return 'GO_LIVE';
-  if (m.totalPnlPercent < -10 || (m.winRate < 30 && m.totalTrades >= 10)) return 'NEEDS_ADJUSTMENT';
+  if (m.totalPnlPercent < -10 || m.winRate < 30) return 'NEEDS_ADJUSTMENT';
   return 'CONTINUE_TESTING';
 }
 

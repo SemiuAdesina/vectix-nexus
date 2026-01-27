@@ -36,6 +36,7 @@ jobs:
           else
             npm ci
           fi
+        continue-on-error: false
 
       - name: Run npm audit
         run: npm audit --audit-level=moderate

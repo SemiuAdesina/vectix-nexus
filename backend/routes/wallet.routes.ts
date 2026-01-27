@@ -4,7 +4,6 @@ import { prisma } from '../lib/prisma';
 import { WalletManager } from '../services/solana';
 import { decryptSecrets } from '../services/secrets';
 import { getWalletBalance, withdrawFunds, validateWalletAddress } from '../services/solana-balance';
-import { requestWithdrawal, verifyWithdrawalToken } from '../services/withdrawal-confirm.service';
 
 const router = Router();
 
@@ -24,7 +23,7 @@ router.get('/agents/:id/balance', async (req: Request, res: Response) => {
   }
 });
 
-router.post('/agents/:id/withdraw/request', async (req: Request, res: Response) => {
+router.post('/agents/:id/withdraw', async (req: Request, res: Response) => {
   try {
     const userId = await getUserIdFromRequest(req);
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
@@ -33,49 +32,21 @@ router.post('/agents/:id/withdraw/request', async (req: Request, res: Response) 
       where: { id: req.params.id, userId },
       include: { user: true },
     });
+
     if (!agent) return res.status(404).json({ error: 'Agent not found' });
 
     const { destinationAddress } = req.body as { destinationAddress?: string };
     const withdrawAddress = destinationAddress || agent.user.walletAddress;
+
     if (!withdrawAddress) {
-      return res.status(400).json({ error: 'No destination wallet provided' });
+      return res.status(400).json({ error: 'No destination wallet. Set a wallet address in your profile or provide one.' });
     }
 
-    const isValid = await validateWalletAddress(withdrawAddress);
-    if (!isValid) return res.status(400).json({ error: 'Invalid Solana address' });
-
-    const { token, expiresAt } = await requestWithdrawal(userId, agent.id, withdrawAddress);
-    return res.json({
-      success: true,
-      message: 'Confirmation sent to your email. Use the token to complete withdrawal.',
-      expiresAt,
-      tokenHint: token.slice(0, 8) + '...',
-    });
-  } catch (error) {
-    return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
-  }
-});
-
-router.post('/agents/:id/withdraw/confirm', async (req: Request, res: Response) => {
-  try {
-    const userId = await getUserIdFromRequest(req);
-    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
-
-    const { token } = req.body as { token: string };
-    if (!token) return res.status(400).json({ error: 'Confirmation token required' });
-
-    const agent = await prisma.agent.findFirst({
-      where: { id: req.params.id, userId },
-      include: { user: true },
-    });
-    if (!agent) return res.status(404).json({ error: 'Agent not found' });
-
-    const verification = verifyWithdrawalToken(token, userId, agent.id);
-    if (!verification.valid) {
-      return res.status(403).json({ error: verification.error });
-    }
+    const isValidAddress = await validateWalletAddress(withdrawAddress);
+    if (!isValidAddress) return res.status(400).json({ error: 'Invalid Solana wallet address' });
 
     if (!agent.encryptedSecrets) return res.status(400).json({ error: 'Agent wallet not configured' });
+
     const secrets = decryptSecrets(agent.encryptedSecrets);
     if (!secrets.customEnvVars?.AGENT_ENCRYPTED_PRIVATE_KEY) {
       return res.status(400).json({ error: 'Agent wallet key not found' });
@@ -83,11 +54,13 @@ router.post('/agents/:id/withdraw/confirm', async (req: Request, res: Response) 
 
     const result = await withdrawFunds({
       encryptedPrivateKey: secrets.customEnvVars.AGENT_ENCRYPTED_PRIVATE_KEY,
-      destinationAddress: verification.destination!,
+      destinationAddress: withdrawAddress,
     });
+
     return res.json(result);
   } catch (error) {
-    return res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return res.status(500).json({ error: errorMessage });
   }
 });
 
@@ -104,21 +77,6 @@ router.put('/user/wallet', async (req: Request, res: Response) => {
 
     await prisma.user.update({ where: { id: userId }, data: { walletAddress } });
     return res.json({ success: true });
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    return res.status(500).json({ error: errorMessage });
-  }
-});
-
-router.get('/user/wallet', async (req: Request, res: Response) => {
-  try {
-    const userId = await getUserIdFromRequest(req);
-    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
-
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user) return res.status(404).json({ error: 'User not found' });
-
-    return res.json({ walletAddress: user.walletAddress });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return res.status(500).json({ error: errorMessage });

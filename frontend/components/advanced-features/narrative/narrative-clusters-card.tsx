@@ -10,14 +10,12 @@ export function NarrativeClustersCard() {
   const [clusters, setClusters] = useState<NarrativeCluster[]>([]);
   const [signals, setSignals] = useState<NarrativeSignal[]>([]);
   const [loading, setLoading] = useState(true);
-  const [demoMode, setDemoMode] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const status = await getNarrativeStatus();
         setAvailable(status.available);
-        setDemoMode(status.demoMode || false);
         if (status.available) {
           const [clustersData, signalsData] = await Promise.all([
             getNarrativeClusters(),
@@ -71,11 +69,7 @@ export function NarrativeClustersCard() {
           <Layers className="w-5 h-5 text-primary" />
           <h3 className="font-semibold">Narrative Clusters</h3>
         </div>
-        {demoMode ? (
-          <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded">Demo Mode</span>
-        ) : (
-          <span className="text-xs text-success bg-success/10 px-2 py-0.5 rounded">Live</span>
-        )}
+        <span className="text-xs text-success bg-success/10 px-2 py-0.5 rounded">Live</span>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">

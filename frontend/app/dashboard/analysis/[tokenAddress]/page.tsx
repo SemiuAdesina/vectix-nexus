@@ -44,8 +44,8 @@ export default function TokenAnalysisPage() {
 
   return (
     <div className="w-full">
-      <Link href="/dashboard/analysis" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
-        <ArrowLeft className="w-4 h-4" /> Back to Analysis
+      <Link href="/dashboard/trending" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
+        <ArrowLeft className="w-4 h-4" /> Back to Trending
       </Link>
 
       <div className="mb-8">
@@ -104,7 +104,7 @@ function AnalysisError({ tokenAddress }: { tokenAddress: string }) {
       <AlertTriangle className="w-16 h-16 mx-auto mb-4 text-[hsl(var(--warning))]" />
       <h2 className="text-xl font-bold mb-2">Analysis Failed</h2>
       <p className="text-muted-foreground mb-6">Could not analyze: {tokenAddress.slice(0, 12)}...</p>
-      <Link href="/dashboard/analysis"><Button>Back to Analysis</Button></Link>
+      <Link href="/dashboard/trending"><Button>Back to Trending</Button></Link>
     </div>
   );
 }

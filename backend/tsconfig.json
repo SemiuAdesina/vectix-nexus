@@ -10,13 +10,9 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    "types": ["node"],
-    "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/*", "../node_modules/*"]
-    }
+    "types": ["node"]
   },
-  "include": ["**/*.ts", "../onchain/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "vitest.config.ts"]
 }
 

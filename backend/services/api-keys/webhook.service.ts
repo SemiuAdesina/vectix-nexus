@@ -49,7 +49,7 @@ export async function listWebhooks(userId: string): Promise<WebhookConfig[]> {
     orderBy: { createdAt: 'desc' },
   });
   
-  return webhooks.map(w => ({
+  return webhooks.map((w: { id: string; url: string; events: string; isActive: boolean; createdAt: Date }) => ({
     id: w.id,
     url: w.url,
     events: JSON.parse(w.events),

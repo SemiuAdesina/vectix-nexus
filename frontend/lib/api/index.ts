@@ -15,10 +15,8 @@ export {
 
 export {
   getAgentBalance,
-  requestWithdrawal,
-  confirmWithdrawal,
   updateUserWallet,
-  getUserWallet,
+  withdrawAgentFunds,
 } from './wallet';
 
 export {
@@ -88,4 +86,3 @@ export type { Strategy, PurchaseResult } from './marketplace';
 export type { TradeAction, TradeMode, TradeRequest, TradeResult, TrendingToken, MarketDataResult } from './trading';
 export type { RiskItem, TrustScore, SecurityReport, SafeToken } from './security';
 export type { WhitelistStatus, AffiliateStats, TurboFees } from './protection';
-export type { WithdrawRequestResult } from './wallet';

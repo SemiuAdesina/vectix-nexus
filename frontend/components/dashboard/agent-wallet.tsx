@@ -3,22 +3,21 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { getAgentBalance, WalletBalance } from '@/lib/api/client';
-import { WithdrawalConfirmModal } from '@/components/wallet/withdrawal-confirm-modal';
-import { Wallet, ArrowDownToLine } from 'lucide-react';
+import { getAgentBalance, withdrawAgentFunds, WalletBalance, WithdrawResult } from '@/lib/api/client';
+import { Wallet, ExternalLink, Loader2, Check, AlertCircle, ArrowDownToLine } from 'lucide-react';
 
 interface AgentWalletProps {
   agentId: string;
   walletAddress?: string;
-  userPayoutWallet?: string;
 }
 
-export function AgentWallet({ agentId, walletAddress, userPayoutWallet }: AgentWalletProps) {
+export function AgentWallet({ agentId, walletAddress }: AgentWalletProps) {
   const [balance, setBalance] = useState<WalletBalance | null>(null);
   const [loading, setLoading] = useState(true);
+  const [withdrawing, setWithdrawing] = useState(false);
   const [customAddress, setCustomAddress] = useState('');
   const [useCustom, setUseCustom] = useState(false);
-  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [result, setResult] = useState<WithdrawResult | null>(null);
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -31,13 +30,19 @@ export function AgentWallet({ agentId, walletAddress, userPayoutWallet }: AgentW
     return () => clearInterval(interval);
   }, [agentId]);
 
-  const handleWithdrawClick = () => setShowWithdrawModal(true);
-  const handleWithdrawSuccess = async () => {
-    setShowWithdrawModal(false);
-    setBalance(await getAgentBalance(agentId));
+  const handleWithdraw = async () => {
+    setWithdrawing(true);
+    setResult(null);
+    try {
+      const res = await withdrawAgentFunds(agentId, useCustom && customAddress ? customAddress : undefined);
+      setResult(res);
+      if (res.success) setBalance(await getAgentBalance(agentId));
+    } catch (e) {
+      setResult({ success: false, error: e instanceof Error ? e.message : 'Withdrawal failed' });
+    } finally {
+      setWithdrawing(false);
+    }
   };
-
-  const destinationAddress = useCustom ? customAddress : (userPayoutWallet || '');
 
   return (
     <div className="space-y-6">
@@ -73,10 +78,7 @@ export function AgentWallet({ agentId, walletAddress, userPayoutWallet }: AgentW
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={useCustom} onChange={(e) => setUseCustom(e.target.checked)}
               className="w-4 h-4 rounded border-border bg-secondary accent-primary" />
-            <span className="text-sm text-muted-foreground">
-              Withdraw to custom address
-              {!useCustom && userPayoutWallet && <span className="text-xs text-primary ml-2">(Defaulting to: {userPayoutWallet.slice(0, 4)}...{userPayoutWallet.slice(-4)})</span>}
-            </span>
+            <span className="text-sm text-muted-foreground">Withdraw to custom address</span>
           </label>
           {useCustom && (
             <Input placeholder="Enter Solana address" value={customAddress} onChange={(e) => setCustomAddress(e.target.value)}
@@ -85,17 +87,26 @@ export function AgentWallet({ agentId, walletAddress, userPayoutWallet }: AgentW
         </div>
       </div>
 
-      <Button size="lg" onClick={handleWithdrawClick} disabled={!balance || balance.sol < 0.001 || !destinationAddress} className="w-full">
-        <ArrowDownToLine className="w-4 h-4" /> Withdraw All Funds
+      <Button size="lg" onClick={handleWithdraw} disabled={withdrawing || !balance || balance.sol < 0.001} className="w-full">
+        {withdrawing ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</> : <><ArrowDownToLine className="w-4 h-4" /> Withdraw All Funds</>}
       </Button>
 
-      {showWithdrawModal && destinationAddress && (
-        <WithdrawalConfirmModal
-          agentId={agentId}
-          destinationAddress={destinationAddress}
-          onClose={() => setShowWithdrawModal(false)}
-          onSuccess={handleWithdrawSuccess}
-        />
+      {result && (
+        <div className={`p-4 rounded-lg text-sm ${result.success ? 'bg-success/10 border border-success/20 text-success' : 'bg-red-500/10 border border-red-500/20 text-red-400'}`}>
+          {result.success ? (
+            <>
+              <p className="font-medium flex items-center gap-2"><Check className="w-4 h-4" /> Withdrawn {result.amountSol?.toFixed(4)} SOL</p>
+              {result.signature && (
+                <a href={`https://solscan.io/tx/${result.signature}`} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-primary mt-1 hover:underline">
+                  View on Solscan <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+            </>
+          ) : (
+            <p className="flex items-center gap-2"><AlertCircle className="w-4 h-4" /> {result.error}</p>
+          )}
+        </div>
       )}
     </div>
   );

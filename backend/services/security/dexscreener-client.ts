@@ -21,36 +21,18 @@ interface DexScreenerResponse {
 
 export async function fetchSolanaTrending(): Promise<SafeToken[]> {
   try {
-    console.log('[DexScreener] Starting fetch for Solana trending tokens...');
     const queries = ['meme', 'ai', 'pump', 'cat', 'dog'];
     const allPairs: DexScreenerPair[] = [];
 
     for (const query of queries) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
-        
-        const response = await fetch(`${DEXSCREENER_BASE}/search?q=${query}`, {
-          signal: controller.signal,
-        });
-        
-        clearTimeout(timeoutId);
-        if (response.ok) {
-          const data = (await response.json()) as DexScreenerResponse;
-          if (data.pairs) {
-            const solanaPairs = data.pairs.filter(p => p.chainId === 'solana');
-            allPairs.push(...solanaPairs);
-            console.log(`[DexScreener] Query "${query}": Found ${solanaPairs.length} Solana pairs`);
-          }
-        } else {
-          console.warn(`[DexScreener] Query "${query}" failed with status ${response.status}`);
+      const response = await fetch(`${DEXSCREENER_BASE}/search?q=${query}`);
+      if (response.ok) {
+        const data = (await response.json()) as DexScreenerResponse;
+        if (data.pairs) {
+          allPairs.push(...data.pairs.filter(p => p.chainId === 'solana'));
         }
-      } catch (queryError) {
-        console.error(`[DexScreener] Error fetching query "${query}":`, queryError);
       }
     }
-    
-    console.log(`[DexScreener] Total pairs collected: ${allPairs.length}`);
 
     const uniquePairs = new Map<string, DexScreenerPair>();
     for (const pair of allPairs) {
@@ -60,12 +42,10 @@ export async function fetchSolanaTrending(): Promise<SafeToken[]> {
     }
 
     const sortedPairs = Array.from(uniquePairs.values())
-      .filter(p => p.liquidity?.usd && p.liquidity.usd >= 10000)
+      .filter(p => p.liquidity?.usd >= 10000)
       .sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0))
       .slice(0, 30);
 
-    console.log(`[DexScreener] Found ${sortedPairs.length} tokens after filtering (liquidity >= $10k)`);
-    
     return sortedPairs.map(pair => ({
       address: pair.baseToken.address,
       symbol: pair.baseToken.symbol,
@@ -86,14 +66,7 @@ export async function fetchSolanaTrending(): Promise<SafeToken[]> {
 
 export async function fetchTokenByAddress(address: string): Promise<SafeToken | null> {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
-    
-    const response = await fetch(`${DEXSCREENER_BASE}/tokens/${address}`, {
-      signal: controller.signal,
-    });
-    
-    clearTimeout(timeoutId);
+    const response = await fetch(`${DEXSCREENER_BASE}/tokens/${address}`);
     if (!response.ok) return null;
 
     const data = (await response.json()) as DexScreenerResponse;

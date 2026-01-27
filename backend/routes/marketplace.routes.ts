@@ -85,7 +85,7 @@ router.get('/marketplace/purchased', async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ success: false, error: 'Unauthorized' });
 
     const purchases = await prisma.strategyPurchase.findMany({ where: { userId }, include: { strategy: true } });
-    return res.status(200).json({ success: true, strategies: purchases.map((p) => p.strategy) });
+    return res.status(200).json({ success: true, strategies: purchases.map((p: { strategy: unknown }) => p.strategy) });
   } catch (error) {
     return res.status(500).json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
   }

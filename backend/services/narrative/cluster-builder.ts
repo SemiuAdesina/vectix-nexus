@@ -1,4 +1,4 @@
-import { LunarCrushCoin } from '../lunarcrush-client';
+import { LunarCrushCoin } from './lunarcrush-client';
 import { NarrativeCluster, NarrativeToken, NARRATIVE_CLUSTERS } from './narrative.types';
 
 export function buildClustersFromCoins(coins: LunarCrushCoin[]): NarrativeCluster[] {
@@ -7,7 +7,7 @@ export function buildClustersFromCoins(coins: LunarCrushCoin[]): NarrativeCluste
       cluster.keywords.some(kw => 
         coin.name.toLowerCase().includes(kw) || 
         coin.symbol.toLowerCase().includes(kw) ||
-        coin.categories?.some(cat => cat.toLowerCase().includes(kw))
+        coin.categories?.some((cat: string) => cat.toLowerCase().includes(kw))
       )
     );
 

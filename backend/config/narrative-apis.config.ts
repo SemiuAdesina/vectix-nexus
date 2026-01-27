@@ -48,15 +48,7 @@ export function getNarrativeApiConfig(): NarrativeApiConfig {
 
 export function isNarrativeFeatureAvailable(): boolean {
   const config = getNarrativeApiConfig();
-  // Only enable if API key is set and not a placeholder
-  const hasValidKey = config.lunarcrush.apiKey && 
-                      config.lunarcrush.apiKey !== 'your_api_key_here' &&
-                      config.lunarcrush.apiKey.trim().length > 0;
-  return hasValidKey || config.twitter.enabled || config.santiment.enabled;
-}
-
-export function isDemoModeEnabled(): boolean {
-  return process.env.ENABLE_NARRATIVE_DEMO === 'true' || process.env.NODE_ENV === 'development';
+  return config.lunarcrush.enabled || config.twitter.enabled || config.santiment.enabled;
 }
 
 export const REQUIRED_ENV_VARS = {

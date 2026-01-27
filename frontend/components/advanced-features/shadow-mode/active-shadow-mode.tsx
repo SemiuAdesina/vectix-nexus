@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { Square, TrendingUp, TrendingDown } from 'lucide-react';
-import { ShadowPortfolio, updateShadowPrices } from '@/lib/api/advanced-features';
+import { ShadowPortfolio } from '@/lib/api/advanced-features';
 
 interface ActiveShadowModeProps {
   portfolio: ShadowPortfolio;
@@ -12,32 +11,11 @@ interface ActiveShadowModeProps {
 }
 
 export function ActiveShadowMode({ 
-  portfolio: initialPortfolio, 
+  portfolio, 
   onStop, 
   onViewReport,
   loading 
 }: ActiveShadowModeProps) {
-  const [portfolio, setPortfolio] = useState<ShadowPortfolio>(initialPortfolio);
-  
-  useEffect(() => {
-    if (!portfolio.isActive) return;
-    
-    const updatePrices = async () => {
-      try {
-        const updated = await updateShadowPrices(portfolio.agentId);
-        if (updated) {
-          setPortfolio(updated);
-        }
-      } catch (error) {
-        console.error('Failed to update shadow prices:', error);
-      }
-    };
-    
-    updatePrices();
-    const interval = setInterval(updatePrices, 30000);
-    return () => clearInterval(interval);
-  }, [portfolio.agentId, portfolio.isActive]);
-  
   const pnl = portfolio.currentValueSol - portfolio.startingSol;
   const pnlPercent = (pnl / portfolio.startingSol) * 100;
   const isPositive = pnl >= 0;

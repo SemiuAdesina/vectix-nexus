@@ -42,25 +42,24 @@ export function SupervisorRulesCard() {
   }
 
   return (
-    <div className="glass rounded-xl p-4 sm:p-6">
-      <div className="flex items-center gap-3 mb-4 sm:mb-6">
-        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-          <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+    <div className="glass rounded-xl p-6">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+          <Brain className="w-5 h-5 text-primary" />
         </div>
-        <div className="min-w-0">
-          <h3 className="font-semibold text-sm sm:text-base">Supervisor AI</h3>
-          <p className="text-xs text-muted-foreground truncate">
+        <div>
+          <h3 className="font-semibold">Supervisor AI</h3>
+          <p className="text-xs text-muted-foreground">
             Constitutional rules the agent cannot break
           </p>
         </div>
       </div>
 
-      <div className="space-y-2 sm:space-y-3">
+      <div className="space-y-3">
         {rules.map(rule => (
           <RuleItem
             key={rule.id}
             rule={rule}
-            isEditing={editingRule === rule.id}
             onToggle={() => toggleRule(rule.id, !rule.enabled)}
             onEdit={() => setEditingRule(editingRule === rule.id ? null : rule.id)}
           />
@@ -81,7 +80,6 @@ export function SupervisorRulesCard() {
 
 interface RuleItemProps {
   rule: SupervisorRule;
-  isEditing: boolean;
   onToggle: () => void;
   onEdit: () => void;
 }
@@ -92,19 +90,21 @@ function RuleItem({ rule, onToggle, onEdit }: RuleItemProps) {
     .join(', ');
 
   return (
-    <div className={`rounded-lg border p-3 transition-all ${rule.enabled
-      ? 'border-primary/30 bg-primary/5'
-      : 'border-border bg-secondary/30'
-      }`}>
+    <div className={`rounded-lg border p-3 transition-all ${
+      rule.enabled 
+        ? 'border-primary/30 bg-primary/5' 
+        : 'border-border bg-secondary/30'
+    }`}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <button
               onClick={onToggle}
-              className={`w-5 h-5 rounded flex items-center justify-center transition-colors ${rule.enabled
-                ? 'bg-primary text-background'
-                : 'bg-secondary text-muted-foreground'
-                }`}
+              className={`w-5 h-5 rounded flex items-center justify-center transition-colors ${
+                rule.enabled 
+                  ? 'bg-primary text-background' 
+                  : 'bg-secondary text-muted-foreground'
+              }`}
             >
               {rule.enabled ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
             </button>

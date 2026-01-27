@@ -12,7 +12,7 @@ export default function Home() {
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Zap className="w-4 h-4 text-background" />
             </div>
-            <span className="font-semibold text-lg"><span className="sm:hidden">VL</span><span className="hidden sm:inline">VectixLogic</span></span>
+            <span className="font-semibold text-lg">VectixLogic</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/pricing" className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
@@ -29,7 +29,7 @@ export default function Home() {
             <SignedIn>
               <Link href="/dashboard">
                 <Button size="default" className="gap-2">
-                  <Rocket className="w-4 h-4" /><span className="hidden sm:inline">Dashboard</span>
+                  <Rocket className="w-4 h-4" /> Dashboard
                 </Button>
               </Link>
               <UserButton afterSignOutUrl="/" />
@@ -53,7 +53,7 @@ export default function Home() {
             </h1>
 
             <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-              Deploy autonomous trading agents with their own wallets and tokens.
+              Deploy autonomous trading agents with their own wallets and tokens. 
               No code required. Built on ElizaOS.
             </p>
 

@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 model User {
@@ -13,25 +13,26 @@ model User {
   walletAddress         String?
   referralCode          String?            @unique
   referredById          String?
+  referredBy            User?              @relation("Referrals", fields: [referredById], references: [id])
+  referrals             User[]             @relation("Referrals")
   totalReferralEarnings Float              @default(0)
   turboModeEnabled      Boolean            @default(false)
   sanctionStatus        String             @default("clean")
   createdAt             DateTime           @default(now())
   updatedAt             DateTime           @updatedAt
+  subscriptions         Subscription[]
   agents                Agent[]
-  apiKeys               ApiKey[]
-  referralPayouts       ReferralPayout[]
   createdStrategies     Strategy[]         @relation("StrategyAuthor")
   purchasedStrategies   StrategyPurchase[]
-  subscriptions         Subscription[]
-  referredBy            User?              @relation("Referrals", fields: [referredById], references: [id])
-  referrals             User[]             @relation("Referrals")
+  referralPayouts       ReferralPayout[]
+  apiKeys               ApiKey[]
   webhooks              Webhook[]
 }
 
 model Subscription {
   id                   String    @id @default(cuid())
   userId               String
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   plan                 String
   status               String
   stripePriceId        String?
@@ -39,12 +40,12 @@ model Subscription {
   currentPeriodEnd     DateTime?
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
-  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Agent {
   id                   String    @id @default(cuid())
   userId               String
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   name                 String
   characterConfig      String
   machineId            String?   @unique
@@ -52,13 +53,12 @@ model Agent {
   walletAddress        String?
   encryptedSecrets     String?
   strategyId           String?
+  strategy             Strategy? @relation(fields: [strategyId], references: [id])
   whitelistedWallet    String?
   whitelistLockedUntil DateTime?
   mevProtectionEnabled Boolean   @default(false)
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
-  strategy             Strategy? @relation(fields: [strategyId], references: [id])
-  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Strategy {
@@ -68,27 +68,27 @@ model Strategy {
   priceUsd      Int                @default(0)
   configJson    String
   authorId      String
+  author        User               @relation("StrategyAuthor", fields: [authorId], references: [id])
   category      String
   icon          String?
   featured      Boolean            @default(false)
   verified      Boolean            @default(false)
   purchaseCount Int                @default(0)
+  agents        Agent[]
+  purchases     StrategyPurchase[]
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
-  agents        Agent[]
-  author        User               @relation("StrategyAuthor", fields: [authorId], references: [id])
-  purchases     StrategyPurchase[]
 }
 
 model StrategyPurchase {
   id              String   @id @default(cuid())
   userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   strategyId      String
+  strategy        Strategy @relation(fields: [strategyId], references: [id])
   pricePaid       Int
   stripePaymentId String?
   createdAt       DateTime @default(now())
-  strategy        Strategy @relation(fields: [strategyId], references: [id])
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, strategyId])
 }
@@ -96,17 +96,18 @@ model StrategyPurchase {
 model ReferralPayout {
   id           String   @id @default(cuid())
   userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   amount       Float
   sourceUserId String
   sourceTxHash String?
   status       String   @default("pending")
   createdAt    DateTime @default(now())
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ApiKey {
   id           String    @id @default(cuid())
   userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   name         String
   keyHash      String    @unique
   keyPrefix    String
@@ -117,19 +118,18 @@ model ApiKey {
   expiresAt    DateTime?
   revokedAt    DateTime?
   createdAt    DateTime  @default(now())
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Webhook {
   id        String   @id @default(cuid())
   userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   url       String
   events    String
   secret    String
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ApiRequestLog {
@@ -139,19 +139,4 @@ model ApiRequestLog {
   method    String
   status    Int
   createdAt DateTime @default(now())
-}
-
-model BugReport {
-  id               String   @id @default(cuid())
-  title            String
-  description      String
-  severity         String
-  category         String
-  stepsToReproduce String
-  impact           String
-  reporterEmail    String?
-  reporterWallet   String?
-  status           String   @default("pending")
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
 }

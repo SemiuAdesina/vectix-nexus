@@ -21,7 +21,7 @@ export function FleetGrid() {
   return (
     <div className="w-full">
       <FleetHeader runningCount={runningCount} totalCount={agents.length} onRefresh={refresh} />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-[repeat(auto-fit,minmax(400px,1fr))]">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {agents.map(agent => (
           <AgentFleetCard key={agent.id} agent={agent} onAction={refresh} />
         ))}
@@ -40,7 +40,7 @@ function FleetHeader({
   onRefresh: () => void;
 }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+    <div className="flex items-center justify-between mb-6">
       <div>
         <h1 className="text-2xl font-bold mb-1">My Fleet</h1>
         <p className="text-muted-foreground">

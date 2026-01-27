@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { Ghost } from 'lucide-react';
-import {
-  createShadowPortfolio,
-  getShadowReport,
-  stopShadowMode,
+import { 
+  createShadowPortfolio, 
+  getShadowReport, 
+  stopShadowMode, 
   ReportCard,
-  ShadowPortfolio
+  ShadowPortfolio 
 } from '@/lib/api/advanced-features';
 import { StartShadowMode } from './start-shadow-mode';
 import { ActiveShadowMode } from './active-shadow-mode';
@@ -56,19 +56,15 @@ export function ShadowModeCard({ agentId }: ShadowModeCardProps) {
     }
   };
 
-  const handleBackToActive = () => {
-    setReport(null);
-  };
-
   return (
-    <div className="glass rounded-xl p-4 sm:p-6">
-      <div className="flex items-center gap-3 mb-4 sm:mb-6">
-        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-          <Ghost className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+    <div className="glass rounded-xl p-6">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+          <Ghost className="w-5 h-5 text-primary" />
         </div>
-        <div className="min-w-0">
-          <h3 className="font-semibold text-sm sm:text-base">Shadow Mode</h3>
-          <p className="text-xs text-muted-foreground truncate">
+        <div>
+          <h3 className="font-semibold">Shadow Mode</h3>
+          <p className="text-xs text-muted-foreground">
             Paper trading with live market data
           </p>
         </div>
@@ -83,7 +79,7 @@ export function ShadowModeCard({ agentId }: ShadowModeCardProps) {
         />
       )}
 
-      {portfolio && portfolio.isActive && !report && (
+      {portfolio && portfolio.isActive && (
         <ActiveShadowMode
           portfolio={portfolio}
           onStop={handleStop}
@@ -92,13 +88,7 @@ export function ShadowModeCard({ agentId }: ShadowModeCardProps) {
         />
       )}
 
-      {report && (
-        <ShadowReportCard 
-          report={report} 
-          onRestart={handleStart}
-          onBack={portfolio?.isActive ? handleBackToActive : undefined}
-        />
-      )}
+      {report && <ShadowReportCard report={report} onRestart={handleStart} />}
     </div>
   );
 }

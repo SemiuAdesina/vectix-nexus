@@ -56,35 +56,25 @@ export class ShadowPortfolioManager {
         pnlPercent: 0,
       });
     }
-    portfolio.currentValueSol -= trade.amountSol;
   }
 
   private executeSell(portfolio: ShadowPortfolio, trade: ShadowTrade): void {
     const holding = portfolio.holdings.get(trade.tokenAddress);
     if (!holding) return;
 
-    const soldAmount = Math.min(holding.amount, trade.amountSol / trade.priceAtTrade);
-    holding.amount -= soldAmount;
+    holding.amount -= Math.min(holding.amount, trade.amountSol / trade.priceAtTrade);
     if (holding.amount <= 0.0001) portfolio.holdings.delete(trade.tokenAddress);
-    portfolio.currentValueSol += trade.amountSol;
   }
 
   private updatePortfolioValue(portfolio: ShadowPortfolio): void {
-    let holdingsValue = 0;
+    let totalValue = 0;
     for (const holding of portfolio.holdings.values()) {
       holding.valueSol = holding.amount * holding.currentPrice;
       holding.pnlSol = holding.valueSol - holding.amount * holding.avgBuyPrice;
       holding.pnlPercent = (holding.pnlSol / (holding.amount * holding.avgBuyPrice)) * 100;
-      holdingsValue += holding.valueSol;
+      totalValue += holding.valueSol;
     }
-    const totalSpentOnBuys = portfolio.trades
-      .filter(t => t.action === 'BUY')
-      .reduce((sum, t) => sum + t.amountSol, 0);
-    const totalReceivedFromSells = portfolio.trades
-      .filter(t => t.action === 'SELL')
-      .reduce((sum, t) => sum + t.amountSol, 0);
-    const remainingSol = portfolio.startingSol - totalSpentOnBuys + totalReceivedFromSells;
-    portfolio.currentValueSol = holdingsValue + remainingSol;
+    portfolio.currentValueSol = totalValue;
   }
 
   updatePrices(agentId: string, prices: Map<string, number>): void {

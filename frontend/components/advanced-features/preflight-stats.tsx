@@ -35,25 +35,25 @@ export function PreflightStatsCard({ agentId }: PreflightStatsCardProps) {
     );
   }
 
-  const approvalRate = stats && stats.total > 0
-    ? Math.round((stats.approved / stats.total) * 100)
+  const approvalRate = stats && stats.total > 0 
+    ? Math.round((stats.approved / stats.total) * 100) 
     : 100;
 
   return (
-    <div className="glass rounded-xl p-4 sm:p-6">
-      <div className="flex items-center gap-3 mb-4 sm:mb-6">
-        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-          <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+    <div className="glass rounded-xl p-6">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+          <Shield className="w-5 h-5 text-primary" />
         </div>
-        <div className="min-w-0">
-          <h3 className="font-semibold text-sm sm:text-base">Pre-Flight Protection</h3>
-          <p className="text-xs text-muted-foreground truncate">
+        <div>
+          <h3 className="font-semibold">Pre-Flight Protection</h3>
+          <p className="text-xs text-muted-foreground">
             Simulates transactions before execution
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-6">
+      <div className="grid grid-cols-3 gap-4 mb-6">
         <StatBox
           icon={<ShieldCheck className="w-4 h-4 text-[hsl(var(--success))]" />}
           label="Approved"
@@ -100,20 +100,20 @@ export function PreflightStatsCard({ agentId }: PreflightStatsCardProps) {
   );
 }
 
-function StatBox({
-  icon,
-  label,
-  value
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: number;
+function StatBox({ 
+  icon, 
+  label, 
+  value 
+}: { 
+  icon: React.ReactNode; 
+  label: string; 
+  value: number; 
 }) {
   return (
-    <div className="bg-secondary/50 rounded-lg p-2 sm:p-3 text-center">
+    <div className="bg-secondary/50 rounded-lg p-3 text-center">
       <div className="flex justify-center mb-1">{icon}</div>
-      <p className="text-base sm:text-lg font-semibold">{value}</p>
-      <p className="text-[10px] sm:text-xs text-muted-foreground">{label}</p>
+      <p className="text-lg font-semibold">{value}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

@@ -1,50 +1,23 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Key, Plus, Copy, Trash2, Check, Loader2, X, AlertTriangle } from 'lucide-react';
+import { Key, Plus, Copy, Trash2, Eye, EyeOff, Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getApiKeys, createApiKey, revokeApiKey, getApiConfig, ApiKeyData, ApiScope, ApiConfig } from '@/lib/api/api-keys';
 import { CreateKeyModal } from '@/components/api-keys/create-key-modal';
 
-function NewKeyModal({ apiKey, onClose }: { apiKey: string; onClose: () => void }) {
-  const [copied, setCopied] = useState(false);
-  const copy = () => { navigator.clipboard.writeText(apiKey); setCopied(true); };
-  return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-background border border-border rounded-xl w-full max-w-lg p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-green-400">API Key Created</h2>
-          <Button variant="ghost" size="sm" onClick={onClose}><X className="w-4 h-4" /></Button>
-        </div>
-        <div className="p-4 rounded-lg bg-amber-500/10 border border-amber-500/30 mb-4">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
-            <p className="text-sm text-muted-foreground">
-              <strong className="text-foreground">Copy this key now.</strong> For security, we don&apos;t store the full key and you won&apos;t be able to see it again.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 mb-6">
-          <code className="flex-1 bg-[#1a1a2e] px-4 py-3 rounded-lg font-mono text-sm break-all select-all">{apiKey}</code>
-          <Button variant={copied ? 'default' : 'outline'} onClick={copy} className="shrink-0">
-            {copied ? <><Check className="w-4 h-4 mr-2" /> Copied!</> : <><Copy className="w-4 h-4 mr-2" /> Copy</>}
-          </Button>
-        </div>
-        <Button className="w-full" onClick={onClose}>I&apos;ve saved my key</Button>
-      </div>
-    </div>
-  );
-}
-
 export default function ApiKeysPage() {
   const [keys, setKeys] = useState<ApiKeyData[]>([]);
   const [config, setConfig] = useState<ApiConfig | null>(null);
+  const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newKey, setNewKey] = useState<string | null>(null);
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    loadData();
+  }, []);
 
   async function loadData() {
     setLoading(true);
@@ -58,32 +31,45 @@ export default function ApiKeysPage() {
     const result = await createApiKey(name, scopes);
     setNewKey(result.key);
     setKeys(prev => [result.data, ...prev]);
-    setShowCreateModal(false);
   }
 
   async function handleRevoke(keyId: string) {
-    if (!confirm('Are you sure? This cannot be undone.')) return;
     await revokeApiKey(keyId);
     setKeys(prev => prev.filter(k => k.id !== keyId));
   }
 
-  function copyPrefix(prefix: string, id: string) {
-    navigator.clipboard.writeText(prefix);
+  function copyKey(key: string, id: string) {
+    navigator.clipboard.writeText(key);
     setCopied(id);
     setTimeout(() => setCopied(null), 2000);
   }
 
-  if (loading) return <div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin" /></div>;
+  if (loading) {
+    return <div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin" /></div>;
+  }
 
   return (
     <div className="w-full">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold mb-2">API Keys</h1>
-          <p className="text-muted-foreground text-sm sm:text-base">Programmatic access to your Vectix agents</p>
+          <p className="text-muted-foreground">Programmatic access to your Vectix agents</p>
         </div>
-        <Button onClick={() => setShowCreateModal(true)} className="w-full sm:w-auto"><Plus className="w-4 h-4 mr-2" /> Create Key</Button>
+        <Button onClick={() => setShowCreateModal(true)}><Plus className="w-4 h-4 mr-2" /> Create Key</Button>
       </div>
+
+      {newKey && (
+        <div className="mb-6 p-4 rounded-lg bg-green-500/10 border border-green-500/50">
+          <p className="font-semibold text-green-400 mb-2">New API Key Created</p>
+          <p className="text-sm text-muted-foreground mb-3">Copy this key now. You will not see it again.</p>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 bg-secondary px-3 py-2 rounded font-mono text-sm">{newKey}</code>
+            <Button variant="outline" size="sm" onClick={() => copyKey(newKey, 'new')}>
+              {copied === 'new' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            </Button>
+          </div>
+        </div>
+      )}
 
       <div className="glass rounded-xl overflow-hidden">
         {keys.length === 0 ? (
@@ -97,11 +83,16 @@ export default function ApiKeysPage() {
                 </div>
                 <div>
                   <p className="font-semibold">{apiKey.name}</p>
-                  <p className="text-xs text-muted-foreground">{apiKey.tier.toUpperCase()} | {apiKey.requestCount} requests</p>
+                  <p className="text-xs text-muted-foreground">
+                    {apiKey.tier.toUpperCase()} | {apiKey.requestCount} requests
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => copyPrefix(apiKey.keyPrefix, apiKey.id)}>
+                <Button variant="ghost" size="sm" onClick={() => setShowKeys(p => ({ ...p, [apiKey.id]: !p[apiKey.id] }))}>
+                  {showKeys[apiKey.id] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => copyKey(apiKey.keyPrefix, apiKey.id)}>
                   {copied === apiKey.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </Button>
                 <Button variant="ghost" size="sm" className="text-destructive" onClick={() => handleRevoke(apiKey.id)}>
@@ -116,7 +107,9 @@ export default function ApiKeysPage() {
               </span>
             </div>
             <div className="mt-2 flex flex-wrap gap-1">
-              {apiKey.scopes.map(scope => <span key={scope} className="text-xs px-2 py-0.5 rounded bg-secondary">{scope}</span>)}
+              {apiKey.scopes.map(scope => (
+                <span key={scope} className="text-xs px-2 py-0.5 rounded bg-secondary">{scope}</span>
+              ))}
             </div>
           </div>
         ))}
@@ -135,8 +128,6 @@ export default function ApiKeysPage() {
       {showCreateModal && config && (
         <CreateKeyModal config={config} onClose={() => setShowCreateModal(false)} onCreate={handleCreate} />
       )}
-
-      {newKey && <NewKeyModal apiKey={newKey} onClose={() => setNewKey(null)} />}
     </div>
   );
 }

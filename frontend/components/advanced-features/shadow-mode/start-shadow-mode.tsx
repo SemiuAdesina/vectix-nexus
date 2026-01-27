@@ -19,7 +19,7 @@ export function StartShadowMode({
     <div className="space-y-4">
       <div>
         <label className="text-sm text-muted-foreground block mb-2">
-          Starting Balance (Paper Trading)
+          Starting Balance (Fake SOL)
         </label>
         <input
           type="number"
@@ -29,9 +29,6 @@ export function StartShadowMode({
           min={1}
           max={1000}
         />
-        <p className="text-xs text-muted-foreground mt-1">
-          Uses live market data for realistic simulation
-        </p>
       </div>
       <button
         onClick={onStart}
@@ -42,7 +39,7 @@ export function StartShadowMode({
         Start Shadow Mode
       </button>
       <p className="text-xs text-muted-foreground text-center">
-        Test strategies risk-free with real-time market prices
+        Test the agent risk-free before going live
       </p>
     </div>
   );
