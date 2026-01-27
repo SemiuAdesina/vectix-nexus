@@ -34,12 +34,27 @@ const clerkAppearance = {
   },
 };
 
+function isValidClerkKey(key: string | undefined): boolean {
+  return Boolean(key && (key.startsWith('pk_live_') || key.startsWith('pk_test_')) && key.length > 20);
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  const hasValidClerkKey = isValidClerkKey(clerkKey);
+
+  const content = (
+    <html lang="en" className="dark">
+      <body>{children}</body>
+    </html>
+  );
+
+  if (!hasValidClerkKey) {
+    return content;
+  }
+
   return (
     <ClerkProvider appearance={clerkAppearance}>
-      <html lang="en" className="dark">
-        <body>{children}</body>
-      </html>
+      {content}
     </ClerkProvider>
   );
 }
