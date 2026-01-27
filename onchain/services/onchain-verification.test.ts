@@ -1,13 +1,31 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { OnChainVerificationService } from './onchain-verification';
-import { Connection, PublicKey } from '@solana/web3.js';
 
-vi.mock('@solana/web3.js', () => ({
-  Connection: vi.fn().mockImplementation(() => ({
-    getAccountInfo: vi.fn(),
-  })),
-  PublicKey: vi.fn().mockImplementation((key) => ({ toString: () => key })),
-}));
+vi.mock('@solana/web3.js', () => {
+  const MockConnection = class {
+    getAccountInfo = vi.fn().mockResolvedValue(null);
+  };
+  const MockPublicKey = class {
+    private key: string;
+    constructor(key: string) {
+      this.key = key;
+    }
+    toString() {
+      return this.key;
+    }
+  };
+  return {
+    Connection: MockConnection,
+    PublicKey: MockPublicKey,
+    Keypair: {
+      generate: () => ({
+        publicKey: { toString: () => 'mock-public-key' },
+        secretKey: new Uint8Array(64),
+      }),
+    },
+  };
+});
+
+import { OnChainVerificationService } from './onchain-verification';
 
 describe('OnChainVerificationService', () => {
   let service: OnChainVerificationService;

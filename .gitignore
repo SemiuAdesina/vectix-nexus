@@ -5,6 +5,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Eliza submodule (external dependency)
+eliza/
+
 .env
 .env.local
 .env.development.local
@@ -31,6 +34,9 @@ build/
 out/
 coverage/
 .nyc_output/
+
+# Compiled TypeScript in onchain folder
+onchain/**/*.js
 
 .vscode/
 .idea/
