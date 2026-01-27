@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Rocket, LayoutDashboard, Bot, Wallet, LineChart, Zap, ArrowRight, Shield, LogIn } from 'lucide-react';
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col">

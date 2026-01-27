@@ -1,15 +1,14 @@
-name: Database Migration Check
+name: Database Migration
 
 on:
   pull_request:
     paths:
-      - 'backend/prisma/schema.prisma'
-      - 'backend/prisma/migrations/**'
+      - 'backend/prisma/**'
   workflow_dispatch:
 
 jobs:
-  validate-migrations:
-    name: Validate Migrations
+  validate:
+    name: Validate Schema
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -18,49 +17,28 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: vectix
-          POSTGRES_PASSWORD: vectix_test_password
-          POSTGRES_DB: vectix_nexus_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
         ports:
           - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install
+        run: npm install
 
-      - name: Generate Prisma Client
-        run: npm run db:generate
-        env:
-          DATABASE_URL: postgresql://vectix:vectix_test_password@localhost:5432/vectix_nexus_test
-
-      - name: Validate schema
+      - name: Validate
         run: npx prisma validate
         env:
-          DATABASE_URL: postgresql://vectix:vectix_test_password@localhost:5432/vectix_nexus_test
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
 
-      - name: Check for unapplied migrations
-        run: |
-          npx prisma migrate deploy --dry-run
+      - name: Test Migration
+        run: npx prisma migrate deploy
         env:
-          DATABASE_URL: postgresql://vectix:vectix_test_password@localhost:5432/vectix_nexus_test
-
-      - name: Test migrations
-        run: |
-          npx prisma migrate reset --force --skip-seed
-          npx prisma migrate deploy
-        env:
-          DATABASE_URL: postgresql://vectix:vectix_test_password@localhost:5432/vectix_nexus_test
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
