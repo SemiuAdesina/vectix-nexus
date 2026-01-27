@@ -75,7 +75,7 @@ jobs:
           cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
         working-directory: ./backend
 
       - name: Run TypeScript type check
@@ -173,7 +173,7 @@ jobs:
           cache-dependency-path: backend/package-lock.json
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
         working-directory: ./backend
 
       - name: Run onchain tests
