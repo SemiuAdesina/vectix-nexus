@@ -19,7 +19,7 @@
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "@solana/web3.js": "^1.98.4",
-    "dotenv": "^16.4.1",
+    "dotenv": "^17.2.3",
     "express": "^4.19.2",
     "pg": "^8.17.1",
     "prisma": "^7.2.0",
