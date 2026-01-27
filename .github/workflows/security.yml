@@ -30,7 +30,12 @@ jobs:
           cache-dependency-path: ${{ matrix.directory }}/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          if [ "${{ matrix.directory }}" == "frontend" ]; then
+            npm ci --legacy-peer-deps
+          else
+            npm ci
+          fi
 
       - name: Run npm audit
         run: npm audit --audit-level=moderate
