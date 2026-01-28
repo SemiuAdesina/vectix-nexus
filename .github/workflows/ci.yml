@@ -29,6 +29,12 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3002
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+
   backend:
     name: Backend
     runs-on: ubuntu-latest
@@ -50,3 +56,6 @@ jobs:
 
       - name: Test
         run: npm test
+
+      - name: Build
+        run: npm run build
