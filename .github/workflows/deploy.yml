@@ -42,11 +42,3 @@ jobs:
           build-args: |
             NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
             NEXT_PUBLIC_API_URL=http://localhost:3002
-
-      - name: Build Backend
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./backend/docker/Dockerfile
-          push: ${{ inputs.push_images }}
-          tags: ${{ env.REGISTRY }}/${{ env.REPO_LC }}-backend:latest
