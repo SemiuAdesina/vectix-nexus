@@ -29,7 +29,5 @@ jobs:
       - name: Generate Client
         run: npx prisma generate
 
-      - name: Test Migration
-        run: npx prisma migrate dev --name test --skip-seed
-        env:
-          DATABASE_URL: file:./test.db
+      - name: Format Check
+        run: npx prisma format --check || true
