@@ -24,7 +24,7 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Lint
-        run: npm run lint || true
+        run: npm run lint
 
       - name: Test
         run: npm test
@@ -47,9 +47,6 @@ jobs:
 
       - name: Generate Prisma
         run: npx prisma generate
-
-      - name: Lint
-        run: npx tsc --noEmit || true
 
       - name: Test
         run: npm test
