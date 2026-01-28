@@ -2115,8 +2115,8 @@ Proprietary - All Rights Reserved
 ## Support
 
 - Documentation: `/docs/api`
-- Security Issues: security@vectixlogic.com
-- General Support: support@vectixlogic.com
+- Security Issues: founders@vectixlogic.com
+- General Support: founders@vectixlogic.com
 
 ---
 
