@@ -3,11 +3,15 @@ name: Code Quality
 on:
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
-  lint:
-    name: Lint
+  frontend:
+    name: Frontend Quality
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
     steps:
       - uses: actions/checkout@v4
 
@@ -15,14 +19,33 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Lint Frontend
-        working-directory: ./frontend
-        run: |
-          npm install --legacy-peer-deps
-          npm run lint || true
+      - name: Install
+        run: npm install --legacy-peer-deps
 
-      - name: Lint Backend
+      - name: ESLint
+        run: npx eslint . --ext .ts,.tsx --format stylish
+
+      - name: Type Check
+        run: npx tsc --noEmit
+
+  backend:
+    name: Backend Quality
+    runs-on: ubuntu-latest
+    defaults:
+      run:
         working-directory: ./backend
-        run: |
-          npm install
-          npx tsc --noEmit
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install
+        run: npm install
+
+      - name: Generate Prisma
+        run: npx prisma generate
+
+      - name: ESLint
+        run: npx eslint . --ext .ts --ignore-pattern "*.test.ts" || true
