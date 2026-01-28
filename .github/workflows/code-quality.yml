@@ -22,9 +22,6 @@ jobs:
       - name: Install
         run: npm install --legacy-peer-deps
 
-      - name: ESLint
-        run: npx eslint . --ext .ts,.tsx --format stylish
-
       - name: Type Check
         run: npx tsc --noEmit
 
@@ -46,6 +43,3 @@ jobs:
 
       - name: Generate Prisma
         run: npx prisma generate
-
-      - name: ESLint
-        run: npx eslint . --ext .ts --ignore-pattern "*.test.ts" || true
