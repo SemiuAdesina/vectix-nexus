@@ -13,16 +13,6 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
-          POSTGRES_DB: test
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
@@ -33,12 +23,13 @@ jobs:
       - name: Install
         run: npm install
 
-      - name: Validate
+      - name: Validate Schema
         run: npx prisma validate
-        env:
-          DATABASE_URL: postgresql://test:test@localhost:5432/test
+
+      - name: Generate Client
+        run: npx prisma generate
 
       - name: Test Migration
-        run: npx prisma migrate deploy
+        run: npx prisma migrate dev --name test --skip-seed
         env:
-          DATABASE_URL: postgresql://test:test@localhost:5432/test
+          DATABASE_URL: file:./test.db
