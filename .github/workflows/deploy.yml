@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set lowercase repo
+        run: echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
       - uses: docker/setup-buildx-action@v3
 
       - name: Login to Registry
@@ -35,7 +38,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: ${{ inputs.push_images }}
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/frontend:latest
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LC }}-frontend:latest
           build-args: |
             NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
             NEXT_PUBLIC_API_URL=http://localhost:3002
@@ -46,4 +49,4 @@ jobs:
           context: .
           file: ./backend/docker/Dockerfile
           push: ${{ inputs.push_images }}
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/backend:latest
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LC }}-backend:latest
