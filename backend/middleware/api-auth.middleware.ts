@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { validateApiKey } from '../services/api-keys/api-key.service';
 import { ApiScope, ApiTier, RATE_LIMITS } from '../services/api-keys/api-key.types';
+import { getStateStorage } from '../lib/state-storage';
 
 export interface ApiAuthRequest extends Request {
   apiAuth?: {
@@ -10,7 +11,7 @@ export interface ApiAuthRequest extends Request {
   };
 }
 
-const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_WINDOW_MS = 60000;
 
 export async function apiKeyAuth(req: ApiAuthRequest, res: Response, next: NextFunction) {
   const apiKey = req.headers['x-api-key'] as string;
@@ -24,22 +25,26 @@ export async function apiKeyAuth(req: ApiAuthRequest, res: Response, next: NextF
     return res.status(401).json({ error: 'API key invalid or revoked' });
   }
   
+  const storage = getStateStorage();
   const limits = RATE_LIMITS[validation.tier];
   const now = Date.now();
-  const windowStart = now - 60000;
-  const key = `${apiKey}:minute`;
+  const key = `apikey:${apiKey}:minute`;
   
-  const current = rateLimitStore.get(key);
-  if (current && current.resetAt > now) {
-    if (current.count >= limits.perMinute) {
-      return res.status(429).json({ 
-        error: 'Rate limit exceeded',
-        retryAfter: Math.ceil((current.resetAt - now) / 1000),
-      });
+  try {
+    const current = await storage.getRateLimit(key);
+    if (current && current.resetAt > now) {
+      if (current.count >= limits.perMinute) {
+        return res.status(429).json({ 
+          error: 'Rate limit exceeded',
+          retryAfter: Math.ceil((current.resetAt - now) / 1000),
+        });
+      }
+      await storage.incrementRateLimit(key);
+    } else {
+      await storage.setRateLimit(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS }, RATE_LIMIT_WINDOW_MS);
     }
-    current.count++;
-  } else {
-    rateLimitStore.set(key, { count: 1, resetAt: now + 60000 });
+  } catch (error) {
+    console.error('API rate limit error:', error);
   }
   
   req.apiAuth = validation;
@@ -74,27 +79,33 @@ export function requireTier(tier: ApiTier) {
   };
 }
 
-const pollingIntervalStore = new Map<string, number>();
-
 export function requirePollingInterval(intervalMs: number) {
-  return (req: ApiAuthRequest, res: Response, next: NextFunction) => {
+  return async (req: ApiAuthRequest, res: Response, next: NextFunction) => {
     if (!req.apiAuth) {
       return res.status(401).json({ error: 'Authentication required' });
     }
     
+    const storage = getStateStorage();
     const apiKey = req.headers['x-api-key'] as string;
+    const key = `polling:${apiKey}`;
     const now = Date.now();
-    const lastRequest = pollingIntervalStore.get(apiKey) || 0;
     
-    if (now - lastRequest < intervalMs) {
-      return res.status(429).json({ 
-        error: 'Polling interval not met',
-        retryAfter: Math.ceil((intervalMs - (now - lastRequest)) / 1000),
-      });
+    try {
+      const record = await storage.getRateLimit(key);
+      const lastRequest = record?.resetAt || 0;
+      
+      if (now - lastRequest < intervalMs) {
+        return res.status(429).json({ 
+          error: 'Polling interval not met',
+          retryAfter: Math.ceil((intervalMs - (now - lastRequest)) / 1000),
+        });
+      }
+      
+      await storage.setRateLimit(key, { count: 1, resetAt: now }, intervalMs * 2);
+    } catch (error) {
+      console.error('Polling interval error:', error);
     }
     
-    pollingIntervalStore.set(apiKey, now);
     next();
   };
 }
-

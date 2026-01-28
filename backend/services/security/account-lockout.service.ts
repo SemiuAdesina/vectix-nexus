@@ -1,6 +1,6 @@
-import { prisma } from '../../lib/prisma';
 import { logAuditEvent, extractContext } from '../audit';
 import { Request } from 'express';
+import { getStateStorage, LockoutRecord } from '../../lib/state-storage';
 
 export interface LockoutConfig {
   maxFailedAttempts: number;
@@ -21,11 +21,10 @@ const DEFAULT_CONFIG: LockoutConfig = {
   resetWindowMs: 60 * 60 * 1000,
 };
 
-const failedAttempts = new Map<string, { count: number; firstAttempt: number; lockedUntil: number | null }>();
-
-export function checkLockoutStatus(identifier: string, config = DEFAULT_CONFIG): LockoutStatus {
+export async function checkLockoutStatus(identifier: string, config = DEFAULT_CONFIG): Promise<LockoutStatus> {
+  const storage = getStateStorage();
   const now = Date.now();
-  const record = failedAttempts.get(identifier);
+  const record = await storage.getLockout(identifier);
 
   if (!record) {
     return {
@@ -46,7 +45,7 @@ export function checkLockoutStatus(identifier: string, config = DEFAULT_CONFIG):
   }
 
   if (record.firstAttempt + config.resetWindowMs < now) {
-    failedAttempts.delete(identifier);
+    await storage.deleteLockout(identifier);
     return {
       isLocked: false,
       failedAttempts: 0,
@@ -68,13 +67,16 @@ export async function recordFailedAttempt(
   req?: Request,
   config = DEFAULT_CONFIG
 ): Promise<LockoutStatus> {
+  const storage = getStateStorage();
   const now = Date.now();
-  const record = failedAttempts.get(identifier) || { count: 0, firstAttempt: now, lockedUntil: null };
+  let record = await storage.getLockout(identifier);
+
+  if (!record) {
+    record = { count: 0, firstAttempt: now, lockedUntil: null };
+  }
 
   if (record.firstAttempt + config.resetWindowMs < now) {
-    record.count = 1;
-    record.firstAttempt = now;
-    record.lockedUntil = null;
+    record = { count: 1, firstAttempt: now, lockedUntil: null };
   } else {
     record.count++;
   }
@@ -94,31 +96,20 @@ export async function recordFailedAttempt(
     }
   }
 
-  failedAttempts.set(identifier, record);
+  await storage.setLockout(identifier, record);
   return checkLockoutStatus(identifier, config);
 }
 
-export function resetLockout(identifier: string): void {
-  failedAttempts.delete(identifier);
+export async function resetLockout(identifier: string): Promise<void> {
+  const storage = getStateStorage();
+  await storage.deleteLockout(identifier);
 }
 
 export async function recordSuccessfulAuth(identifier: string): Promise<void> {
-  resetLockout(identifier);
+  await resetLockout(identifier);
 }
 
-export function cleanupExpiredLockouts(config = DEFAULT_CONFIG): number {
-  const now = Date.now();
-  let cleaned = 0;
-
-  for (const [key, record] of failedAttempts.entries()) {
-    const expired = record.firstAttempt + config.resetWindowMs < now;
-    const lockoutExpired = record.lockedUntil && record.lockedUntil < now;
-
-    if (expired || lockoutExpired) {
-      failedAttempts.delete(key);
-      cleaned++;
-    }
-  }
-
-  return cleaned;
+export async function cleanupExpiredLockouts(config = DEFAULT_CONFIG): Promise<number> {
+  const storage = getStateStorage();
+  return storage.cleanupExpiredLockouts(config.resetWindowMs);
 }

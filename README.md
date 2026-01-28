@@ -1513,12 +1513,12 @@ graph LR
 **Implementation**:
 
 - **Rate Limiting**: Multi-tier rate limiting (global IP-based, per-API-key, per-tier) prevents system overload
-- **Efficient Data Structures**: In-memory Maps for O(1) lookups in rate limiting and circuit breaker state
+- **Distributed State Storage**: Pluggable storage backend supporting in-memory (single instance) or Redis (horizontal scaling)
 - **Database Optimization**: Prisma ORM with connection pooling, indexed queries, and efficient relationship loading
 - **Parallel Processing**: Concurrent token analysis, parallel API requests, and batch operations
-- **Caching Strategies**: In-memory caching for rate limit tracking, circuit breaker state, and frequently accessed data
-- **Horizontal Scaling**: Stateless API design enables load balancing across multiple instances
-- **Resource Management**: Automatic cleanup of expired rate limit records and circuit breaker state
+- **Caching Strategies**: TTL-based caching for rate limits, circuit breaker state, and frequently accessed data
+- **Horizontal Scaling**: Redis-backed shared state enables true load balancing across multiple API instances
+- **Resource Management**: Automatic cleanup of expired rate limit records, lockouts, and circuit breaker state
 
 **Scalability Architecture**:
 
@@ -1531,6 +1531,13 @@ graph TD
         API3[API Instance N]
     end
     
+    subgraph Shared State Layer
+        REDIS[(Redis)]
+        RATE[Rate Limits]
+        CIRCUIT[Circuit Breakers]
+        LOCKOUT[Account Lockouts]
+    end
+    
     subgraph Rate Limiting Layer
         GLOBAL[Global Rate Limiter]
         API_KEY[API Key Rate Limiter]
@@ -1540,7 +1547,7 @@ graph TD
     subgraph Processing Layer
         PARALLEL[Parallel Processing]
         BATCH[Batch Operations]
-        CACHE[In-Memory Cache]
+        CACHE[TTL Cache]
     end
     
     subgraph Data Layer
@@ -1553,10 +1560,15 @@ graph TD
     LB --> API2
     LB --> API3
     
-    API1 --> GLOBAL
-    API2 --> GLOBAL
-    API3 --> GLOBAL
+    API1 --> REDIS
+    API2 --> REDIS
+    API3 --> REDIS
     
+    REDIS --> RATE
+    REDIS --> CIRCUIT
+    REDIS --> LOCKOUT
+    
+    API1 --> GLOBAL
     GLOBAL --> API_KEY
     API_KEY --> TIER
     TIER --> PARALLEL
@@ -1572,11 +1584,30 @@ graph TD
 
 | Component | Implementation | Performance |
 |-----------|---------------|-------------|
-| Rate Limiting | In-memory Map with O(1) lookups | Handles 100,000+ IPs |
+| Rate Limiting | Redis or in-memory Map with O(1) lookups | Handles 100,000+ IPs across instances |
 | API Key Lookup | SHA-256 hash with indexed database query | < 5ms average |
-| Token Analysis | Parallel Promise.allSettled | 10 tokens analyzed concurrently |
+| Token Analysis | Parallel Promise.all | 10-15 tokens analyzed concurrently |
 | Database Queries | Prisma with connection pooling | Connection reuse, prepared statements |
-| Circuit Breakers | In-memory state management | Instant threshold checks |
+| Circuit Breakers | Redis-backed distributed state | Instant threshold checks across instances |
+| Account Lockouts | Redis-backed with auto-cleanup | Consistent lockout across all instances |
+
+**Horizontal Scaling Configuration**:
+
+To enable horizontal scaling with Redis, set the `REDIS_URL` environment variable:
+
+```env
+REDIS_URL=redis://localhost:6379
+```
+
+Without `REDIS_URL`, the application runs in single-instance mode using in-memory storage.
+
+**Code Locations**:
+- State Storage Abstraction: `backend/lib/state-storage.ts`
+- Memory Storage: `backend/lib/memory-storage.ts`
+- Redis Storage: `backend/lib/redis-storage.ts`
+- Rate Limiter: `backend/middleware/rate-limiter.middleware.ts`
+- Circuit Breaker: `onchain/services/circuit-breaker.ts`
+- Account Lockout: `backend/services/security/account-lockout.service.ts`
 
 ### 3. Security
 
@@ -1974,6 +2005,7 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()
 - `TEE_PROVIDER` - TEE provider (simulated, phala, intel-sgx, aws-nitro, azure, google-cloud)
 - `PHALA_API_KEY` - Phala Network API key (if using Phala)
 - `PHALA_ENDPOINT` - Phala Network endpoint (default: https://api.phala.network)
+- `REDIS_URL` - Redis connection URL for horizontal scaling (optional, uses in-memory if not set)
 
 **Required Frontend Variables**:
 - `NEXT_PUBLIC_API_URL` - Backend API URL

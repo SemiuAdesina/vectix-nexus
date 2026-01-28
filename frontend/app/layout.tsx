@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from '@clerk/nextjs';
 import "./globals.css";
+import { OwnershipWatermark } from "@/components/layout";
 
 export const metadata: Metadata = {
   title: "VectixLogic | AI Agent Factory",
@@ -38,7 +39,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <ClerkProvider appearance={clerkAppearance} dynamic>
       <html lang="en" className="dark">
-        <body>{children}</body>
+        <body className="min-h-screen flex flex-col bg-[#0d1117]">
+          <OwnershipWatermark />
+          <div className="flex-1">
+            {children}
+          </div>
+          <footer className="w-full py-3 text-center text-xs text-gray-500 border-t border-gray-800 bg-[#0d1117]/80 backdrop-blur-sm">
+            Platform Secured by <strong className="text-teal-400">VectixLogic Compliance Engine</strong>
+          </footer>
+        </body>
       </html>
     </ClerkProvider>
   );

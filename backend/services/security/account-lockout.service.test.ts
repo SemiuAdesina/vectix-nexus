@@ -23,12 +23,13 @@ const testConfig = {
 };
 
 describe('checkLockoutStatus', () => {
-  beforeEach(() => {
-    resetLockout('test-user');
+  beforeEach(async () => {
+    await resetLockout('test-user');
+    await resetLockout('new-user');
   });
 
-  it('returns not locked for new user', () => {
-    const status = checkLockoutStatus('new-user', testConfig);
+  it('returns not locked for new user', async () => {
+    const status = await checkLockoutStatus('new-user', testConfig);
     expect(status.isLocked).toBe(false);
     expect(status.failedAttempts).toBe(0);
     expect(status.remainingAttempts).toBe(3);
@@ -36,22 +37,22 @@ describe('checkLockoutStatus', () => {
 
   it('tracks failed attempts', async () => {
     await recordFailedAttempt('test-user', undefined, testConfig);
-    const status = checkLockoutStatus('test-user', testConfig);
+    const status = await checkLockoutStatus('test-user', testConfig);
     expect(status.failedAttempts).toBe(1);
     expect(status.remainingAttempts).toBe(2);
   });
 });
 
 describe('recordFailedAttempt', () => {
-  beforeEach(() => {
-    resetLockout('test-user');
+  beforeEach(async () => {
+    await resetLockout('test-user');
   });
 
   it('locks account after max failed attempts', async () => {
     for (let i = 0; i < 3; i++) {
       await recordFailedAttempt('test-user', undefined, testConfig);
     }
-    const status = checkLockoutStatus('test-user', testConfig);
+    const status = await checkLockoutStatus('test-user', testConfig);
     expect(status.isLocked).toBe(true);
     expect(status.lockoutEndsAt).not.toBeNull();
   });
@@ -68,8 +69,8 @@ describe('recordFailedAttempt', () => {
 describe('resetLockout', () => {
   it('clears lockout status', async () => {
     await recordFailedAttempt('test-user', undefined, testConfig);
-    resetLockout('test-user');
-    const status = checkLockoutStatus('test-user', testConfig);
+    await resetLockout('test-user');
+    const status = await checkLockoutStatus('test-user', testConfig);
     expect(status.failedAttempts).toBe(0);
   });
 });
@@ -78,19 +79,19 @@ describe('recordSuccessfulAuth', () => {
   it('resets failed attempts on success', async () => {
     await recordFailedAttempt('test-user', undefined, testConfig);
     await recordSuccessfulAuth('test-user');
-    const status = checkLockoutStatus('test-user', testConfig);
+    const status = await checkLockoutStatus('test-user', testConfig);
     expect(status.failedAttempts).toBe(0);
   });
 });
 
 describe('cleanupExpiredLockouts', () => {
-  beforeEach(() => {
-    resetLockout('test-user-1');
-    resetLockout('test-user-2');
+  beforeEach(async () => {
+    await resetLockout('test-user-1');
+    await resetLockout('test-user-2');
   });
 
-  it('returns count of cleaned entries', () => {
-    const cleaned = cleanupExpiredLockouts(testConfig);
+  it('returns count of cleaned entries', async () => {
+    const cleaned = await cleanupExpiredLockouts(testConfig);
     expect(typeof cleaned).toBe('number');
   });
 });

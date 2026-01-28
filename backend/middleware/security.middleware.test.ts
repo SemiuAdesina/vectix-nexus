@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Request, Response, NextFunction } from 'express';
 import {
   securityHeaders,
@@ -103,12 +103,16 @@ describe('globalRateLimiter', () => {
     vi.useFakeTimers();
   });
 
-  it('allows requests under limit', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('allows requests under limit', async () => {
     const req = createMockReq({ ip: '192.168.1.1' });
     const res = createMockRes();
     const next = vi.fn();
 
-    globalRateLimiter(req, res, next);
+    await globalRateLimiter(req, res, next);
 
     expect(next).toHaveBeenCalled();
   });

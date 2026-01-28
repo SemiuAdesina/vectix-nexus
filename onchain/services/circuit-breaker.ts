@@ -1,31 +1,42 @@
-import type { CircuitBreakerConfig, CircuitBreakerState, CircuitBreakerEvent } from './onchain-types';
+import type { CircuitBreakerConfig, CircuitBreakerState } from './onchain-types';
+import { getStateStorage, CircuitBreakerRecord } from '../../backend/lib/state-storage';
 
 export class CircuitBreakerService {
-  private breakers: Map<string, CircuitBreakerState> = new Map();
+  private storage = getStateStorage();
 
   async initializeBreaker(agentId: string, config: CircuitBreakerConfig): Promise<void> {
-    this.breakers.set(agentId, {
-      agentId,
-      config,
+    const record: CircuitBreakerRecord = {
       status: 'closed',
       failureCount: 0,
       lastFailureTime: null,
-      lastResetTime: new Date(),
+      lastResetTime: Date.now(),
       pausedUntil: null,
-    });
+      config: {
+        maxVolume: config.maxVolume,
+        maxPriceChange: config.maxPriceChange,
+        maxTradesPerPeriod: config.maxTradesPerPeriod,
+        failureThreshold: config.failureThreshold,
+        resetTimeout: config.resetTimeout,
+        pauseDuration: config.pauseDuration,
+      },
+    };
+    await this.storage.setCircuitBreaker(agentId, record);
   }
 
   async checkBreaker(agentId: string, metrics: { volume?: number; priceChange?: number; tradeCount?: number }): Promise<{ allowed: boolean; reason?: string }> {
-    const breaker = this.breakers.get(agentId);
+    const breaker = await this.storage.getCircuitBreaker(agentId);
     if (!breaker) return { allowed: true };
 
+    const now = Date.now();
+
     if (breaker.status === 'open') {
-      if (breaker.pausedUntil && breaker.pausedUntil > new Date()) {
-        return { allowed: false, reason: 'Circuit breaker is open - paused until ' + breaker.pausedUntil.toISOString() };
+      if (breaker.pausedUntil && breaker.pausedUntil > now) {
+        return { allowed: false, reason: 'Circuit breaker is open - paused until ' + new Date(breaker.pausedUntil).toISOString() };
       }
-      if (breaker.lastResetTime && Date.now() - breaker.lastResetTime.getTime() > breaker.config.resetTimeout) {
+      if (breaker.lastResetTime && now - breaker.lastResetTime > breaker.config.resetTimeout) {
         breaker.status = 'half-open';
-        breaker.lastResetTime = new Date();
+        breaker.lastResetTime = now;
+        await this.storage.setCircuitBreaker(agentId, breaker);
       } else {
         return { allowed: false, reason: 'Circuit breaker is open' };
       }
@@ -34,6 +45,7 @@ export class CircuitBreakerService {
     if (breaker.status === 'half-open') {
       breaker.status = 'closed';
       breaker.failureCount = 0;
+      await this.storage.setCircuitBreaker(agentId, breaker);
     }
 
     if (metrics.volume && metrics.volume > breaker.config.maxVolume) {
@@ -54,28 +66,41 @@ export class CircuitBreakerService {
     return { allowed: true };
   }
 
-  async tripBreaker(agentId: string, reason: string): Promise<void> {
-    const breaker = this.breakers.get(agentId);
+  async tripBreaker(agentId: string, _reason: string): Promise<void> {
+    const breaker = await this.storage.getCircuitBreaker(agentId);
     if (!breaker) return;
 
     breaker.status = 'open';
     breaker.failureCount++;
-    breaker.lastFailureTime = new Date();
-    breaker.pausedUntil = new Date(Date.now() + breaker.config.pauseDuration);
+    breaker.lastFailureTime = Date.now();
+    breaker.pausedUntil = Date.now() + breaker.config.pauseDuration;
+    await this.storage.setCircuitBreaker(agentId, breaker);
   }
 
   async resetBreaker(agentId: string): Promise<void> {
-    const breaker = this.breakers.get(agentId);
+    const breaker = await this.storage.getCircuitBreaker(agentId);
     if (!breaker) return;
 
     breaker.status = 'closed';
     breaker.failureCount = 0;
-    breaker.lastResetTime = new Date();
+    breaker.lastResetTime = Date.now();
     breaker.pausedUntil = null;
+    await this.storage.setCircuitBreaker(agentId, breaker);
   }
 
   async getBreakerState(agentId: string): Promise<CircuitBreakerState | null> {
-    return this.breakers.get(agentId) || null;
+    const record = await this.storage.getCircuitBreaker(agentId);
+    if (!record) return null;
+
+    return {
+      agentId,
+      config: record.config,
+      status: record.status,
+      failureCount: record.failureCount,
+      lastFailureTime: record.lastFailureTime ? new Date(record.lastFailureTime) : null,
+      lastResetTime: new Date(record.lastResetTime),
+      pausedUntil: record.pausedUntil ? new Date(record.pausedUntil) : null,
+    };
   }
 }
 

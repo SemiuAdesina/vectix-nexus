@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Request, Response, NextFunction } from 'express';
 import { globalRateLimiter, sensitiveDataFilter } from './rate-limiter.middleware';
 
@@ -23,35 +23,39 @@ describe('globalRateLimiter', () => {
     vi.useFakeTimers();
   });
 
-  it('allows requests under the limit', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('allows requests under the limit', async () => {
     const req = createMockReq({ ip: '10.0.0.1' });
     const res = createMockRes();
     const next = vi.fn();
 
-    globalRateLimiter(req, res, next);
+    await globalRateLimiter(req, res, next);
 
     expect(next).toHaveBeenCalled();
     expect(res.status).not.toHaveBeenCalled();
   });
 
-  it('tracks requests per IP', () => {
+  it('tracks requests per IP', async () => {
     const req1 = createMockReq({ ip: '10.0.0.2' });
     const req2 = createMockReq({ ip: '10.0.0.3' });
     const res = createMockRes();
     const next = vi.fn();
 
-    globalRateLimiter(req1, res, next);
-    globalRateLimiter(req2, res, next);
+    await globalRateLimiter(req1, res, next);
+    await globalRateLimiter(req2, res, next);
 
     expect(next).toHaveBeenCalledTimes(2);
   });
 
-  it('uses socket remoteAddress as fallback', () => {
+  it('uses socket remoteAddress as fallback', async () => {
     const req = createMockReq({ ip: undefined, socket: { remoteAddress: '10.0.0.4' } });
     const res = createMockRes();
     const next = vi.fn();
 
-    globalRateLimiter(req, res, next);
+    await globalRateLimiter(req, res, next);
 
     expect(next).toHaveBeenCalled();
   });

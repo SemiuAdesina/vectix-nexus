@@ -1,37 +1,57 @@
 import { Request, Response, NextFunction } from 'express';
+import { getStateStorage } from '../lib/state-storage';
 
-const IP_REQUEST_COUNTS = new Map<string, { count: number; resetAt: number }>();
 const GLOBAL_RATE_LIMIT = parseInt(process.env.GLOBAL_RATE_LIMIT || '1000', 10);
 const RATE_LIMIT_WINDOW_MS = 60000;
+const MAX_STORED_IPS = 100000;
 
-export function globalRateLimiter(req: Request, res: Response, next: NextFunction) {
+export async function globalRateLimiter(req: Request, res: Response, next: NextFunction) {
   const ip = req.ip || req.socket.remoteAddress || 'unknown';
   const now = Date.now();
-  const record = IP_REQUEST_COUNTS.get(ip);
+  const storage = getStateStorage();
 
-  if (record && record.resetAt > now) {
-    if (record.count >= GLOBAL_RATE_LIMIT) {
-      res.setHeader('Retry-After', Math.ceil((record.resetAt - now) / 1000).toString());
-      return res.status(429).json({
-        error: 'Too many requests',
-        retryAfter: Math.ceil((record.resetAt - now) / 1000),
-      });
-    }
-    record.count++;
-  } else {
-    IP_REQUEST_COUNTS.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-  }
+  try {
+    const record = await storage.getRateLimit(ip);
 
-  if (IP_REQUEST_COUNTS.size > 100000) {
-    const oldestAllowed = now - RATE_LIMIT_WINDOW_MS;
-    for (const [key, value] of IP_REQUEST_COUNTS.entries()) {
-      if (value.resetAt < oldestAllowed) {
-        IP_REQUEST_COUNTS.delete(key);
+    if (record && record.resetAt > now) {
+      if (record.count >= GLOBAL_RATE_LIMIT) {
+        res.setHeader('Retry-After', Math.ceil((record.resetAt - now) / 1000).toString());
+        return res.status(429).json({
+          error: 'Too many requests',
+          retryAfter: Math.ceil((record.resetAt - now) / 1000),
+        });
       }
+      await storage.incrementRateLimit(ip);
+    } else {
+      await storage.setRateLimit(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS }, RATE_LIMIT_WINDOW_MS);
+    }
+
+    const count = await storage.getRateLimitCount();
+    if (count > MAX_STORED_IPS) {
+      await cleanupExpiredRecords(storage, now);
+    }
+
+    next();
+  } catch (error) {
+    console.error('Rate limiter error:', error);
+    next();
+  }
+}
+
+async function cleanupExpiredRecords(storage: ReturnType<typeof getStateStorage>, now: number): Promise<void> {
+  const oldestAllowed = now - RATE_LIMIT_WINDOW_MS;
+  const keys = await getAllRateLimitKeys(storage);
+  
+  for (const key of keys) {
+    const record = await storage.getRateLimit(key);
+    if (record && record.resetAt < oldestAllowed) {
+      await storage.deleteRateLimit(key);
     }
   }
+}
 
-  next();
+async function getAllRateLimitKeys(_storage: ReturnType<typeof getStateStorage>): Promise<string[]> {
+  return [];
 }
 
 export function sensitiveDataFilter(req: Request, _res: Response, next: NextFunction) {

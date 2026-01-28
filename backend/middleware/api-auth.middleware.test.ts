@@ -102,11 +102,20 @@ describe('api-auth.middleware', () => {
     });
 
     describe('requirePollingInterval', () => {
-        it('skips for pro tier', () => {
-            const req = mockRequest({}, { tier: 'pro' });
+        it('calls next for authenticated user', async () => {
+            const req = mockRequest({ 'x-api-key': 'vx_test' }, { tier: 'pro' });
             const res = mockResponse();
-            requirePollingInterval(60000)(req, res, mockNext);
+            const handler = requirePollingInterval(60000);
+            await handler(req, res, mockNext);
             expect(mockNext).toHaveBeenCalled();
+        });
+
+        it('returns 401 when not authenticated', async () => {
+            const req = mockRequest({});
+            const res = mockResponse();
+            const handler = requirePollingInterval(60000);
+            await handler(req, res, mockNext);
+            expect(res.status).toHaveBeenCalledWith(401);
         });
     });
 });
