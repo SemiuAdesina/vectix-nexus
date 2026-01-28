@@ -1,9 +1,12 @@
 name: Security
 
 on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
   schedule:
     - cron: '0 0 * * 0'
-  workflow_dispatch:
 
 jobs:
   audit:
@@ -16,9 +19,17 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install Frontend
+        working-directory: ./frontend
+        run: npm install --legacy-peer-deps
+
       - name: Audit Frontend
         working-directory: ./frontend
         run: npm audit --audit-level=high || true
+
+      - name: Install Backend
+        working-directory: ./backend
+        run: npm install
 
       - name: Audit Backend
         working-directory: ./backend
