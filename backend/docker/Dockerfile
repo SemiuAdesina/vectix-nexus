@@ -17,7 +17,7 @@ COPY backend/prisma ./prisma
 COPY backend ./
 COPY onchain ./onchain
 
-RUN npm run db:generate
+RUN npx prisma generate
 RUN npm run build
 
 FROM node:20-alpine AS runner
