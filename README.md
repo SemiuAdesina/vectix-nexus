@@ -1,23 +1,65 @@
-# VectixLogic Platform
+# Vectix Foundry (VectixLogic)
 
-An enterprise-grade platform for deploying and managing autonomous AI trading agents on the Solana blockchain. The platform implements comprehensive US regulatory compliance standards and provides institutional-grade security infrastructure to protect users and the broader cryptocurrency community from risks and security threats.
+> **Project Submission**  
+> **One-Line Pitch:** The "Suit of Armor" for AI Agents on Solana. We provide the institutional-grade security layer (TEEs, Compliance, Circuit Breakers) that allows ElizaOS agents to trade safely.
+
+---
+
+### For Judges: How to Review This Project
+
+This repo contains **two distinct parts**: the main platform (Vectix Foundry) and the Colosseum hackathon agent. Use the track that fits your focus:
+
+| **Colosseum (Solana) Judges** | **Areta Court 7 (Security) Judges** |
+| :--- | :--- |
+| **Focus:** Infrastructure, DeFi, ElizaOS | **Focus:** TEEs, Audits, Compliance |
+| 1. See [ElizaOS Integration](#elizaos-integration) for how we wrap the framework. | 1. See [Security Architecture](#security-architecture) for Defense-in-Depth. |
+| 2. See [Blockchain Pillars](#blockchain-security-pillars) for Scalability & Decentralization. | 2. Review [US Regulatory Compliance](#us-regulatory-compliance) for FinCEN/OFAC. |
+| 3. Check [Marketplace](#intelligence) for the strategy economy. | 3. Check [TEE & Phala](#security-integration-points) for hardware security. |
+| **Key Innovation:** Making AI agents safe enough for institutional capital on Solana. | **Key Innovation:** Using TEEs and on-chain audit trails to solve the "Black Box" AI problem. |
+
+Colosseum-specific content (agent code, hackathon actions, workflow): **[Part II – Colosseum Hackathon Project (Colosseum)](#part-ii-colosseum-hackathon-project)**. Platform / security focus: **[Part I – Vectix Foundry Platform (Areta Court 7)](#part-i-vectix-foundry-platform-areta-court-7)**.
+
+---
 
 ## Table of Contents
 
-1. [Executive Summary](#executive-summary)
-2. [Platform Overview](#platform-overview)
-3. [Getting Started](#getting-started)
-4. [Architectural Overview](#architectural-overview)
-5. [Database Schema](#database-schema)
-6. [Machine-to-Machine API Integration](#machine-to-machine-api-integration)
-7. [Platform Features by Module](#platform-features-by-module)
-8. [ElizaOS Integration](#elizaos-integration)
-9. [Blockchain Security Pillars](#blockchain-security-pillars)
-10. [US Regulatory Compliance](#us-regulatory-compliance)
-11. [API Reference](#api-reference)
-12. [Security Architecture](#security-architecture)
-13. [Deployment Guide](#deployment-guide)
-14. [Implementation Verification](#implementation-verification)
+**Part I – Vectix Foundry Platform (Areta Court 7)**
+
+| # | Section |
+|---|--------|
+| 1 | [Executive Summary](#executive-summary) |
+| 2 | [Platform Overview](#platform-overview) |
+| 3 | [Getting Started](#getting-started) |
+| 4 | [Architectural Overview](#architectural-overview) |
+| 5 | [Database Schema](#database-schema) |
+| 6 | [Machine-to-Machine API](#machine-to-machine-api-integration) |
+| 7 | [Platform Features by Module](#platform-features-by-module) |
+| 8 | [ElizaOS Integration](#elizaos-integration) |
+| 9 | [Blockchain Security Pillars](#blockchain-security-pillars) |
+| 10 | [US Regulatory Compliance](#us-regulatory-compliance) |
+| 11 | [API Reference](#api-reference) |
+| 12 | [Security Architecture](#security-architecture) |
+| 13 | [Deployment Guide](#deployment-guide) |
+| 14 | [Implementation Verification](#implementation-verification) |
+
+**Part II – Colosseum Hackathon Project (Colosseum)**
+
+| # | Section |
+|---|--------|
+| 15 | [Colosseum Overview](#part-ii-colosseum-hackathon-project) |
+| 16 | [Colosseum Quick Start](#colosseum-quick-start) |
+| 17 | [Colosseum Project Architecture](#colosseum-project-architecture) |
+| 18 | [Colosseum Agent Workflow](#colosseum-agent-workflow) |
+
+**End matter:** [License](#license) · [Support](#support) · [Development Principles](#development-principles)
+
+*[↑ Back to top](#table-of-contents) — use this anchor from any section for easy return to this table.*
+
+---
+
+## Part I: Vectix Foundry Platform (Areta Court 7)
+
+An enterprise-grade platform for deploying and managing autonomous AI trading agents on the Solana blockchain. The platform implements comprehensive US regulatory compliance standards and provides institutional-grade security infrastructure to protect users and the broader cryptocurrency community from risks and security threats.
 
 ---
 
@@ -34,6 +76,8 @@ The platform protects users and the broader ecosystem through:
 - **Transparent Security**: On-chain verification allows independent validation of security decisions without trusting centralized systems
 - **Community Governance**: Decentralized governance mechanisms enable community-driven security policy updates
 - **Open Security Intelligence**: Public APIs provide free access to security scores and threat data for the entire community
+
+**[↑ Table of Contents](#table-of-contents)**
 
 ---
 
@@ -61,9 +105,36 @@ The platform protects users and the broader ecosystem through:
 - On-chain verification of security decisions for transparency
 - Community-driven governance for security policy
 
+**[↑ Table of Contents](#table-of-contents)**
+
 ---
 
 ## Getting Started
+
+### Quick Start (Platform, ~2 min)
+
+**Prerequisites:** Node.js 18+, PostgreSQL (or Docker), npm/pnpm.
+
+```bash
+# 1. Clone & install
+git clone https://github.com/SemiuAdesina/vectix-nexus.git
+cd vectix-nexus
+cd backend && npm install && cd ../frontend && npm install && cd ..
+
+# 2. Configure environment
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env.local
+# Edit backend/.env and frontend/.env.local with your keys (Clerk, Stripe, DB, etc.)
+
+# 3. Database & launch
+cd backend && npx prisma migrate deploy && npx prisma generate && cd ..
+# Terminal 1: cd backend && npm run dev
+# Terminal 2: cd frontend && npm run dev
+```
+
+- **Frontend:** http://localhost:3000  
+- **Backend API:** http://localhost:3002  
+- **Colosseum agent only:** see [Part II – Colosseum Quick Start](#colosseum-quick-start).
 
 ### Prerequisites
 
@@ -74,12 +145,12 @@ The platform protects users and the broader ecosystem through:
 - Stripe account for payments
 - Fly.io account for agent hosting
 
-### Installation
+### Installation (detailed)
 
 #### 1. Clone Repository
 
 ```bash
-git clone https://github.com/your-org/vectix-nexus.git
+git clone https://github.com/SemiuAdesina/vectix-nexus.git
 cd vectix-nexus
 ```
 
@@ -151,21 +222,23 @@ npx prisma generate
 #### 5. Start Development Servers
 
 ```bash
-# Terminal 1 - Backend
+# Terminal 1 – Backend
 cd backend
 npm run dev
 
-# Terminal 2 - Frontend
+# Terminal 2 – Frontend
 cd frontend
 npm run dev
 ```
 
-#### 6. Access Application
+#### 6. Access Application (Platform)
 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:3002
 - API Documentation: http://localhost:3000/docs/api
 - Health Check: http://localhost:3002/health
+
+**[↑ Table of Contents](#table-of-contents)**
 
 ---
 
@@ -295,6 +368,8 @@ graph TB
 - PBKDF2 key derivation (600,000 iterations)
 - SHA-256 hashing for API keys
 - HMAC-SHA256 for webhook signatures
+
+**[↑ Table of Contents](#table-of-contents)**
 
 ---
 
@@ -426,6 +501,8 @@ curl -X POST "http://localhost:3002/v1/agents/agent-id/trade" \
     "mode": "live"
   }'
 ```
+
+**[↑ Table of Contents](#table-of-contents)**
 
 ---
 
@@ -585,6 +662,8 @@ erDiagram
 - **Agent to Strategy**: Many-to-one allowing agents to use purchased strategies
 - **User Referrals**: Self-referential relationship for referral program tracking
 - **API Key Logging**: One-to-many for request tracking and analytics
+
+**[↑ Table of Contents](#table-of-contents)**
 
 ---
 
@@ -1332,6 +1411,8 @@ sequenceDiagram
     F-->>RESEARCHER: Display Rankings
 ```
 
+**[↑ Table of Contents](#table-of-contents)**
+
 ---
 
 ## ElizaOS Integration
@@ -1465,6 +1546,8 @@ sequenceDiagram
 - Shadow Mode: `backend/services/shadow/shadow-portfolio.ts`, `backend/services/shadow/shadow-metrics.ts`
 - TEE Service: `backend/services/tee/secure-enclave.ts`, `backend/services/tee/enclave-config.ts`
 - Phala Integration: `backend/services/tee/tee.types.ts` (supports Phala Network provider)
+
+**[↑ Table of Contents](#table-of-contents)**
 
 ---
 
@@ -1639,6 +1722,8 @@ graph TD
     EXECUTE --> AUDIT[Audit Trail]
 ```
 
+**[↑ Table of Contents](#table-of-contents)**
+
 ---
 
 ## US Regulatory Compliance
@@ -1767,6 +1852,8 @@ sequenceDiagram
     end
 ```
 
+**[↑ Table of Contents](#table-of-contents)**
+
 ---
 
 ## API Reference
@@ -1881,6 +1968,8 @@ X-API-Key: vx_<api_key>
 | GET | `/api/public/security/score/:tokenAddress` | Public | Get token security score |
 | GET | `/api/public/security/trending` | Public | Get public trending tokens |
 
+**[↑ Table of Contents](#table-of-contents)**
+
 ---
 
 ## Security Architecture
@@ -1972,6 +2061,8 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()
 | Webhooks | HMAC-SHA256 | Secret key | Webhook verification |
 | Passwords | PBKDF2-SHA512 | 600,000 iterations | Account security |
 
+**[↑ Table of Contents](#table-of-contents)**
+
 ---
 
 ## Deployment Guide
@@ -2040,6 +2131,8 @@ docker run -d \
   vectix-backend
 ```
 
+**[↑ Table of Contents](#table-of-contents)**
+
 ---
 
 ## Implementation Verification
@@ -2103,6 +2196,122 @@ All features documented in this README have been verified as implemented in the 
 - Database schema matches Prisma schema file
 
 **No Missing Features**: All features described in this README are verified as implemented in the codebase.
+
+**[↑ Table of Contents](#table-of-contents)**
+
+---
+
+## Part II: Colosseum Hackathon Project (Colosseum)
+
+This section describes the **Colosseum hackathon submission**: an autonomous ElizaOS agent that runs inside this repo and integrates with the Colosseum API (registration, project drafts, forum posts, heartbeat). It is **separate from** the main Vectix Foundry platform (Part I): the platform deploys and secures agents; the Colosseum agent is one such agent, living in the `eliza/` directory.
+
+### Colosseum Quick Start
+
+**Prerequisites:** Node.js 18+, Bun (or `npx bun`), OpenAI or OpenRouter API key.
+
+**Important:** All commands below (steps 2–6) must be run from inside the `eliza/` folder. Do not run them from the repo root (`vectix-nexus/`).
+
+```bash
+# 1. Clone repo (if not already)
+git clone https://github.com/SemiuAdesina/vectix-nexus.git
+cd vectix-nexus
+
+# 2. Enter eliza/ — stay here for all remaining commands
+cd eliza
+
+# 3. Install dependencies (Bun)
+npx bun install
+
+# 4. Build core (required for @elizaos/core)
+npx bun run build:core
+
+# 5. Configure environment
+cp .env.example .env
+# Set OPENAI_API_KEY or OPENROUTER_API_KEY in .env
+
+# 6. Start the agent
+npx bun run start
+```
+
+- **Web UI:** http://localhost:3000  
+- **Example prompts:** “Register for the Colosseum Hackathon using the name Vectix-Agent.” / “Check the hackathon heartbeat.” / “Create a project draft. Name: 'My Project'. Description: '...' Repo: https://github.com/..."
+
+### Colosseum Project Architecture
+
+The Colosseum agent is an ElizaOS app in `eliza/`, using the `plugin-bootstrap` package for Colosseum-specific actions and shared logic.
+
+```
+vectix-nexus/
+├── backend/          # Part I: Vectix Foundry API (Express, Prisma, security)
+├── frontend/         # Part I: Next.js dashboard
+├── onchain/          # Part I: On-chain services
+└── eliza/            # Part II: Colosseum ElizaOS agent
+    ├── packages/
+    │   ├── cli/              # Agent CLI & server
+    │   ├── plugin-bootstrap/ # Colosseum actions + bootstrap plugins
+    │   │   └── src/
+    │   │       ├── actions/           # Colosseum actions
+    │   │       │   ├── registerForHackathon.ts
+    │   │       │   ├── checkHeartbeat.ts
+    │   │       │   ├── createProjectDraft.ts
+    │   │       │   ├── createForumPost.ts
+    │   │       │   └── __tests__/     # Unit tests per action
+    │   │       └── lib/
+    │   │           └── secrets.ts     # readHackathonSecrets (hackathon_secrets.json)
+    │   └── core/             # ElizaOS core
+    └── .env                 # OPENAI_API_KEY, OPENROUTER_API_KEY, etc.
+```
+
+- **Colosseum actions** (in `eliza/packages/plugin-bootstrap/src/actions/`): register for hackathon, check heartbeat, create project draft, create forum post. Each action has `validate` and `handler`; handlers call the Colosseum API and use `readHackathonSecrets()` for API key/claim code (stored in `eliza/packages/cli/hackathon_secrets.json` after registration).
+
+### Colosseum Agent Workflow
+
+End-to-end flow from user message to Colosseum API:
+
+```mermaid
+flowchart LR
+    subgraph User
+        U[User Message]
+    end
+    subgraph ElizaOS Agent
+        V[Validate]
+        H[Handler]
+    end
+    subgraph Colosseum API
+        R[Register]
+        P[Project Draft]
+        F[Forum Post]
+        HB[Heartbeat]
+    end
+    U --> V
+    V -->|match| H
+    H -->|POST /api/agents| R
+    H -->|POST /api/my-project| P
+    H -->|POST /api/forum/posts| F
+    H -->|GET heartbeat.md| HB
+```
+
+**Sequence (e.g. project draft):**
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent as ElizaOS Agent
+    participant Secrets as hackathon_secrets.json
+    participant API as Colosseum API
+
+    User->>Agent: "Create project draft. Name: 'X'. Description: '...'"
+    Agent->>Agent: validate(message)
+    Agent->>Secrets: readHackathonSecrets()
+    Secrets-->>Agent: apiKey, claimCode
+    Agent->>API: POST /api/my-project (Bearer apiKey)
+    API-->>Agent: 201 / project id
+    Agent->>User: "Project created. ID: ..."
+```
+
+No platform (Part I) services are required to run the Colosseum agent; it only needs `eliza/`, env keys, and network access to the Colosseum API.
+
+**[↑ Table of Contents](#table-of-contents)**
 
 ---
 
