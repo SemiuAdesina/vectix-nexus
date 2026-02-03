@@ -1,0 +1,17 @@
+app = "eliza-agent"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile.agent"
+
+[env]
+  NODE_ENV = "production"
+
+[[services]]
+  internal_port = 3000
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+

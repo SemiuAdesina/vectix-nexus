@@ -1,0 +1,65 @@
+FROM node:23-slim AS builder
+
+WORKDIR /app
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    ffmpeg \
+    g++ \
+    git \
+    make \
+    python3 \
+    unzip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g pnpm@latest
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+COPY package.json turbo.json tsconfig.json lerna.json .npmrc ./
+COPY scripts ./scripts
+COPY packages ./packages
+
+RUN SKIP_POSTINSTALL=1 pnpm install --frozen-lockfile
+
+RUN pnpm run build
+
+FROM node:23-slim
+
+WORKDIR /app
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    curl \
+    ffmpeg \
+    git \
+    python3 \
+    unzip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g pnpm@latest
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/turbo.json ./
+COPY --from=builder /app/tsconfig.json ./
+COPY --from=builder /app/lerna.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/scripts ./scripts
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+ENV NODE_ENV=production
+
+EXPOSE 3000
+EXPOSE 50000-50100/udp
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
