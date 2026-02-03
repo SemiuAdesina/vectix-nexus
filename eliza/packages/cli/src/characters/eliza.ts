@@ -6,7 +6,7 @@ import { buildCharacterPlugins, type Character } from '@elizaos/core';
  */
 const baseElizaCharacter: Character = {
   name: 'Eliza',
-  plugins: ['@elizaos/plugin-sql', '@elizaos/plugin-bootstrap'],
+  plugins: ['@elizaos/plugin-sql', '@elizaos/plugin-bootstrap', '@elizaos/plugin-solana'],
   settings: {
     secrets: {},
     avatar: 'https://elizaos.github.io/eliza-avatars/Eliza/portrait.png',

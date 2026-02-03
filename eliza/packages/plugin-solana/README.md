@@ -1,9 +1,19 @@
 # Vectix Solana Plugin
 
-This plugin enables the agent to autonomously sign and send transactions on Solana. It manages private keys securely and exposes actions for:
+ElizaOS plugin for Solana: transfer SOL, check balance, and a swap placeholder. Part of the Vectix Foundry Colosseum submission.
 
-- **Transfer** — Send SOL or SPL tokens
-- **Swap** — Swap tokens via supported DEXes
-- **Balance Check** — Query SOL and SPL token balances
+## Actions
 
-Part of the Vectix Foundry Colosseum submission. Requires the agent to be run from the `eliza/` directory of the vectix-nexus repo.
+- **SOLANA_BALANCE** — Query SOL balance for an address (from message or `SOLANA_PUBLIC_KEY`).
+- **SOLANA_TRANSFER** — Send SOL to an address (requires `SOLANA_PRIVATE_KEY`).
+- **SOLANA_SWAP** — Placeholder; returns a message that swap is not implemented.
+
+## Environment
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `SOLANA_RPC_URL` | No | RPC endpoint (default: devnet). |
+| `SOLANA_PUBLIC_KEY` | For "my balance" | Wallet public key when user says "check my balance". |
+| `SOLANA_PRIVATE_KEY` | For transfer | Sender key as 64 comma-separated bytes (e.g. from Keypair secretKey). |
+
+Run the agent from the `eliza/` directory of vectix-nexus. Add `@elizaos/plugin-solana` to your agent's plugins in the project config.

@@ -4,14 +4,15 @@ This doc covers creating the Solana plugin structure, pushing for the leaderboar
 
 ---
 
-## 1. Solana Plugin Structure (Already Created)
+## 1. Solana Plugin Structure (Implemented)
 
-The folder `packages/plugin-solana/` is already in place under **`eliza/`** (not repo root). It contains:
+The folder `packages/plugin-solana/` under **`eliza/`** contains:
 
-- `package.json` — `@elizaos/plugin-solana`, `@solana/web3.js`, `@elizaos/core` (workspace)
-- `README.md` — Transfer, Swap, Balance Check
-- `src/index.ts` — Plugin entry (placeholder)
-- `build.ts`, `tsconfig.json`, `tsconfig.build.json` — Build setup
+- **Actions:** `SOLANA_BALANCE`, `SOLANA_TRANSFER`, `SOLANA_SWAP` (placeholder)
+- **Env:** `SOLANA_RPC_URL`, `SOLANA_PUBLIC_KEY`, `SOLANA_PRIVATE_KEY` (see plugin README)
+- **Tests:** `bun test` in `packages/plugin-solana`
+
+To enable the plugin, add `@elizaos/plugin-solana` to your character's `plugins` array (e.g. in the Colosseum agent config or `packages/cli/characters/*.character.json`), then rebuild and restart the agent.
 
 **Path reminder:** All Colosseum/Eliza commands must be run from **`eliza/`** (see main README [Colosseum Quick Start](../README.md#colosseum-quick-start)).
 
