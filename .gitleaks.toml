@@ -2,15 +2,25 @@
 useDefault = true
 
 [allowlist]
-description = "Allow placeholder values in documentation files"
+description = "Allow placeholder and test values in docs and test files"
 paths = [
   '''ENV_REFERENCE\.md''',
   '''\.env\.example''',
   '''README\.md''',
   '''ROADMAP\.md''',
+  '''.*\.test\.(ts|tsx|js|mjs)$''',
+  '''.*\.spec\.(ts|tsx|js)$''',
 ]
 regexes = [
   '''32_byte_hex_key_for_aes_256_gcm''',
   '''your_.*_key''',
   '''your_.*_secret''',
+  '''sk_test_xxxxx''',
+  '''sk_test_\.\.\.''',
+  '''pk_test_xxxxx''',
+  '''pk_test_\.\.\.''',
+  '''whsec_xxxxx''',
+  '''whsec_\.\.\.''',
+  '''whsec_test123''',
+  '''sk_test_123''',
 ]

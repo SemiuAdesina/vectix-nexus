@@ -1,27 +1,69 @@
 # Vectix Foundry
 
+## Part I: Vectix Foundry Platform (Areta Court 7)
+
+An enterprise-grade platform for deploying and managing autonomous AI trading agents on the Solana blockchain. The platform implements comprehensive US regulatory compliance standards and provides institutional-grade security infrastructure to protect users and the broader cryptocurrency community from risks and security threats.
+
+### Executive Summary
+
+VectixLogic addresses the critical challenge of deploying AI trading systems in a regulated environment by providing institutional-grade security infrastructure, automated compliance monitoring, and comprehensive audit capabilities. The platform serves as a protective layer for the cryptocurrency community, implementing three core blockchain principles—decentralization, scalability, and security—while maintaining full compliance with US federal guidelines.
+
+### Community Impact
+
+The platform protects users and the broader ecosystem through:
+
+- **Automated Risk Detection**: Real-time threat intelligence and anomaly detection prevent malicious transactions before execution
+- **Regulatory Compliance**: Full adherence to US financial regulations ensures legal operation and user protection
+- **Transparent Security**: On-chain verification allows independent validation of security decisions without trusting centralized systems
+- **Community Governance**: Decentralized governance mechanisms enable community-driven security policy updates
+- **Open Security Intelligence**: Public APIs provide free access to security scores and threat data for the entire community
+
+---
+
 **The Autonomous Agent Operating System on Solana.**
 
 > Built on ElizaOS | Verifiable Identity | Asset Management | Monetization
 
 Vectix Foundry is a production-ready framework that wraps **ElizaOS** to create truly autonomous agents. Unlike standard agents that just "chat," Vectix agents can manage their own wallets, sweep assets, verify their reasoning on-chain, and generate revenue.
 
-## Key Features
+### Key Features
 
-### 1. The Foundry (Agent Factory)
-Autonomously deploy new agents with a single command. The Foundry generates secure wallets, configures personality constraints, and prepares the runtime environment—no manual setup required.
+1. **The Foundry (Agent Factory)** — Autonomously deploy new agents with a single command. The Foundry generates secure wallets, configures personality constraints, and prepares the runtime environment—no manual setup required.
 
-### 2. Verifiable Reasoning (SOLPRISM Integration)
-Vectix agents don't just act; they **prove** it. Integrated natively with the SOLPRISM SDK, every high-stakes decision (like moving funds) is committed to the Solana devnet as a verifiable "Reasoning Trace."
+2. **Verifiable Reasoning (SOLPRISM Integration)** — Vectix agents don't just act; they **prove** it. Integrated natively with the SOLPRISM SDK, every high-stakes decision (like moving funds) is committed to the Solana devnet as a verifiable "Reasoning Trace."
 
-### 3. The Gravedigger (Asset Sweeper)
-Smart treasury management. The "Gravedigger" module autonomously scans the agent's wallet for "dust" (idle small balances) and sweeps them to a central treasury or DeFi protocol (e.g., The Trench).
-- *Logic:* `If Balance < Threshold && Balance > Gas -> Sweep()`
+3. **The Gravedigger (Asset Sweeper)** — Smart treasury management. The "Gravedigger" module autonomously scans the agent's wallet for "dust" (idle small balances) and sweeps them to a central treasury or DeFi protocol (e.g., The Trench).  
+   *Logic:* `If Balance < Threshold && Balance > Gas -> Sweep()`
 
-### 4. Built-in Monetization (RWA Ready)
-Vectix is built for business. It includes a backend monetization module that tracks:
-- **Stripe Revenue:** Real-time subscription tracking.
-- **On-Chain Fees:** Treasury verification for protocol licensing (e.g., Pay Protocol License).
+4. **Built-in Monetization (RWA Ready)** — Vectix is built for business. It includes a backend monetization module that tracks **Stripe Revenue** (real-time subscription tracking) and **On-Chain Fees** (treasury verification for protocol licensing, e.g., Pay Protocol License).
+
+### Platform Overview
+
+#### Core Capabilities
+
+- **AI Agent Deployment**: Deploy and manage customizable ElizaOS-based trading agents with full lifecycle control
+- **Secure Wallet Infrastructure**: Automated Solana wallet generation with AES-256-GCM encryption and PBKDF2 key derivation (600,000 iterations)
+- **Protected Trade Execution**: Automated and manual trading with MEV protection, transaction simulation, and multi-layer security checks
+- **Real-Time Monitoring**: Live performance analytics, comprehensive risk assessment, and shadow mode paper trading with detailed performance reports
+- **Strategy Marketplace**: Purchase and deploy verified trading strategies from the integrated marketplace
+- **Developer API**: RESTful API with tiered rate limits, scope-based authorization, and comprehensive documentation
+- **On-Chain Security**: Immutable audit trails, circuit breakers, multi-signature wallets, time-locked transactions, and decentralized governance
+- **Shadow Mode**: Risk-free paper trading with live market data for strategy testing
+- **TEE-Protected Keys**: Hardware-secured key storage via Phala Network and other TEE providers
+
+#### Key Differentiators
+
+- Full compliance with US financial regulations (FinCEN/BSA, OFAC sanctions screening)
+- NIST 800-63B compliant authentication with account lockout protection
+- AML transaction monitoring with velocity limits and structuring detection
+- Geo-blocking for OFAC-sanctioned jurisdictions
+- Comprehensive audit trail for all security-relevant events
+- On-chain verification of security decisions for transparency
+- Community-driven governance for security policy
+
+### Colosseum (Solana) Hackathon
+
+For the **Colosseum track**, the ElizaOS agent runs from **`eliza/`** and the unified CLI from the **repo root**. You get SOLPRISM identity/reasoning proof, Gravedigger (Dust Sweeper), Foundry (deploy new agent), and Pay Protocol License. Full setup and details are in [Colosseum (Solana) Hackathon Path](#colosseum-solana-hackathon-path) and [Part II – Colosseum](#part-ii-colosseum-hackathon-project-colosseum) below.
 
 ---
 
@@ -136,58 +178,6 @@ Option **1** = SOLPRISM identity/reasoning proof. Option **2** = Gravedigger (Du
 **End matter:** [License](#license) · [Support](#support) · [Development Principles](#development-principles)
 
 *[↑ Back to top](#table-of-contents) — use this anchor from any section for easy return to this table.*
-
----
-
-## Part I: Vectix Foundry Platform (Areta Court 7)
-
-An enterprise-grade platform for deploying and managing autonomous AI trading agents on the Solana blockchain. The platform implements comprehensive US regulatory compliance standards and provides institutional-grade security infrastructure to protect users and the broader cryptocurrency community from risks and security threats.
-
----
-
-## Executive Summary
-
-VectixLogic addresses the critical challenge of deploying AI trading systems in a regulated environment by providing institutional-grade security infrastructure, automated compliance monitoring, and comprehensive audit capabilities. The platform serves as a protective layer for the cryptocurrency community, implementing three core blockchain principles—decentralization, scalability, and security—while maintaining full compliance with US federal guidelines.
-
-### Community Impact
-
-The platform protects users and the broader ecosystem through:
-
-- **Automated Risk Detection**: Real-time threat intelligence and anomaly detection prevent malicious transactions before execution
-- **Regulatory Compliance**: Full adherence to US financial regulations ensures legal operation and user protection
-- **Transparent Security**: On-chain verification allows independent validation of security decisions without trusting centralized systems
-- **Community Governance**: Decentralized governance mechanisms enable community-driven security policy updates
-- **Open Security Intelligence**: Public APIs provide free access to security scores and threat data for the entire community
-
-**[↑ Table of Contents](#table-of-contents)**
-
----
-
-## Platform Overview
-
-### Core Capabilities
-
-- **AI Agent Deployment**: Deploy and manage customizable ElizaOS-based trading agents with full lifecycle control
-- **Secure Wallet Infrastructure**: Automated Solana wallet generation with AES-256-GCM encryption and PBKDF2 key derivation (600,000 iterations)
-- **Protected Trade Execution**: Automated and manual trading with MEV protection, transaction simulation, and multi-layer security checks
-- **Real-Time Monitoring**: Live performance analytics, comprehensive risk assessment, and shadow mode paper trading with detailed performance reports
-- **Strategy Marketplace**: Purchase and deploy verified trading strategies from the integrated marketplace
-- **Developer API**: RESTful API with tiered rate limits, scope-based authorization, and comprehensive documentation
-- **On-Chain Security**: Immutable audit trails, circuit breakers, multi-signature wallets, time-locked transactions, and decentralized governance
-- **Shadow Mode**: Risk-free paper trading with live market data for strategy testing
-- **TEE-Protected Keys**: Hardware-secured key storage via Phala Network and other TEE providers
-
-### Key Differentiators
-
-- Full compliance with US financial regulations (FinCEN/BSA, OFAC sanctions screening)
-- NIST 800-63B compliant authentication with account lockout protection
-- AML transaction monitoring with velocity limits and structuring detection
-- Geo-blocking for OFAC-sanctioned jurisdictions
-- Comprehensive audit trail for all security-relevant events
-- On-chain verification of security decisions for transparency
-- Community-driven governance for security policy
-
-**[↑ Table of Contents](#table-of-contents)**
 
 ---
 
@@ -328,100 +318,50 @@ npm run dev
 
 ### System Architecture
 
-```mermaid
-graph TB
-    subgraph Client Layer
-        WEB[Next.js Frontend]
-        API_CLIENT[API Clients]
-        M2M[Machine-to-Machine Systems]
-    end
-    
-    subgraph Authentication Layer
-        CLERK[Clerk Auth Service]
-        API_KEY[API Key Service]
-    end
-    
-    subgraph API Gateway
-        EXPRESS[Express.js Server]
-        MIDDLEWARE[Security Middleware]
-        RATE_LIMIT[Rate Limiter]
-        CORS[CORS Handler]
-    end
-    
-    subgraph Business Logic Layer
-        AGENTS[Agent Service]
-        WALLET[Wallet Service]
-        TRADING[Trading Service]
-        SECURITY[Security Services]
-        ONCHAIN[On-Chain Services]
-        STRIPE_SVC[Stripe Service]
-    end
-    
-    subgraph Security Layer
-        OFAC[OFAC Screening]
-        AML[AML Monitoring]
-        GEO[Geo-Blocking]
-        THREAT[Threat Intelligence]
-        CIRCUIT[Circuit Breakers]
-        SUPERVISOR[Supervisor AI]
-    end
-    
-    subgraph Data Layer
-        POSTGRES[(PostgreSQL)]
-        PRISMA[Prisma ORM]
-        AUDIT[Audit Trail]
-    end
-    
-    subgraph External Services
-        FLY[Fly.io - Agent Hosting]
-        STRIPE[Stripe Payments]
-        SOLANA[Solana Blockchain]
-        DEXSCREENER[DexScreener API]
-        RUGCHECK[RugCheck API]
-    end
-    
-    WEB --> CLERK
-    WEB --> EXPRESS
-    API_CLIENT --> API_KEY
-    API_CLIENT --> EXPRESS
-    M2M --> API_KEY
-    M2M --> EXPRESS
-    
-    EXPRESS --> MIDDLEWARE
-    MIDDLEWARE --> RATE_LIMIT
-    MIDDLEWARE --> CORS
-    MIDDLEWARE --> AGENTS
-    MIDDLEWARE --> WALLET
-    MIDDLEWARE --> TRADING
-    MIDDLEWARE --> SECURITY
-    MIDDLEWARE --> ONCHAIN
-    MIDDLEWARE --> STRIPE_SVC
-    
-    TRADING --> CIRCUIT
-    TRADING --> THREAT
-    TRADING --> SUPERVISOR
-    TRADING --> AML
-    TRADING --> OFAC
-    
-    AGENTS --> PRISMA
-    WALLET --> PRISMA
-    TRADING --> PRISMA
-    SECURITY --> PRISMA
-    ONCHAIN --> PRISMA
-    STRIPE_SVC --> PRISMA
-    
-    PRISMA --> POSTGRES
-    SECURITY --> AUDIT
-    ONCHAIN --> AUDIT
-    
-    AGENTS --> FLY
-    WALLET --> SOLANA
-    TRADING --> SOLANA
-    SECURITY --> DEXSCREENER
-    SECURITY --> RUGCHECK
-    STRIPE_SVC --> STRIPE
-    SECURITY --> OFAC
+The following diagram is plain text so it renders in any Markdown viewer. Flow is top-down: clients → auth/gateway → business logic → data → external services.
+
 ```
++--------------------------------------------------------------------------------------------------+
+| CLIENT LAYER                                                                                     |
+|   Next.js Frontend (dashboard, agents, billing, marketplace)  |  M2M / API clients  |  Vectix CLI |
++----------------------------------------------------------+-----------------------------------+
+                                                           |
++----------------------------------------------------------v-----------------------------------+
+| AUTHENTICATION & API GATEWAY                                                                     |
+|   Clerk (user auth)  |  API Key Service (vx_*, scopes)  |  Express  |  Security middleware  |  CORS  |  Rate limit |
++----------------------------------------------------------+-----------------------------------+
+                                                           |
++----------------------------------------------------------v-----------------------------------+
+| BUSINESS LOGIC (backend + onchain)                                                              |
+|   Agents  |  Wallet  |  Trading  |  Stripe  |  Deploy (Fly)  |  Affiliate  |  Marketplace  |  Protection (whitelist) |
+|   Security: token-security, OFAC, AML, geo-blocking, DexScreener, RugCheck, GoPlus, safe-trending |
+|   On-chain: audit-trail, circuit-breaker, governance, multisig, security-scanning, threat-intel, time-lock |
+|   Narrative (LunarCrush)  |  Shadow (portfolio + metrics)  |  Simulation (preflight, tx simulator) |
+|   Supervisor (rule engine)  |  TEE (secure enclave)  |  Webhooks  |  Bug bounty  |  Public API  |
++----------------------------------------------------------+-----------------------------------+
+                                                           |
++----------------------------------------------------------v-----------------------------------+
+| DATA LAYER                                                                                       |
+|   PostgreSQL  |  Prisma ORM  |  Audit trail (security-relevant events)                           |
++----------------------------------------------------------+-----------------------------------+
+                                                           |
++----------------------------------------------------------v-----------------------------------+
+| EXTERNAL SERVICES                                                                                |
+|   Fly.io (agent hosting)  |  Stripe  |  Solana  |  DexScreener  |  RugCheck  |  GoPlus  |  LunarCrush  |  TEE (e.g. Phala) |
++--------------------------------------------------------------------------------------------------+
+```
+
+**Colosseum path (Part II):** The ElizaOS agent in `eliza/` and scripts (SOLPRISM, Gravedigger, Foundry, Pay License) run alongside the platform; they use Solana and optional env only, not the backend/frontend stack above.
+
+**Components by layer (reference)**
+
+| Layer | Components |
+|-------|------------|
+| **Client** | Next.js frontend, M2M/API clients, Vectix CLI (Colosseum) |
+| **Auth & Gateway** | Clerk, API Key Service, Express, security middleware, rate limit, CORS |
+| **Business** | Agents, Wallet, Trading, Stripe, Deploy (Fly), Affiliate, Marketplace, Protection/Whitelist, Narrative, Shadow, Simulation, Supervisor, TEE, Webhooks, Bug bounty, Public API; Security (OFAC, AML, geo, token-security, DexScreener, RugCheck, GoPlus, safe-trending); On-chain (audit-trail, circuit-breaker, governance, multisig, security-scanning, threat-intelligence, time-lock) |
+| **Data** | PostgreSQL, Prisma, Audit trail |
+| **External** | Fly.io, Stripe, Solana, DexScreener, RugCheck, GoPlus, LunarCrush, TEE (e.g. Phala) |
 
 ### Technology Stack
 
