@@ -34,7 +34,8 @@ export default function DashboardPage() {
   }
 
   const isDev = process.env.NODE_ENV === 'development';
-  if (!subscription?.hasActiveSubscription && !isDev) {
+  const noSubscription = subscription != null && !subscription.hasActiveSubscription;
+  if (noSubscription && !isDev) {
     return <SubscriptionRequired />;
   }
 

@@ -1,3 +1,5 @@
+import * as path from 'node:path';
+import { existsSync } from 'node:fs';
 import {
   Keypair,
   PublicKey,
@@ -6,8 +8,23 @@ import {
   LAMPORTS_PER_SOL,
   sendAndConfirmTransaction,
 } from '@solana/web3.js';
+import bs58 from 'bs58';
 import type { IAgentRuntime, Memory, State } from '@elizaos/core';
+import { loadEnvFile } from '@elizaos/core';
 import { getSolanaConnection } from '../lib/connection.ts';
+
+function tryLoadEnvFromPaths(): void {
+  if (process.env.SOLANA_PRIVATE_KEY) return;
+  const cwd = typeof process.cwd === 'function' ? process.cwd() : '';
+  const candidates = [cwd, path.join(cwd, '..'), path.join(cwd, '../..'), path.join(cwd, '../../..')];
+  for (const dir of candidates) {
+    const envPath = path.join(dir, '.env');
+    if (dir && existsSync(envPath)) {
+      loadEnvFile(envPath);
+      if (process.env.SOLANA_PRIVATE_KEY) return;
+    }
+  }
+}
 
 const BASE58_REGEX = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const MIN_RENT = 890880;
@@ -28,20 +45,31 @@ function isValidSolanaAddress(address: string): boolean {
   return BASE58_REGEX.test(address) && address.length >= 32 && address.length <= 44;
 }
 
-function loadKeypair(): Keypair | null {
-  const raw = process.env.SOLANA_PRIVATE_KEY;
-  if (!raw || typeof raw !== 'string') {
-    return null;
-  }
+function loadKeypairFromRaw(raw: string): Keypair | null {
+  if (!raw || typeof raw !== 'string') return null;
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
   try {
-    const decoded = raw.trim().replace(/^\[|\]$/g, '').split(',').map(Number);
-    if (decoded.length !== 64) {
-      return null;
+    if (/^[\d,\s\[\]-]+$/.test(trimmed)) {
+      const decoded = trimmed.replace(/^\[|\]$/g, '').split(',').map((n) => parseInt(n.trim(), 10));
+      if (decoded.length === 64 && decoded.every((n) => !Number.isNaN(n))) {
+        return Keypair.fromSecretKey(new Uint8Array(decoded));
+      }
     }
-    return Keypair.fromSecretKey(new Uint8Array(decoded));
+    const bytes = bs58.decode(trimmed);
+    if (bytes.length === 64) return Keypair.fromSecretKey(bytes);
+    if (bytes.length === 65) return Keypair.fromSecretKey(bytes.subarray(0, 64));
+    if (bytes.length === 32) return Keypair.fromSeed(bytes);
   } catch {
-    return null;
+    /* fallthrough */
   }
+  return null;
+}
+
+function loadKeypair(runtime?: IAgentRuntime): Keypair | null {
+  const fromEnv = process.env.SOLANA_PRIVATE_KEY;
+  const fromSetting = runtime?.getSetting?.('SOLANA_PRIVATE_KEY') as string | undefined;
+  return loadKeypairFromRaw(fromEnv ?? '') ?? loadKeypairFromRaw(fromSetting ?? '') ?? null;
 }
 
 export const solanaTransferAction = {
@@ -67,9 +95,11 @@ export const solanaTransferAction = {
     _options?: Record<string, unknown>,
     callback?: (result: { text: string }) => void
   ): Promise<{ success: boolean; text: string; values?: Record<string, unknown>; error?: string }> => {
-    const keypair = loadKeypair();
+    tryLoadEnvFromPaths();
+    const keypair = loadKeypair(runtime);
     if (!keypair) {
-      const msg = 'Solana wallet not configured. Set SOLANA_PRIVATE_KEY (64-byte array as comma-separated numbers).';
+      const msg =
+        'Solana wallet not configured. Set SOLANA_PRIVATE_KEY in eliza/.env (base58 string or 64 comma-separated numbers). Restart the agent after changing .env.';
       callback?.({ text: msg });
       return { success: false, text: msg, error: 'no_wallet' };
     }

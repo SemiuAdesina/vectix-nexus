@@ -7,6 +7,7 @@ export async function deployAgent(request: DeployAgentRequest): Promise<DeployAg
   const headers = await getAuthHeaders();
   const response = await fetch(`${BACKEND_URL}/api/deploy-agent`, {
     method: 'POST',
+    credentials: 'include',
     headers,
     body: JSON.stringify(request),
   });

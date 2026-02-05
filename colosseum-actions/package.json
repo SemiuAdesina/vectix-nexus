@@ -1,0 +1,14 @@
+{
+  "name": "@vectix/plugin-colosseum",
+  "version": "1.0.0",
+  "description": "Colosseum Hackathon actions for ElizaOS",
+  "type": "module",
+  "main": "src/index.ts",
+  "peerDependencies": {
+    "@elizaos/core": "*"
+  },
+  "devDependencies": {
+    "@elizaos/core": "*",
+    "typescript": "^5.0.0"
+  }
+}

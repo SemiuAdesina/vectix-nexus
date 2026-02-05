@@ -8,7 +8,19 @@ vi.mock('./config', () => ({
 describe('auth', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    auth.registerAuthTokenGetter(null);
     delete (window as unknown as { Clerk?: unknown }).Clerk;
+    delete (window as unknown as Record<string, unknown>)['__VECTIX_AUTH_GET_TOKEN__'];
+  });
+
+  describe('registerAuthTokenGetter', () => {
+    it('allows getAuthHeaders to use registered getter', async () => {
+      const mockGetToken = vi.fn().mockResolvedValue('registered-token');
+      auth.registerAuthTokenGetter(mockGetToken);
+
+      const headers = await auth.getAuthHeaders();
+      expect(headers.Authorization).toBe('Bearer registered-token');
+    });
   });
 
   describe('getAuthHeaders', () => {
@@ -31,6 +43,16 @@ describe('auth', () => {
         'Content-Type': 'application/json',
         Authorization: 'Bearer test-token',
       });
+    });
+
+    it('prefers registered getter over window.Clerk', async () => {
+      auth.registerAuthTokenGetter(() => Promise.resolve('from-register'));
+      (window as unknown as { Clerk?: { session: { getToken: Mock } } }).Clerk = {
+        session: { getToken: vi.fn().mockResolvedValue('from-window') },
+      };
+
+      const headers = await auth.getAuthHeaders();
+      expect(headers.Authorization).toBe('Bearer from-register');
     });
 
     it('handles token fetch error gracefully', async () => {

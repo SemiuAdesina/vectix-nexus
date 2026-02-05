@@ -46,27 +46,28 @@ export function PricingPage() {
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
             Start deploying AI agents that trade, tweet, and earn for you
           </p>
+          <div className="w-24 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mt-6 mx-auto" />
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {Object.entries(DEFAULT_PLANS).map(([key, plan]) => (
             <div
               key={key}
-              className={`relative rounded-xl p-8 transition-all duration-200 ${
+              className={`relative rounded-2xl border bg-card p-8 transition-all duration-200 shadow-[0_0_24px_-8px_hsl(var(--primary)/0.08)] ${
                 key === 'pro'
-                  ? 'glass border-2 border-primary'
-                  : 'glass hover:border-primary/30'
+                  ? 'border-primary/40 shadow-[0_0_28px_-10px_hsl(var(--primary)/0.18)] hover:shadow-[0_0_32px_-10px_hsl(var(--primary)/0.22)]'
+                  : 'border-primary/20 hover:border-primary/40 hover:shadow-[0_0_24px_-8px_hsl(var(--primary)/0.12)]'
               }`}
             >
               {key === 'pro' && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-background text-xs font-semibold uppercase tracking-wider flex items-center gap-1">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 border border-primary/30 shadow-[0_0_12px_-4px_hsl(var(--primary)/0.3)]">
                   <Sparkles className="w-3 h-3" />
                   Most Popular
                 </div>
               )}
 
               <div className="mb-6">
-                <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
+                <h3 className="text-xl font-bold mb-2 text-foreground">{plan.name}</h3>
                 <div className="flex items-baseline gap-1">
                   <span className="text-4xl font-bold text-primary">${(plan.price / 100).toFixed(0)}</span>
                   <span className="text-muted-foreground">/month</span>
@@ -76,8 +77,8 @@ export function PricingPage() {
               <ul className="space-y-3 mb-8">
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-center gap-3">
-                    <div className="w-5 h-5 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
-                      <Check className="w-3 h-3 text-success" />
+                    <div className="w-6 h-6 rounded-lg bg-primary/15 flex items-center justify-center flex-shrink-0 border border-primary/20">
+                      <Check className="w-3.5 h-3.5 text-primary" />
                     </div>
                     <span className="text-muted-foreground text-sm">{feature}</span>
                   </li>
@@ -86,14 +87,14 @@ export function PricingPage() {
 
               <Button
                 size="lg"
-                variant={key === 'pro' ? 'default' : 'secondary'}
-                className="w-full"
+                variant={key === 'pro' ? 'default' : 'outline'}
+                className={`w-full ${key === 'pro' ? 'shadow-[0_0_14px_-4px_hsl(var(--primary)/0.4)]' : 'border-primary/30 hover:bg-primary/10 hover:border-primary/50 hover:text-primary'}`}
                 onClick={() => handleSubscribe(key)}
                 disabled={subscribing !== null}
               >
                 {subscribing === key ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0" />
                     Processing...
                   </>
                 ) : (

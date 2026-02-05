@@ -1,9 +1,12 @@
 const getDefaultApiUrl = () => {
   if (typeof window !== 'undefined') {
-    const hostname = window.location.hostname;
-    return `http://${hostname}:3002`;
+    const origin = window.location?.origin ?? '';
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return 'http://localhost:3002';
+    }
+    return '';
   }
-  return 'http://localhost:3002';
+  return process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3002';
 };
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || getDefaultApiUrl();

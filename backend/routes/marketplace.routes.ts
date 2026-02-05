@@ -7,19 +7,58 @@ import { getParam } from '../lib/route-helpers';
 
 const router = Router();
 
+const FALLBACK_AUTHOR = { id: 'default-author', name: 'VectixLogic' as string | null };
+
+function fallbackStrategies(category?: string, featured?: string) {
+  let list = DEFAULT_STRATEGIES.map((s, i) => ({
+    id: `default-${i}`,
+    name: s.name,
+    description: s.description,
+    priceUsd: s.priceUsd,
+    configJson: s.configJson,
+    category: s.category,
+    icon: s.icon,
+    featured: s.featured,
+    verified: s.verified,
+    purchaseCount: 0,
+    author: FALLBACK_AUTHOR,
+  }));
+  if (category) list = list.filter((s) => s.category === category);
+  if (featured === 'true') list = list.filter((s) => s.featured);
+  list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+  return list;
+}
+
+async function seedMarketplaceIfEmpty(): Promise<void> {
+  const count = await prisma.strategy.count();
+  if (count > 0) return;
+  let admin = await prisma.user.findFirst({ where: { email: 'admin@vectixlogic.com' } });
+  if (!admin) admin = await prisma.user.create({ data: { email: 'admin@vectixlogic.com', name: 'VectixLogic' } });
+  for (const s of DEFAULT_STRATEGIES) {
+    await prisma.strategy.create({ data: { ...s, authorId: admin.id } });
+  }
+}
+
 router.get('/marketplace/strategies', async (req: Request, res: Response) => {
   try {
-    const { category, featured } = req.query;
-    const where: Record<string, unknown> = { verified: true };
-    if (category) where.category = category;
-    if (featured === 'true') where.featured = true;
-
-    const strategies = await prisma.strategy.findMany({
-      where,
-      include: { author: { select: { id: true, name: true } } },
-      orderBy: [{ featured: 'desc' }, { purchaseCount: 'desc' }],
-    });
-
+    let strategies: Array<Record<string, unknown>>;
+    try {
+      await seedMarketplaceIfEmpty();
+      const { category, featured } = req.query;
+      const where: Record<string, unknown> = { verified: true };
+      if (category) where.category = category;
+      if (featured === 'true') where.featured = true;
+      strategies = await prisma.strategy.findMany({
+        where,
+        include: { author: { select: { id: true, name: true } } },
+        orderBy: [{ featured: 'desc' }, { purchaseCount: 'desc' }],
+      }) as Array<Record<string, unknown>>;
+    } catch {
+      strategies = fallbackStrategies(req.query.category as string | undefined, req.query.featured as string | undefined) as Array<Record<string, unknown>>;
+    }
+    if (strategies.length === 0) {
+      strategies = fallbackStrategies(req.query.category as string | undefined, req.query.featured as string | undefined) as Array<Record<string, unknown>>;
+    }
     return res.status(200).json({ success: true, strategies });
   } catch (error) {
     return res.status(500).json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
@@ -119,7 +158,6 @@ router.post('/marketplace/seed', async (_req: Request, res: Response) => {
   try {
     let admin = await prisma.user.findFirst({ where: { email: 'admin@vectixlogic.com' } });
     if (!admin) admin = await prisma.user.create({ data: { email: 'admin@vectixlogic.com', name: 'VectixLogic' } });
-
     const created: string[] = [];
     for (const s of DEFAULT_STRATEGIES) {
       const exists = await prisma.strategy.findFirst({ where: { name: s.name } });
@@ -128,7 +166,6 @@ router.post('/marketplace/seed', async (_req: Request, res: Response) => {
         created.push(s.name);
       }
     }
-
     return res.status(200).json({ success: true, message: `Created ${created.length} strategies`, created });
   } catch (error) {
     return res.status(500).json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });

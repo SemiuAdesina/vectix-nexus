@@ -42,7 +42,8 @@ export const solanaBalanceAction = {
     callback?: (result: { text: string }) => void
   ): Promise<{ success: boolean; text: string; values?: Record<string, unknown>; error?: string }> => {
     const text = ((message?.content as { text?: string })?.text ?? '').trim();
-    const address = parseAddressFromMessage(text) ?? process.env.SOLANA_PUBLIC_KEY ?? null;
+    const envKey = process.env.SOLANA_PUBLIC_KEY?.trim();
+    const address = parseAddressFromMessage(text) ?? (envKey || null);
 
     if (!address) {
       const msg = 'No address provided. Say "balance &lt;Solana address&gt;" or set SOLANA_PUBLIC_KEY for "my balance".';

@@ -47,7 +47,7 @@ export const createProjectDraft = {
       {
         name: 'user',
         content: {
-          text: "Create a new project. Name: SuperSwap. Description: DEX aggregator. Repo link: https://github.com/super/swap. Solana integration: On-chain settlement. Tags: defi, dex",
+          text: 'Create a new project. Name: SuperSwap. Description: DEX aggregator. Repo link: https://github.com/super/swap. Solana integration: On-chain settlement. Tags: defi, dex',
         },
       },
       { name: 'agent', content: { text: 'Project draft created.' } },

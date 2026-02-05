@@ -61,11 +61,25 @@ describe('secrets', () => {
       expect(result.errors).toHaveLength(0);
     });
 
-    it('returns error when no AI keys provided', () => {
+    it('allows empty secrets for demo mode', () => {
       const testSecrets: secrets.AgentSecrets = {};
       const result = secrets.validateSecrets(testSecrets);
+      expect(result.valid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it('rejects invalid OpenAI key format', () => {
+      const testSecrets: secrets.AgentSecrets = { openaiApiKey: 'invalid-key' };
+      const result = secrets.validateSecrets(testSecrets);
       expect(result.valid).toBe(false);
-      expect(result.errors.length).toBeGreaterThan(0);
+      expect(result.errors.some(e => e.includes('OpenAI'))).toBe(true);
+    });
+
+    it('rejects invalid Anthropic key format', () => {
+      const testSecrets: secrets.AgentSecrets = { anthropicApiKey: 'invalid-key' };
+      const result = secrets.validateSecrets(testSecrets);
+      expect(result.valid).toBe(false);
+      expect(result.errors.some(e => e.includes('Anthropic'))).toBe(true);
     });
 
     it('validates Twitter credentials', () => {

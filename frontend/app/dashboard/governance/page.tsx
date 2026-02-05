@@ -21,7 +21,8 @@ export default function GovernancePage() {
 
   const fetchProposals = async () => {
     try {
-      const data = await getGovernanceProposals();
+      const voterId = typeof window !== 'undefined' ? getVoterId() : undefined;
+      const data = await getGovernanceProposals(voterId);
       if (data.success) {
         setProposals(data.proposals.map(p => ({ ...p, createdAt: new Date(p.createdAt) })));
       }
@@ -73,16 +74,17 @@ export default function GovernancePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Security Governance</h1>
+          <h1 className="text-2xl font-bold mb-2 text-foreground">Security Governance</h1>
           <p className="text-muted-foreground">DAO-style voting on security rules and parameters</p>
+          <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mt-4" />
         </div>
         <button
           onClick={() => setShowCreate(!showCreate)}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 flex items-center gap-2"
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 flex items-center gap-2 shrink-0 shadow-[0_0_14px_-4px_hsl(var(--primary)_/_0.4)]"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 shrink-0" />
           New Proposal
         </button>
       </div>
@@ -105,8 +107,10 @@ export default function GovernancePage() {
         ))}
 
         {proposals.length === 0 && (
-          <div className="glass rounded-xl p-12 text-center">
-            <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <div className="rounded-2xl border border-primary/20 bg-card p-12 text-center shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.08)]">
+            <div className="w-16 h-16 rounded-xl bg-primary/15 flex items-center justify-center mx-auto mb-4 border border-primary/30 shadow-[0_0_16px_-6px_hsl(var(--primary)_/_0.2)]">
+              <Users className="w-8 h-8 text-primary" />
+            </div>
             <p className="text-muted-foreground">No active proposals</p>
           </div>
         )}

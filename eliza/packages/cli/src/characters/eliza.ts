@@ -1,4 +1,5 @@
 import { buildCharacterPlugins, type Character } from '@elizaos/core';
+import { solanaPlugin } from '@elizaos/plugin-solana';
 
 /**
  * Base Eliza character configuration
@@ -6,7 +7,7 @@ import { buildCharacterPlugins, type Character } from '@elizaos/core';
  */
 const baseElizaCharacter: Character = {
   name: 'Eliza',
-  plugins: ['@elizaos/plugin-sql', '@elizaos/plugin-bootstrap', '@elizaos/plugin-solana'],
+  plugins: ['@elizaos/plugin-sql', '@elizaos/plugin-bootstrap'],
   settings: {
     secrets: {},
     avatar: 'https://elizaos.github.io/eliza-avatars/Eliza/portrait.png',
@@ -228,7 +229,7 @@ export function getDefaultCharacter(
 ): Character {
   return {
     ...baseElizaCharacter,
-    plugins: buildCharacterPlugins(env),
+    plugins: [...buildCharacterPlugins(env), solanaPlugin] as string[],
   };
 }
 

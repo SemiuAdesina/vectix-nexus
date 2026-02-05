@@ -11,6 +11,7 @@ export interface GovernanceProposal {
   votesAgainst: number;
   createdAt: Date;
   executedAt?: Date;
+  userVote?: 'for' | 'against' | null;
 }
 
 export interface GovernanceVote {

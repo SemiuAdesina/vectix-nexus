@@ -76,7 +76,9 @@ router.post('/deploy-agent', async (req: Request, res: Response) => {
       walletAddress: walletResult.wallet.address,
     });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    const err = error instanceof Error ? error : new Error('Unknown error occurred');
+    console.error('[deploy-agent]', err.message, err.stack);
+    const errorMessage = err.message;
     if (errorMessage.includes('subscription required')) {
       return res.status(402).json({ success: false, error: errorMessage });
     }

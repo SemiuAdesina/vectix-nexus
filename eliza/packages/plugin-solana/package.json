@@ -22,7 +22,8 @@
   "files": ["dist", "package.json", "README.md"],
   "dependencies": {
     "@elizaos/core": "workspace:*",
-    "@solana/web3.js": "^1.87.0"
+    "@solana/web3.js": "^1.87.0",
+    "bs58": "^6.0.0"
   },
   "devDependencies": {
     "@elizaos/config": "workspace:*",

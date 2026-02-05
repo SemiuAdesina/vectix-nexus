@@ -2,6 +2,12 @@ import { SafeToken } from './security.types';
 
 const DEXSCREENER_BASE = 'https://api.dexscreener.com/latest/dex';
 
+const SOLANA_ADDRESS_REGEX = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
+function isSolanaAddress(value: string): boolean {
+  return typeof value === 'string' && SOLANA_ADDRESS_REGEX.test(value.trim()) && !value.includes('/') && !value.includes(':');
+}
+
 interface DexScreenerPair {
   chainId: string;
   pairAddress: string;
@@ -65,8 +71,10 @@ export async function fetchSolanaTrending(): Promise<SafeToken[]> {
 }
 
 export async function fetchTokenByAddress(address: string): Promise<SafeToken | null> {
+  if (!isSolanaAddress(address)) return null;
   try {
-    const response = await fetch(`${DEXSCREENER_BASE}/tokens/${address}`);
+    const encoded = encodeURIComponent(address.trim());
+    const response = await fetch(`${DEXSCREENER_BASE}/tokens/${encoded}`);
     if (!response.ok) return null;
 
     const data = (await response.json()) as DexScreenerResponse;

@@ -69,26 +69,27 @@ export default function AuditDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Security Audit Dashboard</h1>
+          <h1 className="text-2xl font-bold mb-2 text-foreground">Security Audit Dashboard</h1>
           <p className="text-muted-foreground">Comprehensive security audit trail and compliance reports</p>
+          <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mt-4" />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 shrink-0">
           <button
             onClick={() => handleExport('json')}
             disabled={exporting}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 flex items-center gap-2"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 flex items-center gap-2 shadow-[0_0_14px_-4px_hsl(var(--primary)_/_0.4)]"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4 shrink-0" />
             Export JSON
           </button>
           <button
             onClick={() => handleExport('csv')}
             disabled={exporting}
-            className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 disabled:opacity-50 flex items-center gap-2"
+            className="px-4 py-2 border border-primary/30 rounded-lg hover:bg-primary/10 hover:border-primary/50 hover:text-primary text-foreground disabled:opacity-50 flex items-center gap-2 transition-colors"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4 shrink-0" />
             Export CSV
           </button>
         </div>

@@ -1,6 +1,15 @@
 const FLY_API_HOSTNAME = process.env.FLY_API_HOSTNAME || 'https://api.machines.dev';
 const DEFAULT_APP_NAME = process.env.FLY_APP_NAME || 'eliza-agent';
 
+function useMockDeploy(): boolean {
+  const mock = process.env.MOCK_FLY_DEPLOY;
+  if (mock !== undefined && mock !== '') {
+    const v = String(mock).toLowerCase();
+    if (v === 'true' || v === '1' || v === 'yes') return true;
+  }
+  return !process.env.FLY_API_TOKEN || String(process.env.FLY_API_TOKEN).trim() === '';
+}
+
 function getAuthHeaders(): Record<string, string> {
   const token = process.env.FLY_API_TOKEN;
   if (!token) {
@@ -28,6 +37,16 @@ export async function getMachineStatus(
   machineId: string,
   appName: string = DEFAULT_APP_NAME
 ): Promise<MachineStatus> {
+  if (useMockDeploy() || machineId.startsWith('mock-')) {
+    return {
+      id: machineId,
+      name: 'mock',
+      state: 'started',
+      region: 'local',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+  }
   const headers = getAuthHeaders();
   const url = `${FLY_API_HOSTNAME}/v1/apps/${appName}/machines/${machineId}`;
 
@@ -54,6 +73,7 @@ export async function startMachine(
   machineId: string,
   appName: string = DEFAULT_APP_NAME
 ): Promise<void> {
+  if (useMockDeploy() || machineId.startsWith('mock-')) return;
   const headers = getAuthHeaders();
   const url = `${FLY_API_HOSTNAME}/v1/apps/${appName}/machines/${machineId}/start`;
 
@@ -69,6 +89,7 @@ export async function stopMachine(
   machineId: string,
   appName: string = DEFAULT_APP_NAME
 ): Promise<void> {
+  if (useMockDeploy() || machineId.startsWith('mock-')) return;
   const headers = getAuthHeaders();
   const url = `${FLY_API_HOSTNAME}/v1/apps/${appName}/machines/${machineId}/stop`;
 
@@ -84,6 +105,7 @@ export async function restartMachine(
   machineId: string,
   appName: string = DEFAULT_APP_NAME
 ): Promise<void> {
+  if (useMockDeploy() || machineId.startsWith('mock-')) return;
   const headers = getAuthHeaders();
   const url = `${FLY_API_HOSTNAME}/v1/apps/${appName}/machines/${machineId}/restart`;
 
@@ -99,6 +121,7 @@ export async function destroyMachine(
   machineId: string,
   appName: string = DEFAULT_APP_NAME
 ): Promise<void> {
+  if (useMockDeploy() || machineId.startsWith('mock-')) return;
   const headers = getAuthHeaders();
   const url = `${FLY_API_HOSTNAME}/v1/apps/${appName}/machines/${machineId}`;
 

@@ -22,19 +22,17 @@ export function ActiveShadowMode({
 
   return (
     <div className="space-y-4">
-      <div className="bg-secondary/50 rounded-lg p-4">
+      <div className="rounded-xl border border-primary/20 bg-card p-4 shadow-[0_0_12px_-4px_hsl(var(--primary)/0.08)]">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm text-muted-foreground">Current Value</span>
           <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-[hsl(var(--success))] animate-pulse" />
-            <span className="text-xs text-[hsl(var(--success))]">Live</span>
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-xs text-primary font-medium">Live</span>
           </div>
         </div>
-        <p className="text-2xl font-bold">{portfolio.currentValueSol.toFixed(2)} SOL</p>
-        <div className={`flex items-center gap-1 mt-1 ${
-          isPositive ? 'text-[hsl(var(--success))]' : 'text-destructive'
-        }`}>
-          {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+        <p className="text-2xl font-bold text-foreground">{portfolio.currentValueSol.toFixed(2)} SOL</p>
+        <div className={`flex items-center gap-1 mt-1 ${isPositive ? 'text-primary' : 'text-destructive'}`}>
+          {isPositive ? <TrendingUp className="w-4 h-4 shrink-0" /> : <TrendingDown className="w-4 h-4 shrink-0" />}
           <span className="text-sm font-medium">
             {isPositive ? '+' : ''}{pnl.toFixed(2)} SOL ({pnlPercent.toFixed(1)}%)
           </span>
@@ -45,7 +43,7 @@ export function ActiveShadowMode({
         <button
           onClick={onViewReport}
           disabled={loading}
-          className="h-10 rounded-lg border border-border bg-secondary hover:bg-secondary/80 text-sm font-medium transition-all disabled:opacity-50"
+          className="h-10 rounded-lg border border-primary/30 bg-secondary/80 hover:bg-primary/10 hover:border-primary/50 hover:text-primary text-sm font-medium transition-all disabled:opacity-50 text-foreground"
         >
           View Report
         </button>
@@ -54,7 +52,7 @@ export function ActiveShadowMode({
           disabled={loading}
           className="h-10 rounded-lg bg-destructive text-destructive-foreground font-medium flex items-center justify-center gap-2 hover:bg-destructive/90 transition-all disabled:opacity-50"
         >
-          <Square className="w-3 h-3" />
+          <Square className="w-3 h-3 shrink-0" />
           Stop
         </button>
       </div>

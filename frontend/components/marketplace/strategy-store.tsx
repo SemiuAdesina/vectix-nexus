@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { StrategyCard } from './strategy-card';
 import { getStrategies, getPurchasedStrategies, purchaseStrategy, Strategy } from '@/lib/api/marketplace';
-import { X, Loader2, Store, Flame, TrendingUp, Coins, Building, MessageSquare, PackageOpen } from 'lucide-react';
+import { X, Loader2, Store, PackageOpen, TrendingUp, Rocket, Shield, MessageSquare } from 'lucide-react';
+
+const MODAL_HEIGHT = 'min(85vh, 640px)';
 
 interface StrategyStoreProps {
   onSelectStrategy: (strategy: Strategy) => void;
@@ -12,10 +14,10 @@ interface StrategyStoreProps {
 }
 
 const CATEGORIES = [
-  { id: 'all', label: 'All', icon: Flame },
+  { id: 'all', label: 'All', icon: PackageOpen },
   { id: 'trading', label: 'Trading', icon: TrendingUp },
-  { id: 'meme', label: 'Meme', icon: Coins },
-  { id: 'defi', label: 'DeFi', icon: Building },
+  { id: 'meme', label: 'Meme', icon: Rocket },
+  { id: 'defi', label: 'DeFi', icon: Shield },
   { id: 'social', label: 'Social', icon: MessageSquare },
 ];
 
@@ -69,46 +71,68 @@ export function StrategyStore({ onSelectStrategy, onClose }: StrategyStoreProps)
     }
   };
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-      <div className="glass rounded-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity duration-200"
+      style={{ opacity: mounted ? 1 : 0 }}
+    >
+      <div
+        className="rounded-2xl border border-primary/20 w-full max-w-4xl flex flex-col overflow-hidden shadow-2xl bg-card transition-[opacity,transform] duration-200"
+        style={{
+          height: MODAL_HEIGHT,
+          backgroundColor: 'hsl(var(--card))',
+          opacity: mounted ? 1 : 0,
+          transform: mounted ? 'scale(1)' : 'scale(0.98)',
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-primary/20">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30">
               <Store className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-xl font-bold">Strategy Store</h2>
+              <h2 className="text-xl font-bold text-foreground">Strategy Store</h2>
               <p className="text-sm text-muted-foreground">Choose a pre-built strategy</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose}><X className="w-4 h-4" /></Button>
+          <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0 rounded-lg hover:bg-primary/10 hover:text-primary">
+            <X className="w-4 h-4" />
+          </Button>
         </div>
 
-        <div className="flex gap-2 px-6 py-3 border-b border-border overflow-x-auto">
+        <div className="shrink-0 flex gap-2 px-6 py-3 border-b border-primary/20 overflow-x-auto">
           {CATEGORIES.map((cat) => (
-            <button key={cat.id} onClick={() => setCategory(cat.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                category === cat.id ? 'bg-primary text-background' : 'bg-secondary text-muted-foreground hover:text-foreground'
-              }`}>
-              <cat.icon className="w-4 h-4" />
+            <button
+              key={cat.id}
+              onClick={() => setCategory(cat.id)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+                category === cat.id
+                  ? 'bg-primary text-primary-foreground shadow-[0_0_12px_-4px_hsl(var(--primary)_/_0.4)]'
+                  : 'bg-secondary text-muted-foreground border border-transparent hover:text-primary hover:bg-primary/10 hover:border-primary/20'
+              }`}
+            >
+              <cat.icon className="w-4 h-4 shrink-0" />
               {cat.label}
             </button>
           ))}
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-6">
           {loading ? (
-            <div className="flex items-center justify-center h-64">
+            <div className="flex items-center justify-center min-h-[200px]">
               <Loader2 className="w-8 h-8 text-primary animate-spin" />
             </div>
           ) : strategies.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
-              <PackageOpen className="w-12 h-12 mb-4" />
+            <div className="flex flex-col items-center justify-center min-h-[200px] text-muted-foreground text-center">
+              <PackageOpen className="w-12 h-12 mb-4 text-muted-foreground/50" />
               <p>No strategies found in this category</p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 gap-4 pb-2">
               {strategies.map((strategy) => (
                 <StrategyCard
                   key={strategy.id}

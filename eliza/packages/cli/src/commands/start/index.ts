@@ -29,16 +29,21 @@ export const start = new Command()
   .action(async (options: StartOptions & { character?: string[] }) => {
     try {
       // Load env config first before any character loading
-      // Use monorepo-aware resolver so root .env is found when running via turbo
+      // Load monorepo root .env when present so vars like SOLANA_PRIVATE_KEY are available to plugins
       try {
         const userEnv = UserEnvironment.getInstance();
-        const { envFilePath } = await userEnv.getPathInfo();
+        const { envFilePath, monorepoRoot } = await userEnv.getPathInfo();
+        if (monorepoRoot) {
+          const rootEnv = path.join(monorepoRoot, '.env');
+          if (fs.existsSync(rootEnv)) {
+            loadEnvFile(rootEnv);
+          }
+        }
         const candidateEnv = envFilePath || path.join(process.cwd(), '.env');
         if (fs.existsSync(candidateEnv)) {
           loadEnvFile(candidateEnv);
         }
       } catch {
-        // Fallback to CWD-based .env if resolution fails
         const envPath = path.join(process.cwd(), '.env');
         if (fs.existsSync(envPath)) {
           loadEnvFile(envPath);

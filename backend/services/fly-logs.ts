@@ -1,6 +1,15 @@
 const FLY_API_HOSTNAME = process.env.FLY_API_HOSTNAME || 'https://api.machines.dev';
 const DEFAULT_APP_NAME = process.env.FLY_APP_NAME || 'eliza-agent';
 
+function useMockDeploy(): boolean {
+  const mock = process.env.MOCK_FLY_DEPLOY;
+  if (mock !== undefined && mock !== '') {
+    const v = String(mock).toLowerCase();
+    if (v === 'true' || v === '1' || v === 'yes') return true;
+  }
+  return !process.env.FLY_API_TOKEN || String(process.env.FLY_API_TOKEN).trim() === '';
+}
+
 function getAuthHeaders(): Record<string, string> {
   const token = process.env.FLY_API_TOKEN;
   if (!token) {
@@ -29,6 +38,9 @@ export async function getMachineLogs(
   appName: string = DEFAULT_APP_NAME,
   options: { limit?: number; nextToken?: string } = {}
 ): Promise<LogsResponse> {
+  if (useMockDeploy() || machineId.startsWith('mock-')) {
+    return { logs: [] };
+  }
   const headers = getAuthHeaders();
   const limit = options.limit || 50;
 
@@ -82,6 +94,7 @@ export async function streamLogs(
   onLog: (log: LogEntry) => void,
   signal?: AbortSignal
 ): Promise<void> {
+  if (useMockDeploy() || machineId.startsWith('mock-')) return;
   const headers = getAuthHeaders();
 
   const url = `https://api.fly.io/v1/apps/${appName}/logs/stream?instance=${machineId}`;

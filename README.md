@@ -1,23 +1,104 @@
-# Vectix Foundry (VectixLogic)
+# Vectix Foundry
 
-> **Project Submission**  
-> **One-Line Pitch:** The "Suit of Armor" for AI Agents on Solana. We provide the institutional-grade security layer (TEEs, Compliance, Circuit Breakers) that allows ElizaOS agents to trade safely.
+**The Autonomous Agent Operating System on Solana.**
+
+> Built on ElizaOS | Verifiable Identity | Asset Management | Monetization
+
+Vectix Foundry is a production-ready framework that wraps **ElizaOS** to create truly autonomous agents. Unlike standard agents that just "chat," Vectix agents can manage their own wallets, sweep assets, verify their reasoning on-chain, and generate revenue.
+
+## Key Features
+
+### 1. The Foundry (Agent Factory)
+Autonomously deploy new agents with a single command. The Foundry generates secure wallets, configures personality constraints, and prepares the runtime environment—no manual setup required.
+
+### 2. Verifiable Reasoning (SOLPRISM Integration)
+Vectix agents don't just act; they **prove** it. Integrated natively with the SOLPRISM SDK, every high-stakes decision (like moving funds) is committed to the Solana devnet as a verifiable "Reasoning Trace."
+
+### 3. The Gravedigger (Asset Sweeper)
+Smart treasury management. The "Gravedigger" module autonomously scans the agent's wallet for "dust" (idle small balances) and sweeps them to a central treasury or DeFi protocol (e.g., The Trench).
+- *Logic:* `If Balance < Threshold && Balance > Gas -> Sweep()`
+
+### 4. Built-in Monetization (RWA Ready)
+Vectix is built for business. It includes a backend monetization module that tracks:
+- **Stripe Revenue:** Real-time subscription tracking.
+- **On-Chain Fees:** Treasury verification for protocol licensing (e.g., Pay Protocol License).
 
 ---
 
-### For Judges: How to Review This Project
+## Installation
 
-This repo contains **two distinct parts**: the main platform (Vectix Foundry) and the Colosseum hackathon agent. Use the track that fits your focus:
+```bash
+git clone https://github.com/SemiuAdesina/vectix-nexus.git
+cd vectix-nexus
 
-| **Colosseum (Solana) Judges** | **Areta Court 7 (Security) Judges** |
-| :--- | :--- |
-| **Focus:** Infrastructure, DeFi, ElizaOS | **Focus:** TEEs, Audits, Compliance |
-| 1. See [ElizaOS Integration](#elizaos-integration) for how we wrap the framework. | 1. See [Security Architecture](#security-architecture) for Defense-in-Depth. |
-| 2. See [Blockchain Pillars](#blockchain-security-pillars) for Scalability & Decentralization. | 2. Review [US Regulatory Compliance](#us-regulatory-compliance) for FinCEN/OFAC. |
-| 3. Check [Marketplace](#intelligence) for the strategy economy. | 3. Check [TEE & Phala](#security-integration-points) for hardware security. |
-| **Key Innovation:** Making AI agents safe enough for institutional capital on Solana. | **Key Innovation:** Using TEEs and on-chain audit trails to solve the "Black Box" AI problem. |
+# Backend (optional; for full platform)
+cd backend && npm install && cd ..
+```
 
-Colosseum-specific content (agent code, hackathon actions, workflow): **[Part II – Colosseum Hackathon Project (Colosseum)](#part-ii-colosseum-hackathon-project)**. Platform / security focus: **[Part I – Vectix Foundry Platform (Areta Court 7)](#part-i-vectix-foundry-platform-areta-court-7)**.
+---
+
+## Quick Start (The CLI)
+
+Vectix comes with a unified Command Line Interface to manage your agent's lifecycle.
+
+```bash
+node vectix-cli.mjs
+```
+
+**Menu options:**
+- **1 — Identity:** Run the SOLPRISM proof protocol.
+- **2 — Asset Management:** Execute the Dust Sweeper (Gravedigger).
+- **3 — Foundry:** Generate a new Agent Config and Wallet.
+- **4 — Pay Protocol License:** Send 0.05 SOL license fee to the Vectix Treasury (monetization demo).
+- **5 — Exit**
+
+**Treasury / revenue (backend):** Run `cd backend && npm run monetization` to view Stripe and subscription revenue.
+
+---
+
+## Colosseum (Solana) Hackathon Path
+
+For the **Colosseum track**, run the ElizaOS agent from **`eliza/`** and use the CLI from the **repo root**.
+
+**1. Start the agent (from `eliza/`):**
+
+```bash
+cd vectix-nexus
+cd eliza
+npx bun install
+npx bun run build:core
+cp .env.example .env
+# Set OPENAI_API_KEY or OPENROUTER_API_KEY, SOLANA_PRIVATE_KEY, SOLANA_PUBLIC_KEY in eliza/.env
+npx bun run start
+```
+
+**2. Run the CLI (from repo root):**
+
+```bash
+cd vectix-nexus
+node vectix-cli.mjs
+```
+
+Option **1** = SOLPRISM identity/reasoning proof. Option **2** = Gravedigger (Dust Sweeper). Option **3** = Foundry (deploy new agent). Option **4** = Pay Protocol License. Requires `eliza/.env` with `SOLANA_PRIVATE_KEY` and `SOLANA_RPC_URL` (e.g. devnet). Full details: [Part II – Colosseum](#part-ii-colosseum-hackathon-project-colosseum) and [Gravedigger & Vectix CLI](#colosseum-gravedigger-dust-sweeper--vectix-cli).
+
+---
+
+## Architecture
+
+| Layer | Stack |
+|-------|--------|
+| Core | ElizaOS (TypeScript) |
+| Blockchain | Solana Web3.js |
+| Verification | SOLPRISM SDK |
+| Backend | Node.js / Prisma / Stripe |
+
+---
+
+## Hackathon Tracks
+
+- **DeFi:** Automated asset sweeping and treasury management.
+- **Infra:** A reusable framework for deploying verifiable agents.
+- **AI:** Autonomous reasoning using the Eliza model.
 
 ---
 
@@ -46,10 +127,11 @@ Colosseum-specific content (agent code, hackathon actions, workflow): **[Part II
 
 | # | Section |
 |---|--------|
-| 15 | [Colosseum Overview](#part-ii-colosseum-hackathon-project) |
+| 15 | [Colosseum Overview](#part-ii-colosseum-hackathon-project-colosseum) |
 | 16 | [Colosseum Quick Start](#colosseum-quick-start) |
 | 17 | [Colosseum Project Architecture](#colosseum-project-architecture) |
 | 18 | [Colosseum Agent Workflow](#colosseum-agent-workflow) |
+| 19 | [Colosseum Gravedigger (Dust Sweeper) & Vectix CLI](#colosseum-gravedigger-dust-sweeper--vectix-cli) |
 
 **End matter:** [License](#license) · [Support](#support) · [Development Principles](#development-principles)
 
@@ -2310,6 +2392,46 @@ sequenceDiagram
 ```
 
 No platform (Part I) services are required to run the Colosseum agent; it only needs `eliza/`, env keys, and network access to the Colosseum API.
+
+### Colosseum Gravedigger (Dust Sweeper) & Vectix CLI
+
+**Gravedigger** is the Dust Sweeper module: it checks the agent wallet balance on Solana (devnet by default), and if the balance is below a configurable dust threshold and above the fee buffer, it sweeps the remainder to a destination address ("The Trench"). This demonstrates conditional financial logic in the Colosseum agent stack.
+
+**Vectix CLI** is a single entry point at the repo root for Colosseum-related scripts:
+
+- **Option 1 — Identity & Reasoning (SOLPRISM):** Registers Vectix-Agent on SOLPRISM and commits a reasoning trace on devnet.
+- **Option 2 — Asset Management (Gravedigger):** Runs the Dust Sweeper (balance check + conditional transfer to The Trench).
+- **Option 3 — Foundry:** Generates a new agent config and wallet.
+- **Option 4 — Pay Protocol License:** Sends 0.05 SOL license fee to the Vectix Treasury.
+- **Option 5 — Exit**
+
+**Installation and run (Colosseum path only)**
+
+All steps below use the **repo root** for the CLI; the agent itself runs from **`eliza/`** (see [Colosseum Quick Start](#colosseum-quick-start)).
+
+1. **Clone and configure env (Colosseum)**  
+   Clone the repo, then set `eliza/.env` with at least:
+   - `SOLANA_PUBLIC_KEY`, `SOLANA_PRIVATE_KEY` (base58 or 64 comma-separated bytes)
+   - `SOLANA_RPC_URL=https://api.devnet.solana.com`  
+   Get devnet SOL from https://faucet.solana.com if needed.
+
+2. **Run the CLI from repo root**  
+   From the `vectix-nexus/` directory (not inside `eliza/`):
+
+   ```bash
+   node vectix-cli.mjs
+   ```
+
+   Select option **1** for SOLPRISM proof or **2** for Gravedigger (Dust Sweeper). The CLI runs scripts under `scripts/` (and `scripts/axiom-protocol/sdk/` for SOLPRISM); dependencies for those scripts are installed in `scripts/axiom-protocol/sdk/node_modules`.
+
+3. **Run Gravedigger only (optional)**  
+   From repo root, run the Dust Sweeper directly via the SDK directory (so `@solana/web3.js` and `bs58` resolve):
+
+   ```bash
+   cd scripts/axiom-protocol/sdk && node ../../dust-sweeper.mjs
+   ```
+
+**Colosseum-only paths:** Agent and Colosseum API integration live in **`eliza/`**. SOLPRISM and Gravedigger scripts live in **`scripts/`** and **`scripts/axiom-protocol/sdk/`**. Do not use platform (Part I) backend/frontend paths for Colosseum agent or CLI.
 
 **[↑ Table of Contents](#table-of-contents)**
 

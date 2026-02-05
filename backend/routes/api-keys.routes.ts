@@ -10,7 +10,6 @@ const router = Router();
 router.get('/api-keys', async (req: Request, res: Response) => {
   const auth = await getOrCreateUser(req);
   if (!auth) return res.status(401).json({ error: 'Unauthorized' });
-  
   const keys = await listApiKeys(auth.userId);
   res.json({ keys });
 });
@@ -18,12 +17,10 @@ router.get('/api-keys', async (req: Request, res: Response) => {
 router.post('/api-keys', async (req: Request, res: Response) => {
   const auth = await getOrCreateUser(req);
   if (!auth) return res.status(401).json({ error: 'Unauthorized' });
-  
   const { name, scopes } = req.body as { name: string; scopes: ApiScope[] };
   if (!name || !scopes?.length) {
     return res.status(400).json({ error: 'Name and scopes are required' });
   }
-  
   const result = await createApiKey(auth.userId, name, scopes);
   res.json(result);
 });
@@ -31,7 +28,6 @@ router.post('/api-keys', async (req: Request, res: Response) => {
 router.delete('/api-keys/:id', async (req: Request, res: Response) => {
   const auth = await getOrCreateUser(req);
   if (!auth) return res.status(401).json({ error: 'Unauthorized' });
-  
   const revoked = await revokeApiKey(auth.userId, getParam(req, 'id'));
   if (!revoked) return res.status(404).json({ error: 'API key not found' });
   

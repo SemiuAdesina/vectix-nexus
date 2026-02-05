@@ -41,10 +41,11 @@ export default function OnChainPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold mb-2">On-Chain Verification</h1>
+        <h1 className="text-2xl font-bold mb-2 text-foreground">On-Chain Verification</h1>
         <p className="text-muted-foreground">
           Verifiable security decisions stored on the Solana blockchain
         </p>
+        <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mt-4" />
       </div>
 
       <StatusCard status={status} />

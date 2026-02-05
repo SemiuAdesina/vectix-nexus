@@ -1,6 +1,10 @@
-import { randomBytes, createHash } from 'crypto';
+import { randomBytes, pbkdf2Sync, createHash } from 'crypto';
 import { prisma } from '../../lib/prisma';
 import { ApiScope, ApiTier, ApiKeyData, CreateApiKeyResponse, FREE_TIER_SCOPES, PRO_TIER_SCOPES } from './api-key.types';
+
+const PBKDF2_ITERATIONS = 100000;
+const PBKDF2_KEYLEN = 32;
+const HASH_SALT = process.env.API_KEY_HASH_SALT || 'vectix-nexus-api-key-v1';
 
 function generateApiKey(): string {
   const randomPart = randomBytes(24).toString('base64url');
@@ -8,6 +12,10 @@ function generateApiKey(): string {
 }
 
 function hashKey(key: string): string {
+  return pbkdf2Sync(key, HASH_SALT, PBKDF2_ITERATIONS, PBKDF2_KEYLEN, 'sha256').toString('hex');
+}
+
+function legacyHashKey(key: string): string {
   return createHash('sha256').update(key).digest('hex');
 }
 
@@ -63,8 +71,10 @@ export async function revokeApiKey(userId: string, keyId: string): Promise<boole
 
 export async function validateApiKey(key: string): Promise<{ userId: string; scopes: ApiScope[]; tier: ApiTier } | null> {
   const keyHash = hashKey(key);
-  const apiKey = await prisma.apiKey.findUnique({ where: { keyHash } });
-  
+  let apiKey = await prisma.apiKey.findUnique({ where: { keyHash } });
+  if (!apiKey) {
+    apiKey = await prisma.apiKey.findUnique({ where: { keyHash: legacyHashKey(key) } });
+  }
   if (!apiKey || apiKey.revokedAt || (apiKey.expiresAt && apiKey.expiresAt < new Date())) {
     return null;
   }

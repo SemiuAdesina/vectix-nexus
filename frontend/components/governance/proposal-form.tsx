@@ -53,22 +53,23 @@ export function ProposalForm({ onSuccess, onCancel }: ProposalFormProps) {
       }
     } catch (error) {
       console.error('Failed to create proposal:', error);
-      toast.error('Failed to create proposal. Please try again.');
+      const msg = error instanceof Error && error.message.includes('HTML') ? 'Governance API not available. Ensure the backend is running.' : 'Failed to create proposal. Please try again.';
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="glass rounded-xl p-6">
+    <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.12)]">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold">Create Proposal</h2>
+        <h2 className="text-xl font-semibold text-foreground">Create Proposal</h2>
         <button
           onClick={() => {
             resetForm();
             onCancel();
           }}
-          className="p-1 hover:bg-secondary rounded-lg transition-colors"
+          className="p-1.5 hover:bg-primary/10 hover:text-primary rounded-lg transition-colors text-muted-foreground"
         >
           <X className="w-5 h-5" />
         </button>
@@ -80,16 +81,16 @@ export function ProposalForm({ onSuccess, onCancel }: ProposalFormProps) {
           <button
             type="submit"
             disabled={submitting}
-            className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_0_14px_-4px_hsl(var(--primary)_/_0.4)]"
           >
             {submitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin shrink-0" />
                 Creating...
               </>
             ) : (
               <>
-                <Plus className="w-4 h-4" />
+                <Plus className="w-4 h-4 shrink-0" />
                 Create Proposal
               </>
             )}
@@ -100,7 +101,7 @@ export function ProposalForm({ onSuccess, onCancel }: ProposalFormProps) {
               resetForm();
               onCancel();
             }}
-            className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80"
+            className="px-4 py-2 border border-primary/30 rounded-lg hover:bg-primary/10 hover:border-primary/50 hover:text-primary text-foreground transition-colors"
           >
             Cancel
           </button>

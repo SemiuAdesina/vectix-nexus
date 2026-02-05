@@ -101,9 +101,16 @@ router.get('/subscription/status', async (req: Request, res: Response) => {
 
     const status = await checkSubscriptionStatus(userId);
     return res.json(status);
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    return res.status(500).json({ error: errorMessage });
+  } catch {
+    return res.status(200).json({
+      hasActiveSubscription: false,
+      plan: undefined,
+      planName: undefined,
+      subscriptionId: undefined,
+      stripeSubscriptionId: undefined,
+      currentPeriodEnd: undefined,
+      status: undefined,
+    });
   }
 });
 

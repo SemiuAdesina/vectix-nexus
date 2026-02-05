@@ -2,23 +2,26 @@
   "name": "@vectix-nexus/backend",
   "version": "0.1.0",
   "private": true,
-  "main": "./dist/server.js",
+  "main": "./dist/backend/server.js",
   "scripts": {
     "dev": "tsx watch server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
-    "test": "vitest run"
+    "start": "node dist/backend/server.js",
+    "test": "vitest run",
+    "monetization": "tsx scripts/monetization.ts"
   },
   "dependencies": {
     "@clerk/express": "^1.7.65",
     "@libsql/client": "^0.17.0",
     "@prisma/adapter-libsql": "^7.2.0",
+    "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "@solana/web3.js": "^1.98.4",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.19.2",
     "ioredis": "^5.9.2",
+    "pg": "^8.17.2",
     "prisma": "^7.3.0",
     "stripe": "^20.2.0",
     "zod": "^4.3.6"

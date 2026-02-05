@@ -41,14 +41,16 @@ describe('dexscreener-client', () => {
   });
 
   describe('fetchTokenByAddress', () => {
-    it('fetches token by address', async () => {
+    const validSolanaAddress = 'So11111111111111111111111111111111111111112';
+
+    it('fetches token by valid Solana address', async () => {
       const { fetchTokenByAddress } = await import('./dexscreener-client');
       vi.mocked(global.fetch).mockResolvedValue({
         ok: true,
         json: async () => ({
           pairs: [
             {
-              baseToken: { address: 'token1', name: 'Token1', symbol: 'TKN1' },
+              baseToken: { address: validSolanaAddress, name: 'Token1', symbol: 'TKN1' },
               quoteToken: { symbol: 'SOL' },
               priceUsd: '1.5',
               priceChange: { h24: 10 },
@@ -60,18 +62,32 @@ describe('dexscreener-client', () => {
         }),
       } as Response);
 
-      const token = await fetchTokenByAddress('token1');
+      const token = await fetchTokenByAddress(validSolanaAddress);
       expect(token).toBeTruthy();
-      expect(token?.address).toBe('token1');
+      expect(token?.address).toBe(validSolanaAddress);
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining(encodeURIComponent(validSolanaAddress))
+      );
     });
 
-    it('returns null when token not found', async () => {
+    it('returns null for invalid address without calling fetch', async () => {
       const { fetchTokenByAddress } = await import('./dexscreener-client');
-      vi.mocked(global.fetch).mockResolvedValue({
-        ok: false,
-      } as Response);
+      const token = await fetchTokenByAddress('https://evil.com/path');
+      expect(token).toBeNull();
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
 
-      const token = await fetchTokenByAddress('invalid');
+    it('returns null for too-short address', async () => {
+      const { fetchTokenByAddress } = await import('./dexscreener-client');
+      const token = await fetchTokenByAddress('short');
+      expect(token).toBeNull();
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
+    it('returns null when API returns not ok', async () => {
+      const { fetchTokenByAddress } = await import('./dexscreener-client');
+      vi.mocked(global.fetch).mockResolvedValue({ ok: false } as Response);
+      const token = await fetchTokenByAddress(validSolanaAddress);
       expect(token).toBeNull();
     });
   });

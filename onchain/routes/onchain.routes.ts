@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { onchainRateLimit } from '../middleware/rate-limit';
 import { onChainVerification } from '../services/onchain-verification';
 import type { OnChainLog } from '../services/onchain-types';
 import circuitBreakerRoutes from './circuit-breaker.routes';
@@ -10,6 +11,7 @@ import securityScanningRoutes from './security-scanning.routes';
 import threatIntelligenceRoutes from './threat-intelligence.routes';
 
 const router = Router();
+router.use(onchainRateLimit);
 
 router.get('/onchain/status', (_req: Request, res: Response) => {
   const programId = process.env.SOLANA_PROGRAM_ID || null;

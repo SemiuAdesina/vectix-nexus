@@ -1,5 +1,11 @@
 const RUGCHECK_BASE = 'https://api.rugcheck.xyz/v1';
 
+const SOLANA_ADDRESS_REGEX = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
+function isSolanaAddress(value: string): boolean {
+  return typeof value === 'string' && SOLANA_ADDRESS_REGEX.test(value.trim()) && !value.includes('/') && !value.includes(':');
+}
+
 interface RugCheckResponse {
   mint: string;
   score: number;
@@ -31,8 +37,10 @@ export interface RugCheckResult {
 }
 
 export async function fetchRugCheckData(tokenAddress: string): Promise<RugCheckResult | null> {
+  if (!isSolanaAddress(tokenAddress)) return null;
   try {
-    const response = await fetch(`${RUGCHECK_BASE}/tokens/${tokenAddress}/report`, {
+    const encoded = encodeURIComponent(tokenAddress.trim());
+    const response = await fetch(`${RUGCHECK_BASE}/tokens/${encoded}/report`, {
       headers: { 'Accept': 'application/json' },
     });
 

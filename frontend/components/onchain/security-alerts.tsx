@@ -43,10 +43,12 @@ export function SecurityAlertsCard() {
   };
 
   return (
-    <div className="glass rounded-xl p-6">
+    <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.08)]">
       <div className="flex items-center gap-3 mb-4">
-        <AlertTriangle className="w-5 h-5 text-primary" />
-        <h3 className="font-semibold">Security Alerts</h3>
+        <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30">
+          <AlertTriangle className="w-5 h-5 text-primary" />
+        </div>
+        <h3 className="font-semibold text-foreground">Security Alerts</h3>
         <span className="text-sm text-muted-foreground">({alerts.length})</span>
       </div>
 
@@ -54,11 +56,13 @@ export function SecurityAlertsCard() {
         {alerts.slice(0, 5).map((alert) => {
           const Icon = typeIcons[alert.type] || AlertTriangle;
           return (
-            <div key={alert.id} className="p-3 rounded-lg bg-secondary/50 border border-border">
+            <div key={alert.id} className="p-3 rounded-xl border border-primary/20 bg-card hover:border-primary/40 transition-colors">
               <div className="flex items-start gap-2">
-                <Icon className={`w-4 h-4 mt-0.5 ${severityColors[alert.severity]}`} />
-                <div className="flex-1">
-                  <p className="text-sm font-medium">{alert.message}</p>
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+                  <Icon className={`w-4 h-4 ${severityColors[alert.severity]}`} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground">{alert.message}</p>
                   <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                     <span className="capitalize">{alert.severity}</span>
                     <span>•</span>

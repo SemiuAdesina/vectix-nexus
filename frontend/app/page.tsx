@@ -1,11 +1,13 @@
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Rocket, LayoutDashboard, Bot, Wallet, LineChart, Zap, ArrowRight, Shield, LogIn } from 'lucide-react';
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
-
-export const dynamic = 'force-dynamic';
+import { Rocket, LayoutDashboard, Bot, Wallet, LineChart, Zap, ArrowRight, Shield, LogIn, Loader2 } from 'lucide-react';
+import { SignInButton, SignedIn, SignedOut, UserButton, useAuth } from '@clerk/nextjs';
 
 export default function Home() {
+  const { isLoaded } = useAuth();
+
   return (
     <main className="min-h-screen flex flex-col">
       <nav className="glass fixed top-0 left-0 right-0 z-50 border-b border-border">
@@ -21,21 +23,27 @@ export default function Home() {
               <Wallet className="w-4 h-4" />
               <span className="hidden sm:inline">Pricing</span>
             </Link>
-            <SignedOut>
-              <SignInButton mode="modal">
-                <Button size="default" variant="outline" className="gap-2">
-                  <LogIn className="w-4 h-4" /> Sign In
-                </Button>
-              </SignInButton>
-            </SignedOut>
-            <SignedIn>
-              <Link href="/dashboard">
-                <Button size="default" className="gap-2">
-                  <Rocket className="w-4 h-4" /> Dashboard
-                </Button>
-              </Link>
-              <UserButton afterSignOutUrl="/" />
-            </SignedIn>
+            {!isLoaded ? (
+              <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+            ) : (
+              <>
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <Button size="default" variant="outline" className="gap-2">
+                      <LogIn className="w-4 h-4" /> Sign In
+                    </Button>
+                  </SignInButton>
+                </SignedOut>
+                <SignedIn>
+                  <Link href="/dashboard">
+                    <Button size="default" className="gap-2">
+                      <Rocket className="w-4 h-4" /> Dashboard
+                    </Button>
+                  </Link>
+                  <UserButton afterSignOutUrl="/" />
+                </SignedIn>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -60,30 +68,36 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <SignedOut>
-                <SignInButton mode="modal">
-                  <Button size="xl" className="w-full sm:w-auto">
-                    <Bot className="w-5 h-5" /> Get Started Free
-                  </Button>
-                </SignInButton>
-                <Link href="/pricing">
-                  <Button size="xl" variant="secondary" className="w-full sm:w-auto border border-border">
-                    <Wallet className="w-5 h-5" /> View Pricing
-                  </Button>
-                </Link>
-              </SignedOut>
-              <SignedIn>
-                <Link href="/create">
-                  <Button size="xl" className="w-full sm:w-auto">
-                    <Bot className="w-5 h-5" /> Create Your Agent
-                  </Button>
-                </Link>
-                <Link href="/dashboard">
-                  <Button size="xl" variant="secondary" className="w-full sm:w-auto border border-border">
-                    <LayoutDashboard className="w-5 h-5" /> View Dashboard
-                  </Button>
-                </Link>
-              </SignedIn>
+              {!isLoaded ? (
+                <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+              ) : (
+                <>
+                  <SignedOut>
+                    <SignInButton mode="modal">
+                      <Button size="xl" className="w-full sm:w-auto">
+                        <Bot className="w-5 h-5" /> Get Started Free
+                      </Button>
+                    </SignInButton>
+                    <Link href="/pricing">
+                      <Button size="xl" variant="secondary" className="w-full sm:w-auto border border-border">
+                        <Wallet className="w-5 h-5" /> View Pricing
+                      </Button>
+                    </Link>
+                  </SignedOut>
+                  <SignedIn>
+                    <Link href="/create">
+                      <Button size="xl" className="w-full sm:w-auto">
+                        <Bot className="w-5 h-5" /> Create Your Agent
+                      </Button>
+                    </Link>
+                    <Link href="/dashboard">
+                      <Button size="xl" variant="secondary" className="w-full sm:w-auto border border-border">
+                        <LayoutDashboard className="w-5 h-5" /> View Dashboard
+                      </Button>
+                    </Link>
+                  </SignedIn>
+                </>
+              )}
             </div>
           </div>
 

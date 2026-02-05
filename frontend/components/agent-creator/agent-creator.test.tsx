@@ -15,9 +15,9 @@ describe('AgentCreator', () => {
     expect(screen.getByText('Configure')).toBeInTheDocument();
   });
 
-  it('should show risk level label and default Medium value', () => {
+  it('should show risk level label and default Balanced option', () => {
     render(<AgentCreator />);
     expect(screen.getByText(/Risk Level/)).toBeInTheDocument();
-    expect(screen.getByText('Medium')).toBeInTheDocument();
+    expect(screen.getByText('Balanced')).toBeInTheDocument();
   });
 });

@@ -60,18 +60,23 @@ export async function createShadowPortfolio(agentId: string, startingSol = 10): 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ agentId, startingSol }),
   });
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error ?? `Failed to start shadow mode (${res.status})`);
+  if (!data.portfolio) throw new Error('Invalid response: no portfolio');
   return data.portfolio;
 }
 
 export async function getShadowReport(agentId: string): Promise<ReportCard | null> {
   const res = await fetch(`${API_BASE}/api/shadow/report/${agentId}`);
-  const data = await res.json();
-  return data.report;
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error ?? `Failed to load report (${res.status})`);
+  return data.report ?? null;
 }
 
 export async function stopShadowMode(agentId: string): Promise<void> {
-  await fetch(`${API_BASE}/api/shadow/stop/${agentId}`, { method: 'POST' });
+  const res = await fetch(`${API_BASE}/api/shadow/stop/${agentId}`, { method: 'POST' });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error ?? `Failed to stop shadow mode (${res.status})`);
 }
 
 export async function getTEEStatus(): Promise<TEEStatus> {

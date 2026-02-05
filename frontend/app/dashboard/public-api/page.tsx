@@ -12,15 +12,22 @@ export default function PublicApiPage() {
 
   const handleCheck = async () => {
     if (!tokenAddress.trim()) return;
-    
+
     setLoading(true);
+    setResult(null);
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || '';
-      const res = await fetch(`${apiBase}/api/public/security/score/${tokenAddress}`);
-      const data = await res.json();
+      const url = apiBase ? `${apiBase}/api/public/security/score/${encodeURIComponent(tokenAddress.trim())}` : `/api/public/security/score/${encodeURIComponent(tokenAddress.trim())}`;
+      const res = await fetch(url);
+      const text = await res.text();
+      if (text.trimStart().startsWith('<')) {
+        setResult({ success: false, error: 'API not available. Ensure the backend is running and Public Security API is enabled.' });
+        return;
+      }
+      const data = JSON.parse(text) as { success: boolean; trustScore?: number; trustGrade?: string; risks?: unknown[]; passed?: unknown[]; error?: string };
       setResult(data);
     } catch (error) {
-      console.error('Failed to check:', error);
+      setResult({ success: false, error: error instanceof Error ? error.message : 'Request failed' });
     } finally {
       setLoading(false);
     }
@@ -29,49 +36,54 @@ export default function PublicApiPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Public Security API</h1>
+        <h1 className="text-2xl font-bold mb-2 text-foreground">Public Security API</h1>
         <p className="text-muted-foreground">
           Free, rate-limited API for token security scores - no authentication required
         </p>
+        <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mt-4" />
       </div>
 
-      <div className="glass rounded-xl p-6">
+      <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.12)]">
         <div className="flex items-center gap-3 mb-4">
-          <Globe className="w-5 h-5 text-primary" />
-          <h2 className="text-xl font-semibold">Try It Now</h2>
+          <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30 shadow-[0_0_12px_-4px_hsl(var(--primary)_/_0.2)]">
+            <Globe className="w-5 h-5 text-primary" />
+          </div>
+          <h2 className="text-xl font-semibold text-foreground">Try It Now</h2>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Token Address</label>
-            <div className="flex gap-2">
+            <label className="block text-sm font-medium mb-2 text-foreground">Token Address</label>
+            <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
                 value={tokenAddress}
                 onChange={(e) => setTokenAddress(e.target.value)}
                 placeholder="Enter Solana token address..."
-                className="flex-1 px-4 py-2 bg-secondary/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="flex-1 px-4 py-2 bg-secondary/80 border border-border rounded-lg text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
               />
               <button
                 onClick={handleCheck}
                 disabled={!tokenAddress.trim() || loading}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center gap-2 shrink-0 shadow-[0_0_14px_-4px_hsl(var(--primary)_/_0.4)]"
               >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
+                {loading ? <Loader2 className="w-4 h-4 animate-spin shrink-0" /> : <Shield className="w-4 h-4 shrink-0" />}
                 Check
               </button>
             </div>
           </div>
 
           {result && (
-            <div className={`p-4 rounded-lg border ${
-              result.success ? 'bg-success/10 border-success/20' : 'bg-destructive/10 border-destructive/20'
+            <div className={`p-4 rounded-xl border ${
+              result.success ? 'bg-primary/10 border-primary/30' : 'bg-destructive/10 border-destructive/30'
             }`}>
               {result.success ? (
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-success" />
-                    <span className="font-medium">Security Score: {result.trustScore}/100</span>
+                    <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center border border-primary/20">
+                      <CheckCircle2 className="w-4 h-4 text-primary" />
+                    </div>
+                    <span className="font-medium text-foreground">Security Score: {result.trustScore}/100</span>
                     <span className="text-sm text-muted-foreground">({result.trustGrade})</span>
                   </div>
                   <div className="text-sm text-muted-foreground">

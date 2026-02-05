@@ -123,5 +123,35 @@ describe('api-key.service', () => {
       const result = await apiKeyService.validateApiKey('vx_test123');
       expect(result).toBeNull();
     });
+
+    it('validates legacy SHA-256 hashed key when PBKDF2 lookup misses', async () => {
+      vi.mocked(prisma.prisma.apiKey.findUnique)
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce({
+          id: 'key1',
+          userId: 'user1',
+          scopes: JSON.stringify(['read:agents']),
+          tier: 'free',
+          revokedAt: null,
+          expiresAt: null,
+        } as any);
+      vi.mocked(prisma.prisma.apiKey.update).mockResolvedValue({} as any);
+
+      const result = await apiKeyService.validateApiKey('vx_legacy_key');
+      expect(result).toEqual({
+        userId: 'user1',
+        scopes: ['read:agents'],
+        tier: 'free',
+      });
+      expect(prisma.prisma.apiKey.findUnique).toHaveBeenCalledTimes(2);
+    });
+
+    it('returns null when key not found by PBKDF2 or legacy hash', async () => {
+      vi.mocked(prisma.prisma.apiKey.findUnique).mockResolvedValue(null);
+
+      const result = await apiKeyService.validateApiKey('vx_unknown');
+      expect(result).toBeNull();
+      expect(prisma.prisma.apiKey.findUnique).toHaveBeenCalledTimes(2);
+    });
   });
 });

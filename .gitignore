@@ -5,8 +5,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Eliza submodule (external dependency)
-eliza/
+hackathon_secrets.json
 
 .env
 .env.local
@@ -34,6 +33,7 @@ build/
 out/
 coverage/
 .nyc_output/
+foundry-output/
 
 # Compiled TypeScript in onchain folder
 onchain/**/*.js

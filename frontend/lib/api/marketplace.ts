@@ -1,4 +1,5 @@
-import { getBackendUrl, getAuthHeaders } from './auth';
+import { getApiBaseUrl } from './config';
+import { getAuthHeaders } from './auth';
 
 export interface Strategy {
   id: string;
@@ -14,35 +15,49 @@ export interface Strategy {
   author: { id: string; name: string | null };
 }
 
+function marketplaceBase(): string {
+  const base = getApiBaseUrl();
+  return base ? `${base}/api` : '/api';
+}
+
 export async function getStrategies(options?: { category?: string; featured?: boolean }): Promise<Strategy[]> {
   const params = new URLSearchParams();
   if (options?.category) params.append('category', options.category);
   if (options?.featured) params.append('featured', 'true');
 
-  const response = await fetch(`${getBackendUrl()}/api/marketplace/strategies?${params}`, {
-    headers: await getAuthHeaders(),
-  });
-
-  const data = await response.json();
-  return data.strategies || [];
+  try {
+    const response = await fetch(`${marketplaceBase()}/marketplace/strategies?${params}`, {
+      headers: await getAuthHeaders(),
+    });
+    const data = await response.json();
+    return data.strategies || [];
+  } catch {
+    return [];
+  }
 }
 
 export async function getStrategy(id: string): Promise<Strategy | null> {
-  const response = await fetch(`${getBackendUrl()}/api/marketplace/strategies/${id}`, {
-    headers: await getAuthHeaders(),
-  });
-
-  const data = await response.json();
-  return data.strategy || null;
+  try {
+    const response = await fetch(`${marketplaceBase()}/marketplace/strategies/${id}`, {
+      headers: await getAuthHeaders(),
+    });
+    const data = await response.json();
+    return data.strategy || null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getPurchasedStrategies(): Promise<Strategy[]> {
-  const response = await fetch(`${getBackendUrl()}/api/marketplace/purchased`, {
-    headers: await getAuthHeaders(),
-  });
-
-  const data = await response.json();
-  return data.strategies || [];
+  try {
+    const response = await fetch(`${marketplaceBase()}/marketplace/purchased`, {
+      headers: await getAuthHeaders(),
+    });
+    const data = await response.json();
+    return data.strategies || [];
+  } catch {
+    return [];
+  }
 }
 
 export interface PurchaseResult {
@@ -54,11 +69,10 @@ export interface PurchaseResult {
 }
 
 export async function purchaseStrategy(id: string): Promise<PurchaseResult> {
-  const response = await fetch(`${getBackendUrl()}/api/marketplace/strategies/${id}/purchase`, {
+  const response = await fetch(`${marketplaceBase()}/marketplace/strategies/${id}/purchase`, {
     method: 'POST',
     headers: await getAuthHeaders(),
   });
-
   return response.json();
 }
 

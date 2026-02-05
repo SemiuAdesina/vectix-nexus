@@ -1,4 +1,5 @@
 import { getApiBaseUrl } from '@/lib/api/config';
+import { safeJson } from './safe-json';
 import type { CircuitBreakerState, CircuitBreakerConfig } from './types';
 
 const API_BASE = getApiBaseUrl();
@@ -15,7 +16,7 @@ export async function initializeCircuitBreaker(agentId: string, config: CircuitB
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ agentId, config }),
   });
-  return res.json();
+  return safeJson(res);
 }
 
 export async function checkCircuitBreaker(agentId: string, metrics: CircuitBreakerMetrics): Promise<{ success: boolean; allowed: boolean; reason?: string }> {
@@ -24,12 +25,16 @@ export async function checkCircuitBreaker(agentId: string, metrics: CircuitBreak
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ agentId, metrics }),
   });
-  return res.json();
+  return safeJson(res);
 }
 
 export async function getCircuitBreakerState(agentId: string): Promise<{ success: boolean; state: CircuitBreakerState | null }> {
   const res = await fetch(`${API_BASE}/api/onchain/circuit-breaker/state/${agentId}`);
-  return res.json();
+  try {
+    return await safeJson(res);
+  } catch {
+    return { success: false, state: null };
+  }
 }
 
 export async function resetCircuitBreaker(agentId: string): Promise<{ success: boolean }> {
@@ -38,5 +43,5 @@ export async function resetCircuitBreaker(agentId: string): Promise<{ success: b
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ agentId }),
   });
-  return res.json();
+  return safeJson(res);
 }

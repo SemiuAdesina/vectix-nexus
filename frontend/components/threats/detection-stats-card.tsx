@@ -3,8 +3,6 @@
 import React from 'react';
 import { Shield, AlertTriangle, TrendingUp, Activity } from 'lucide-react';
 import type { ThreatIntelligence } from '@/lib/api/onchain/types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 interface DetectionStatsCardProps {
   threats: ThreatIntelligence[];
@@ -26,32 +24,36 @@ export function DetectionStatsCard({ threats }: DetectionStatsCardProps) {
   ];
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center gap-2">
+    <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.08)]">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30">
           <Shield className="w-5 h-5 text-primary" />
-          <CardTitle>Detection Stats</CardTitle>
         </div>
-        <CardDescription>Threat intelligence metrics by severity</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {stats.map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <div key={stat.label} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                <div className="flex items-center gap-3">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">Detection Stats</h2>
+          <p className="text-sm text-muted-foreground">Threat intelligence metrics by severity</p>
+        </div>
+      </div>
+      <div className="space-y-3">
+        {stats.map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <div key={stat.label} className="flex items-center justify-between p-3 rounded-xl border border-primary/20 bg-card hover:border-primary/40 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
+                  stat.color === 'text-primary' ? 'bg-primary/15 border-primary/20' :
+                  stat.color === 'text-destructive' ? 'bg-destructive/10 border-destructive/20' :
+                  'bg-secondary/50 border-border'
+                }`}>
                   <Icon className={`w-4 h-4 ${stat.color}`} />
-                  <span className="text-sm font-medium">{stat.label}</span>
                 </div>
-                <Badge variant="secondary" className="text-base font-semibold px-3 py-1">
-                  {stat.value}
-                </Badge>
+                <span className="text-sm font-medium text-foreground">{stat.label}</span>
               </div>
-            );
-          })}
-        </div>
-      </CardContent>
-    </Card>
+              <span className="text-base font-semibold text-foreground tabular-nums">{stat.value}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }

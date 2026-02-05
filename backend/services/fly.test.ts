@@ -9,14 +9,18 @@ describe('fly', () => {
   });
 
   describe('createFlyMachine', () => {
-    it('throws error when FLY_API_TOKEN not set', async () => {
+    it('returns mock machine when FLY_API_TOKEN not set', async () => {
       delete process.env.FLY_API_TOKEN;
+      delete process.env.MOCK_FLY_DEPLOY;
       const { createFlyMachine } = await import('./fly');
-      await expect(createFlyMachine('{"name":"test"}')).rejects.toThrow('FLY_API_TOKEN');
+      const result = await createFlyMachine('{"name":"test"}');
+      expect(result.id).toMatch(/^mock-/);
+      expect(result.state).toBe('started');
     });
 
     it('creates machine via API when token is set', async () => {
       process.env.FLY_API_TOKEN = 'test-token';
+      delete process.env.MOCK_FLY_DEPLOY;
       const { createFlyMachine } = await import('./fly');
       vi.mocked(global.fetch).mockResolvedValue({
         ok: true,
@@ -36,14 +40,17 @@ describe('fly', () => {
   });
 
   describe('getMachineIP', () => {
-    it('throws error when FLY_API_TOKEN not set', async () => {
+    it('returns null when FLY_API_TOKEN not set (mock mode)', async () => {
       delete process.env.FLY_API_TOKEN;
+      delete process.env.MOCK_FLY_DEPLOY;
       const { getMachineIP } = await import('./fly');
-      await expect(getMachineIP('machine1')).rejects.toThrow('FLY_API_TOKEN');
+      const ip = await getMachineIP('machine1');
+      expect(ip).toBeNull();
     });
 
     it('returns IP from API when token is set', async () => {
       process.env.FLY_API_TOKEN = 'test-token';
+      delete process.env.MOCK_FLY_DEPLOY;
       const { getMachineIP } = await import('./fly');
       vi.mocked(global.fetch).mockResolvedValue({
         ok: true,
@@ -58,6 +65,7 @@ describe('fly', () => {
 
     it('returns null on API failure', async () => {
       process.env.FLY_API_TOKEN = 'test-token';
+      delete process.env.MOCK_FLY_DEPLOY;
       const { getMachineIP } = await import('./fly');
       vi.mocked(global.fetch).mockResolvedValue({
         ok: false,
@@ -65,6 +73,36 @@ describe('fly', () => {
 
       const ip = await getMachineIP('machine1');
       expect(ip).toBeNull();
+    });
+
+    it('returns null for invalid machineId without calling fetch', async () => {
+      process.env.FLY_API_TOKEN = 'test-token';
+      delete process.env.MOCK_FLY_DEPLOY;
+      const { getMachineIP } = await import('./fly');
+      const ip = await getMachineIP('machine/../../../etc');
+      expect(ip).toBeNull();
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
+    it('uses safe app name in URL when creating machine', async () => {
+      process.env.FLY_API_TOKEN = 'test-token';
+      delete process.env.MOCK_FLY_DEPLOY;
+      const { createFlyMachine } = await import('./fly');
+      vi.mocked(global.fetch).mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          id: 'm1',
+          name: 'test',
+          state: 'started',
+          region: 'lax',
+          config: {},
+        }),
+      } as Response);
+      await createFlyMachine('{}', 'my-app_name');
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/apps\/my-app_name\/machines$/),
+        expect.any(Object)
+      );
     });
   });
 });

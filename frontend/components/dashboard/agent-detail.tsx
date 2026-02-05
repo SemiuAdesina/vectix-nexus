@@ -39,7 +39,7 @@ export function AgentDetail({ agent, onClose }: AgentDetailProps) {
             <p className="text-xs text-muted-foreground font-mono">{agent.id.slice(0, 8)}...</p>
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={onClose} className="text-muted-foreground hover:text-foreground">
+        <Button variant="ghost" size="sm" onClick={onClose} className="text-muted-foreground hover:text-primary">
           <X className="w-4 h-4" />
         </Button>
       </div>
@@ -51,8 +51,8 @@ export function AgentDetail({ agent, onClose }: AgentDetailProps) {
             onClick={() => setActiveTab(tab.id)}
             className={`flex-1 px-4 py-3 text-sm font-medium transition-all flex items-center justify-center gap-2 ${
               activeTab === tab.id
-                ? 'text-foreground border-b-2 border-primary bg-primary/5'
-                : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                ? 'text-primary border-b-2 border-primary bg-primary/5'
+                : 'text-muted-foreground hover:text-primary hover:bg-secondary/50'
             }`}
           >
             <tab.icon className="w-4 h-4" />

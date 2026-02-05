@@ -28,25 +28,25 @@ export function PreflightStatsCard({ agentId }: PreflightStatsCardProps) {
 
   if (loading) {
     return (
-      <div className="glass rounded-xl p-6 animate-pulse">
-        <div className="h-6 bg-secondary rounded w-1/3 mb-4" />
-        <div className="h-20 bg-secondary rounded" />
+      <div className="rounded-2xl border border-primary/20 bg-card p-6 animate-pulse shadow-[0_0_24px_-8px_hsl(var(--primary)/0.08)]">
+        <div className="h-6 bg-secondary/80 rounded w-1/3 mb-4" />
+        <div className="h-20 bg-secondary/80 rounded-xl" />
       </div>
     );
   }
 
-  const approvalRate = stats && stats.total > 0 
-    ? Math.round((stats.approved / stats.total) * 100) 
+  const approvalRate = stats && stats.total > 0
+    ? Math.round((stats.approved / stats.total) * 100)
     : 100;
 
   return (
-    <div className="glass rounded-xl p-6">
+    <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)/0.12)]">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30 shadow-[0_0_12px_-4px_hsl(var(--primary)/0.2)]">
           <Shield className="w-5 h-5 text-primary" />
         </div>
         <div>
-          <h3 className="font-semibold">Pre-Flight Protection</h3>
+          <h3 className="font-semibold text-foreground">Pre-Flight Protection</h3>
           <p className="text-xs text-muted-foreground">
             Simulates transactions before execution
           </p>
@@ -55,7 +55,7 @@ export function PreflightStatsCard({ agentId }: PreflightStatsCardProps) {
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         <StatBox
-          icon={<ShieldCheck className="w-4 h-4 text-[hsl(var(--success))]" />}
+          icon={<ShieldCheck className="w-4 h-4 text-primary" />}
           label="Approved"
           value={stats?.approved ?? 0}
         />
@@ -74,7 +74,7 @@ export function PreflightStatsCard({ agentId }: PreflightStatsCardProps) {
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Approval Rate</span>
-          <span className="font-medium">{approvalRate}%</span>
+          <span className="font-medium text-foreground">{approvalRate}%</span>
         </div>
         <div className="h-2 bg-secondary rounded-full overflow-hidden">
           <div
@@ -100,19 +100,19 @@ export function PreflightStatsCard({ agentId }: PreflightStatsCardProps) {
   );
 }
 
-function StatBox({ 
-  icon, 
-  label, 
-  value 
-}: { 
-  icon: React.ReactNode; 
-  label: string; 
-  value: number; 
+function StatBox({
+  icon,
+  label,
+  value
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
 }) {
   return (
-    <div className="bg-secondary/50 rounded-lg p-3 text-center">
+    <div className="rounded-xl border border-primary/20 bg-card p-3 text-center shadow-[0_0_12px_-4px_hsl(var(--primary)/0.08)]">
       <div className="flex justify-center mb-1">{icon}</div>
-      <p className="text-lg font-semibold">{value}</p>
+      <p className="text-lg font-semibold text-foreground">{value}</p>
       <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );

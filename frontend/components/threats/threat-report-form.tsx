@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { X, Send, Loader2, AlertTriangle } from 'lucide-react';
 import { reportThreat } from '@/lib/api/onchain/threats';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -60,31 +59,29 @@ export function ThreatReportForm({ onClose, onSuccess }: ThreatReportFormProps) 
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <AlertTriangle className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <CardTitle>Report Threat</CardTitle>
-              <CardDescription>Submit a threat report to VectixLogic security team</CardDescription>
-            </div>
+    <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.12)]">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30">
+            <AlertTriangle className="w-5 h-5 text-primary" />
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            aria-label="Close"
-            disabled={submitting}
-          >
-            <X className="w-4 h-4" />
-          </Button>
+          <div>
+            <h2 className="text-xl font-semibold text-foreground">Report Threat</h2>
+            <p className="text-sm text-muted-foreground">Submit a threat report to VectixLogic security team</p>
+          </div>
         </div>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          aria-label="Close"
+          disabled={submitting}
+          className="hover:bg-primary/10 hover:text-primary rounded-lg"
+        >
+          <X className="w-4 h-4" />
+        </Button>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="tokenAddress">
               Token Address
@@ -167,9 +164,9 @@ export function ThreatReportForm({ onClose, onSuccess }: ThreatReportFormProps) 
           </div>
 
           {error && (
-            <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+            <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/30">
               <div className="flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 text-destructive mt-0.5" />
+                <AlertTriangle className="w-4 h-4 text-destructive mt-0.5 shrink-0" />
                 <p className="text-sm text-destructive">{error}</p>
               </div>
             </div>
@@ -181,28 +178,29 @@ export function ThreatReportForm({ onClose, onSuccess }: ThreatReportFormProps) 
               variant="outline"
               onClick={onClose}
               disabled={submitting}
+              className="border-primary/30 hover:bg-primary/10 hover:border-primary/50 hover:text-primary"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={submitting || !formData.description.trim()}
+              className="shadow-[0_0_14px_-4px_hsl(var(--primary)_/_0.4)]"
             >
               {submitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin shrink-0" />
                   Submitting...
                 </>
               ) : (
                 <>
-                  <Send className="w-4 h-4" />
+                  <Send className="w-4 h-4 shrink-0" />
                   Submit Report
                 </>
               )}
             </Button>
           </div>
         </form>
-      </CardContent>
-    </Card>
+    </div>
   );
 }

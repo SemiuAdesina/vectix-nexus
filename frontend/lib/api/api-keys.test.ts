@@ -9,6 +9,7 @@ vi.mock('./auth', () => ({
 }));
 
 vi.mock('./config', () => ({
+  getApiBaseUrl: vi.fn(() => 'http://localhost:3001'),
   API_ENDPOINTS: {
     apiKeys: {
       list: '/api/api-keys',
@@ -43,6 +44,7 @@ describe('api-keys', () => {
     it('creates API key', async () => {
       const mockResponse = { key: 'vx_test123', data: { id: 'key1', name: 'Test Key' } };
       (global.fetch as Mock).mockResolvedValue({
+        ok: true,
         json: async () => mockResponse,
       } as Response);
 

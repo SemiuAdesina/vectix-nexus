@@ -9,20 +9,28 @@ function summarizeHeartbeat(markdown: string): string {
 
   for (const line of lines) {
     if (line.startsWith('## ') || line.startsWith('# ')) {
-      if (current.length) sections.push(current.join(' '));
+      if (current.length) {
+        sections.push(current.join(' '));
+      }
       current = [line.replace(/^#+\s*/, '').trim()];
     } else if (line.startsWith('- [ ]') || line.startsWith('- [x]') || line.startsWith('- [X]')) {
       const task = line.replace(/^-\s*\[.?\]\s*/, '').trim();
-      if (task) current.push(task);
+      if (task) {
+        current.push(task);
+      }
     } else if (line.startsWith('- ') && !line.startsWith('- [')) {
       current.push(line.slice(2).trim());
     } else if (line.length > 0 && line.length < 120) {
       current.push(line);
     }
   }
-  if (current.length) sections.push(current.join(' '));
+  if (current.length) {
+    sections.push(current.join(' '));
+  }
 
-  if (sections.length === 0) return markdown.slice(0, 1500);
+  if (sections.length === 0) {
+    return markdown.slice(0, 1500);
+  }
   return sections.join('\n\n');
 }
 

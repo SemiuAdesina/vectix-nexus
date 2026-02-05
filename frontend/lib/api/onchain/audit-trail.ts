@@ -1,5 +1,6 @@
 import { getApiBaseUrl } from '@/lib/api/config';
-import type { AuditTrailEntry } from '../onchain/types';
+import type { AuditTrailEntry } from './types';
+import { safeJson } from './safe-json';
 
 const API_BASE = getApiBaseUrl();
 
@@ -7,12 +8,20 @@ export async function getAuditTrail(query: { agentId?: string; tokenAddress?: st
   const params = new URLSearchParams();
   Object.entries(query).forEach(([k, v]) => { if (v) params.append(k, String(v)); });
   const res = await fetch(`${API_BASE}/api/onchain/audit-trail?${params}`);
-  return res.json();
+  try {
+    return await safeJson(res);
+  } catch {
+    return { success: false, entries: [], total: 0 };
+  }
 }
 
 export async function verifyAuditTrail(): Promise<{ success: boolean; valid: boolean; invalidEntries: string[] }> {
   const res = await fetch(`${API_BASE}/api/onchain/audit-trail/verify`);
-  return res.json();
+  try {
+    return await safeJson(res);
+  } catch {
+    return { success: false, valid: false, invalidEntries: [] };
+  }
 }
 
 export async function exportAuditTrail(format: 'json' | 'csv'): Promise<Blob> {

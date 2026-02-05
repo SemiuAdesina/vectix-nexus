@@ -16,6 +16,8 @@ import affiliateRoutes from './routes/affiliate.routes';
 import protectionRoutes from './routes/protection.routes';
 import apiKeysRoutes from './routes/api-keys.routes';
 import publicApiRoutes from './routes/public-api.routes';
+import publicSecurityRoutes from './routes/public-security.routes';
+import onchainRoutes from './routes/onchain.routes';
 
 dotenv.config();
 
@@ -23,7 +25,18 @@ const app = express();
 const PORT = process.env.PORT || 3002;
 
 app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
-app.use(cors());
+
+const allowedOrigins = (process.env.CORS_ORIGIN || process.env.FRONTEND_URL || 'http://localhost:3000')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) cb(null, origin || allowedOrigins[0]);
+    else cb(null, false);
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 app.use('/api', stripeRoutes);
@@ -40,6 +53,8 @@ app.use('/api', whitelistRoutes);
 app.use('/api', affiliateRoutes);
 app.use('/api', protectionRoutes);
 app.use('/api', apiKeysRoutes);
+app.use('/api', onchainRoutes);
+app.use('/api', publicSecurityRoutes);
 app.use('/v1', publicApiRoutes);
 
 app.get('/health', (_req, res) => {

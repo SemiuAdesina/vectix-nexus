@@ -35,29 +35,31 @@ export function AgentFleetCard({ agent, onAction }: AgentFleetCardProps) {
   };
 
   return (
-    <div className="glass rounded-xl overflow-hidden transition-all hover:border-primary/30">
+    <div className="min-w-0 rounded-2xl border border-primary/20 bg-card shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.08)] transition-all hover:border-primary/40 hover:shadow-[0_0_28px_-8px_hsl(var(--primary)_/_0.12)]">
       <div className="p-5">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
+        <div className="flex items-start justify-between gap-3 mb-4 min-h-0">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
             <StatusBadge status={agent.status} />
-            <div>
+            <div className="min-w-0">
               <Link href={`/dashboard/agents/${agent.id}`} className="hover:text-primary transition-colors">
-                <h3 className="font-semibold">{agent.name}</h3>
+                <h3 className="font-semibold text-foreground truncate">{agent.name}</h3>
               </Link>
               <p className="text-xs text-muted-foreground">{uptime}</p>
             </div>
           </div>
-          <ActionButtons
-            isRunning={isRunning}
-            actionLoading={actionLoading}
-            onAction={handleAction}
-          />
+          <div className="shrink-0">
+            <ActionButtons
+              isRunning={isRunning}
+              actionLoading={actionLoading}
+              onAction={handleAction}
+            />
+          </div>
         </div>
 
         {agent.walletAddress && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-            <Wallet className="w-3.5 h-3.5" />
-            <span className="font-mono truncate">{agent.walletAddress}</span>
+          <div className="flex items-center gap-2 text-xs mb-3 p-2.5 rounded-xl border border-primary/20 bg-background/80">
+            <Wallet className="w-3.5 h-3.5 text-primary shrink-0" />
+            <span className="font-mono text-muted-foreground truncate">{agent.walletAddress}</span>
           </div>
         )}
 
@@ -72,11 +74,11 @@ function StatusBadge({ status }: { status: string }) {
   const isError = status === 'error';
 
   return (
-    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-      isRunning ? 'bg-success/10' : isError ? 'bg-destructive/10' : 'bg-secondary'
+    <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
+      isRunning ? 'bg-primary/15 border-primary/30' : isError ? 'bg-destructive/10 border-destructive/30' : 'bg-background/80 border-primary/20'
     }`}>
       <div className={`w-2.5 h-2.5 rounded-full ${
-        isRunning ? 'bg-success animate-pulse' : isError ? 'bg-destructive' : 'bg-muted-foreground'
+        isRunning ? 'bg-primary animate-pulse' : isError ? 'bg-destructive' : 'bg-muted-foreground'
       }`} />
     </div>
   );
@@ -103,15 +105,15 @@ function ActionButtons({
     <div className="flex gap-1">
       {isRunning ? (
         <>
-          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => onAction('restart')} title="Restart">
+          <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-primary/10 hover:text-primary" onClick={() => onAction('restart')} title="Restart">
             <RotateCcw className="w-4 h-4" />
           </Button>
-          <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => onAction('stop')} title="Stop">
+          <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={() => onAction('stop')} title="Stop">
             <Square className="w-4 h-4" />
           </Button>
         </>
       ) : (
-        <Button size="icon" variant="ghost" className="h-8 w-8 text-success hover:text-success" onClick={() => onAction('start')} title="Start">
+        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg text-primary hover:bg-primary/10 hover:text-primary" onClick={() => onAction('start')} title="Start">
           <Play className="w-4 h-4" />
         </Button>
       )}
@@ -121,12 +123,12 @@ function ActionButtons({
 
 function MiniTerminal({ log, isRunning }: { log?: string; isRunning: boolean }) {
   return (
-    <div className="bg-zinc-950 rounded-lg p-3 font-mono text-xs">
-      <div className="flex items-center gap-2 text-zinc-500 mb-1.5">
-        <Terminal className="w-3 h-3" />
+    <div className="rounded-xl border border-primary/20 bg-background/80 p-3 font-mono text-xs">
+      <div className="flex items-center gap-2 text-muted-foreground mb-1.5">
+        <Terminal className="w-3.5 h-3.5 text-primary" />
         <span>Latest Activity</span>
       </div>
-      <p className={`truncate ${isRunning ? 'text-green-400' : 'text-zinc-500'}`}>
+      <p className={`truncate ${isRunning ? 'text-primary' : 'text-muted-foreground'}`}>
         {log || (isRunning ? 'Awaiting next action...' : 'Agent offline')}
       </p>
     </div>

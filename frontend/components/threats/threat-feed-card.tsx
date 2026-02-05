@@ -27,21 +27,23 @@ export function ThreatFeedCard({ threats }: ThreatFeedCardProps) {
     <div className="space-y-3 max-h-[600px] overflow-y-auto">
       {threats.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
-          <AlertTriangle className="w-12 h-12 mx-auto mb-3 opacity-50" />
-          <p className="text-sm font-medium mb-1">No threats detected</p>
+          <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3 border border-primary/20">
+            <AlertTriangle className="w-7 h-7 text-primary opacity-70" />
+          </div>
+          <p className="text-sm font-medium mb-1 text-foreground">No threats detected</p>
           <p className="text-xs">Threats will appear here as they are detected or reported by VectixLogic</p>
         </div>
       ) : (
         threats.map((threat) => {
           const Icon = typeIcons[threat.type] || AlertTriangle;
           return (
-            <div key={threat.id} className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
+            <div key={threat.id} className="p-4 rounded-xl border border-primary/20 bg-card hover:border-primary/40 transition-colors">
               <div className="flex items-start gap-3">
-                <div className={`p-1.5 rounded-md ${severityColors[threat.severity]}`}>
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border ${severityColors[threat.severity]}`}>
                   <Icon className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium mb-2">{threat.description}</p>
+                  <p className="text-sm font-medium mb-2 text-foreground">{threat.description}</p>
                   <div className="flex items-center gap-2 flex-wrap">
                     <Badge variant="outline" className={`text-xs ${severityColors[threat.severity]}`}>
                       {threat.severity}

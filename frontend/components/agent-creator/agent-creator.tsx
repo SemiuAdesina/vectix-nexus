@@ -9,11 +9,11 @@ import { SecretsForm } from './secrets-form';
 import { ReviewStep } from './review-step';
 import { AgentSecrets, deployAgent } from '@/lib/api/client';
 import type { Strategy } from '@/lib/api/marketplace';
-import { Settings, Key, Rocket, ChevronRight } from 'lucide-react';
+import { Settings, Key, Rocket, Check } from 'lucide-react';
 
 type Step = 'config' | 'secrets' | 'review';
 
-const steps: { id: Step; label: string; icon: typeof Settings }[] = [
+const STEPS: { id: Step; label: string; icon: typeof Settings }[] = [
   { id: 'config', label: 'Configure', icon: Settings },
   { id: 'secrets', label: 'API Keys', icon: Key },
   { id: 'review', label: 'Deploy', icon: Rocket },
@@ -63,38 +63,88 @@ export function AgentCreator() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold mb-2">Create Your AI Agent</h1>
-        <p className="text-muted-foreground">Configure, connect, and deploy in minutes</p>
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">Create Your AI Agent</h1>
+        <p className="text-muted-foreground text-base">Configure, connect, and deploy in minutes</p>
+        <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mx-auto mt-4" />
       </div>
 
-      <div className="flex justify-center mb-10">
-        {steps.map((s, i) => (
-          <div key={s.id} className="flex items-center">
-            <button
-              onClick={() => (s.id === 'config' || generatedJson) && setStep(s.id)}
-              disabled={s.id !== 'config' && !generatedJson}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
-                step === s.id ? 'bg-primary text-background' : 'text-muted-foreground hover:text-foreground'
-              } ${s.id !== 'config' && !generatedJson ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              <s.icon className="w-4 h-4" />
-              <span className="text-sm font-medium hidden sm:inline">{s.label}</span>
-            </button>
-            {i < steps.length - 1 && <ChevronRight className="w-4 h-4 text-border mx-2" />}
-          </div>
-        ))}
+      <div className="mb-10 rounded-2xl border border-primary/20 bg-card/60 p-4 shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.08)]">
+        <div className="flex items-center justify-between">
+          {STEPS.map((s, i) => {
+            const stepIndex = STEPS.findIndex((st) => st.id === step);
+            const isActive = step === s.id;
+            const deploySuccess = deployResult?.success === true;
+            const isCompleted = stepIndex > i || (i === 2 && deploySuccess);
+            const isClickable = s.id === 'config' || !!generatedJson;
+            const isDisabled = !isClickable;
+
+            return (
+              <React.Fragment key={s.id}>
+                <button
+                  type="button"
+                  onClick={() => isClickable && setStep(s.id)}
+                  disabled={isDisabled}
+                  className={`group flex flex-1 flex-col items-center gap-2 sm:flex-row sm:gap-3 ${
+                    isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                  }`}
+                >
+                  <div
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-200 ${
+                      isActive
+                        ? 'border-primary bg-primary/20 text-primary shadow-[0_0_16px_-4px_hsl(var(--primary)_/_0.35)]'
+                        : isCompleted
+                          ? 'border-primary/40 bg-primary/10 text-primary'
+                          : 'border-primary/20 bg-background/80 text-muted-foreground group-hover:border-primary/40 group-hover:bg-primary/5'
+                    } ${isDisabled ? 'group-hover:border-primary/20 group-hover:bg-background/80' : ''}`}
+                  >
+                    {isCompleted ? <Check className="h-5 w-5" /> : <s.icon className="h-5 w-5" />}
+                  </div>
+                  <div className="text-center sm:text-left">
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground sm:text-xs">Step {i + 1}</span>
+                    <p className={`text-sm font-semibold ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>{s.label}</p>
+                  </div>
+                </button>
+                {i < STEPS.length - 1 && (
+                  <div
+                    className={`h-0.5 min-w-6 flex-1 max-w-16 rounded-full ${
+                      stepIndex > i ? 'bg-primary/60' : 'bg-primary/20'
+                    }`}
+                    aria-hidden
+                  />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="glass rounded-xl p-8">
-        {step === 'config' && (
-          <ConfigForm formData={formData} onFormDataChange={setFormData} onSubmit={handleGenerateJson} selectedStrategy={selectedStrategy} onStrategySelect={setSelectedStrategy} />
-        )}
-        {step === 'secrets' && (
-          <SecretsForm secrets={secrets} onSecretsChange={setSecrets} onBack={() => setStep('config')} onNext={() => setStep('review')} />
-        )}
-        {step === 'review' && (
-          <ReviewStep generatedJson={generatedJson} secrets={secrets} isDeploying={isDeploying} deployResult={deployResult} onBack={() => setStep('secrets')} onDeploy={handleDeploy} />
-        )}
+      <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-card/80 backdrop-blur-sm p-8 shadow-[0_0_40px_-12px_hsl(var(--primary)_/_0.15),inset_0_1px_0_hsl(var(--primary)_/_0.05)]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/8 to-transparent transition-opacity duration-500 ease-out"
+          style={{ opacity: step === 'config' ? 1 : 0 }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-tl from-primary/25 via-primary/10 to-transparent transition-opacity duration-500 ease-out"
+          style={{ opacity: step === 'secrets' ? 1 : 0 }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/30 via-primary/12 to-primary/5 transition-opacity duration-500 ease-out"
+          style={{ opacity: step === 'review' ? 1 : 0 }}
+        />
+        <div className="relative z-10">
+          {step === 'config' && (
+            <ConfigForm formData={formData} onFormDataChange={setFormData} onSubmit={handleGenerateJson} selectedStrategy={selectedStrategy} onStrategySelect={setSelectedStrategy} />
+          )}
+          {step === 'secrets' && (
+            <SecretsForm secrets={secrets} onSecretsChange={setSecrets} onBack={() => setStep('config')} onNext={() => setStep('review')} />
+          )}
+          {step === 'review' && (
+            <ReviewStep generatedJson={generatedJson} secrets={secrets} isDeploying={isDeploying} deployResult={deployResult} onBack={() => setStep('secrets')} onDeploy={handleDeploy} />
+          )}
+        </div>
       </div>
     </div>
   );

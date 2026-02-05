@@ -15,10 +15,11 @@ export default function AdvancedFeaturesPage() {
   return (
     <div className="w-full">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-2">Security & Intelligence Suite</h1>
+        <h1 className="text-2xl font-bold mb-2 text-foreground">Security & Intelligence Suite</h1>
         <p className="text-muted-foreground">
           Enterprise-grade features that make your AI agents robust, secure, and profitable.
         </p>
+        <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mt-4" />
       </div>
 
       <div className="grid gap-6">
@@ -60,25 +61,25 @@ export default function AdvancedFeaturesPage() {
   );
 }
 
-function FeatureSection({ 
-  icon, 
-  title, 
-  description, 
-  children 
-}: { 
-  icon: React.ReactNode; 
-  title: string; 
-  description: string; 
-  children: React.ReactNode; 
+function FeatureSection({
+  icon,
+  title,
+  description,
+  children
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  children: React.ReactNode;
 }) {
   return (
     <section>
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+        <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center text-primary border border-primary/30 shadow-[0_0_12px_-4px_hsl(var(--primary)/0.2)]">
           {icon}
         </div>
         <div>
-          <h3 className="font-semibold">{title}</h3>
+          <h3 className="font-semibold text-foreground">{title}</h3>
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { getApiBaseUrl } from '@/lib/api/config';
-import type { ThreatIntelligence, ThreatReport } from '../onchain/types';
+import type { ThreatIntelligence, ThreatReport } from './types';
+import { safeJson } from './safe-json';
 
 const API_BASE = getApiBaseUrl();
 
@@ -9,13 +10,22 @@ export async function detectThreat(metrics: { volume?: number; priceChange?: num
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(metrics),
   });
-  return res.json();
+  try {
+    return await safeJson(res);
+  } catch {
+    return { success: false, isAnomaly: false, confidence: 0, reason: 'Threat API not available' };
+  }
 }
 
 export async function getThreatFeed(limit?: number): Promise<{ success: boolean; threats: ThreatIntelligence[] }> {
-  const params = limit ? `?limit=${limit}` : '';
-  const res = await fetch(`${API_BASE}/api/onchain/threats/feed${params}`);
-  return res.json();
+  try {
+    const params = limit ? `?limit=${limit}` : '';
+    const res = await fetch(`${API_BASE}/api/onchain/threats/feed${params}`);
+    const data = await safeJson<{ success: boolean; threats: ThreatIntelligence[] }>(res);
+    return data ?? { success: false, threats: [] };
+  } catch {
+    return { success: false, threats: [] };
+  }
 }
 
 export async function reportThreat(report: Omit<ThreatReport, 'id' | 'status' | 'createdAt'>): Promise<{ success: boolean; report: ThreatReport }> {
@@ -24,5 +34,5 @@ export async function reportThreat(report: Omit<ThreatReport, 'id' | 'status' | 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(report),
   });
-  return res.json();
+  return safeJson(res);
 }

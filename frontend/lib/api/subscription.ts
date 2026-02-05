@@ -3,11 +3,17 @@ import type { SubscriptionStatus, PricingPlan } from './types';
 
 const BACKEND_URL = getBackendUrl();
 
+const DEFAULT_SUBSCRIPTION: SubscriptionStatus = { hasActiveSubscription: false };
+
 export async function getSubscriptionStatus(): Promise<SubscriptionStatus> {
-  const headers = await getAuthHeaders();
-  const response = await fetch(`${BACKEND_URL}/api/subscription/status`, { headers });
-  if (!response.ok) throw new Error(`Failed to fetch subscription status: ${response.status}`);
-  return response.json() as Promise<SubscriptionStatus>;
+  try {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${BACKEND_URL}/api/subscription/status`, { headers });
+    if (!response.ok) return DEFAULT_SUBSCRIPTION;
+    return (await response.json()) as SubscriptionStatus;
+  } catch {
+    return DEFAULT_SUBSCRIPTION;
+  }
 }
 
 export async function createCheckoutSession(plan: 'hobby' | 'pro'): Promise<string> {
