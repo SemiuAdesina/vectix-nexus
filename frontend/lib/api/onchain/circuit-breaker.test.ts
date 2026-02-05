@@ -16,6 +16,7 @@ describe('circuit-breaker', () => {
     it('initializes circuit breaker', async () => {
       const mockResponse = { success: true };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -35,6 +36,7 @@ describe('circuit-breaker', () => {
     it('checks circuit breaker state', async () => {
       const mockResponse = { success: true, allowed: true };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -51,6 +53,7 @@ describe('circuit-breaker', () => {
     it('fetches circuit breaker state', async () => {
       const mockResponse = { success: true, state: { status: 'closed', failures: 0 } };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -63,6 +66,7 @@ describe('circuit-breaker', () => {
     it('resets circuit breaker', async () => {
       const mockResponse = { success: true };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 

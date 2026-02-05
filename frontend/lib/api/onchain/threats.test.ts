@@ -21,6 +21,7 @@ describe('threats', () => {
         reason: 'No threat detected',
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -40,6 +41,7 @@ describe('threats', () => {
         threats: [{ id: 'threat1', type: 'anomaly', severity: 'high' }],
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -53,6 +55,7 @@ describe('threats', () => {
         threats: [{ id: 'threat1', type: 'anomaly' }],
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -68,6 +71,7 @@ describe('threats', () => {
         report: { id: 'report1', type: 'suspicious_activity', status: 'pending' },
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 

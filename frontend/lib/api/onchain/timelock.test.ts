@@ -25,6 +25,7 @@ describe('timelock', () => {
         },
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -43,6 +44,7 @@ describe('timelock', () => {
     it('cancels timelock', async () => {
       const mockResponse = { success: true };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -60,6 +62,7 @@ describe('timelock', () => {
         ],
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 

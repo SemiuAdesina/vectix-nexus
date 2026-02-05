@@ -19,6 +19,7 @@ describe('governance', () => {
         proposal: { id: 'proposal1', title: 'Test Proposal', status: 'pending' },
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -37,6 +38,7 @@ describe('governance', () => {
       const mockResponse = { success: true };
       (global.fetch as Mock).mockResolvedValue({
         ok: true,
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -49,9 +51,11 @@ describe('governance', () => {
     });
 
     it('throws error on failure', async () => {
+      const errorResponse = { error: 'Vote failed' };
       (global.fetch as Mock).mockResolvedValue({
         ok: false,
-        json: async () => ({ error: 'Vote failed' }),
+        text: async () => JSON.stringify(errorResponse),
+        json: async () => errorResponse,
       } as Response);
 
       await expect(
@@ -67,6 +71,7 @@ describe('governance', () => {
         proposals: [{ id: 'proposal1', title: 'Test Proposal' }],
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -82,6 +87,7 @@ describe('governance', () => {
         proposal: { id: 'proposal1', title: 'Test Proposal' },
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -94,6 +100,7 @@ describe('governance', () => {
     it('executes governance proposal', async () => {
       const mockResponse = { success: true };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 

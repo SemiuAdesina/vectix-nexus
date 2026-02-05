@@ -20,6 +20,7 @@ describe('audit-trail', () => {
         total: 1,
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -32,6 +33,7 @@ describe('audit-trail', () => {
     it('verifies audit trail integrity', async () => {
       const mockResponse = { success: true, valid: true, invalidEntries: [] };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 

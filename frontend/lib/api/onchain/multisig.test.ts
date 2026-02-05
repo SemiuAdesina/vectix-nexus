@@ -16,6 +16,7 @@ describe('multisig', () => {
     it('creates multisig', async () => {
       const mockResponse = { success: true, multisigId: 'multisig1' };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -35,6 +36,7 @@ describe('multisig', () => {
         proposal: { id: 'proposal1', multisigId: 'multisig1', action: 'transfer' },
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 

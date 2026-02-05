@@ -19,6 +19,7 @@ describe('security-scanning', () => {
         result: { tokenAddress: 'token1', risks: [], score: 85 },
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -34,6 +35,7 @@ describe('security-scanning', () => {
         alerts: [{ id: 'alert1', severity: 'high', tokenAddress: 'token1' }],
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
@@ -47,6 +49,7 @@ describe('security-scanning', () => {
         alerts: [{ id: 'alert1', severity: 'high' }],
       };
       (global.fetch as Mock).mockResolvedValue({
+        text: async () => JSON.stringify(mockResponse),
         json: async () => mockResponse,
       } as Response);
 
