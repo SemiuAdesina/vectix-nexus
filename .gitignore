@@ -47,6 +47,7 @@ onchain/**/*.js
 .cache/
 .temp/
 tmp/
+var/
 
 *.pem
 *.key

@@ -36,13 +36,14 @@ describe('subscription', () => {
       expect(status).toEqual(mockStatus);
     });
 
-    it('throws error on failure', async () => {
+    it('returns default status on failure', async () => {
       (global.fetch as Mock).mockResolvedValue({
         ok: false,
         status: 500,
       } as Response);
 
-      await expect(subscription.getSubscriptionStatus()).rejects.toThrow();
+      const status = await subscription.getSubscriptionStatus();
+      expect(status).toEqual({ hasActiveSubscription: false });
     });
   });
 

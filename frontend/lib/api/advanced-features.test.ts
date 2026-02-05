@@ -99,6 +99,7 @@ describe('advanced-features', () => {
     it('creates shadow portfolio', async () => {
       const mockPortfolio = { agentId: 'agent1', startingSol: 10, isActive: true };
       (global.fetch as Mock).mockResolvedValue({
+        ok: true,
         json: async () => ({ portfolio: mockPortfolio }),
       } as Response);
 
@@ -111,6 +112,7 @@ describe('advanced-features', () => {
     it('fetches shadow report', async () => {
       const mockReport = { agentId: 'agent1', totalTrades: 5 };
       (global.fetch as Mock).mockResolvedValue({
+        ok: true,
         json: async () => ({ report: mockReport }),
       } as Response);
 
@@ -121,7 +123,10 @@ describe('advanced-features', () => {
 
   describe('stopShadowMode', () => {
     it('stops shadow mode', async () => {
-      (global.fetch as Mock).mockResolvedValue({ ok: true } as Response);
+      (global.fetch as Mock).mockResolvedValue({
+        ok: true,
+        json: async () => ({}),
+      } as Response);
 
       await advancedFeatures.stopShadowMode('agent1');
       expect(global.fetch).toHaveBeenCalled();
