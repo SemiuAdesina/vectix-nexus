@@ -40,6 +40,18 @@ describe('shadow-metrics', () => {
       expect(recommendation).toBe('GO_LIVE');
     });
 
+    it('recommends CONTINUE_TESTING when fewer than 10 trades', () => {
+      const metrics = {
+        totalPnlPercent: 10,
+        winRate: 60,
+        sharpeRatio: 1.0,
+        totalTrades: 5,
+      } as any;
+
+      const recommendation = shadowMetrics.getRecommendation(metrics);
+      expect(recommendation).toBe('CONTINUE_TESTING');
+    });
+
     it('recommends NEEDS_ADJUSTMENT for poor performance', () => {
       const metrics = {
         totalPnlPercent: -15,

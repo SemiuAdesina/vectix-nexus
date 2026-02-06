@@ -11,7 +11,3 @@ export { updateSettingsAction } from './settings';
 export { unfollowRoomAction } from './unfollowRoom';
 export { unmuteRoomAction } from './unmuteRoom';
 export { updateEntityAction } from './updateEntity';
-export { registerForHackathon } from './registerForHackathon';
-export { checkHeartbeat } from './checkHeartbeat';
-export { createForumPost } from './createForumPost';
-export { createProjectDraft } from './createProjectDraft';

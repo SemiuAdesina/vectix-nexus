@@ -4,6 +4,10 @@ import { prisma } from '../lib/prisma';
 import { WalletManager } from '../services/solana';
 import { decryptSecrets } from '../services/secrets';
 import { getWalletBalance, withdrawFunds, validateWalletAddress } from '../services/solana-balance';
+import { checkWithdrawalAllowed } from '../services/security/whitelist.service';
+import { checkAmlCompliance, recordTransaction } from '../services/security/aml-monitoring.service';
+import { logAuditEvent } from '../services/audit';
+import { checkWithdrawalAmount, MAX_WITHDRAWAL_PER_TX_SOL } from '../lib/withdrawal-limits';
 import { getParam } from '../lib/route-helpers';
 
 const router = Router();
@@ -25,12 +29,13 @@ router.get('/agents/:id/balance', async (req: Request, res: Response) => {
 });
 
 router.post('/agents/:id/withdraw', async (req: Request, res: Response) => {
+  const agentId = getParam(req, 'id');
   try {
     const userId = await getUserIdFromRequest(req);
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
     const agent = await prisma.agent.findFirst({
-      where: { id: getParam(req, 'id'), userId },
+      where: { id: agentId, userId },
       include: { user: true },
     });
 
@@ -43,10 +48,30 @@ router.post('/agents/:id/withdraw', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'No destination wallet. Set a wallet address in your profile or provide one.' });
     }
 
+    const whitelistCheck = await checkWithdrawalAllowed(agentId, withdrawAddress);
+    if (!whitelistCheck.allowed) {
+      await logAuditEvent('wallet.withdraw_blocked', { userId, agentId }, { reason: whitelistCheck.reason }, false);
+      return res.status(403).json({ error: whitelistCheck.reason });
+    }
+
     const isValidAddress = await validateWalletAddress(withdrawAddress);
     if (!isValidAddress) return res.status(400).json({ error: 'Invalid Solana wallet address' });
 
     if (!agent.encryptedSecrets) return res.status(400).json({ error: 'Agent wallet not configured' });
+
+    if (!agent.walletAddress) return res.status(400).json({ error: 'Agent wallet not found' });
+    const balance = await getWalletBalance(agent.walletAddress);
+    const estimatedAmount = Math.max(0, balance.sol - 0.001);
+    const limitCheck = checkWithdrawalAmount(estimatedAmount);
+    if (!limitCheck.allowed) {
+      return res.status(400).json({ error: limitCheck.reason });
+    }
+
+    const amlResult = await checkAmlCompliance(userId, estimatedAmount, 'withdrawal');
+    if (!amlResult.allowed) {
+      await logAuditEvent('wallet.withdraw_aml_blocked', { userId, agentId }, { reason: amlResult.reason, flags: amlResult.flags }, false);
+      return res.status(403).json({ error: amlResult.reason });
+    }
 
     const secrets = decryptSecrets(agent.encryptedSecrets);
     if (!secrets.customEnvVars?.AGENT_ENCRYPTED_PRIVATE_KEY) {
@@ -58,8 +83,14 @@ router.post('/agents/:id/withdraw', async (req: Request, res: Response) => {
       destinationAddress: withdrawAddress,
     });
 
+    if (result.success && result.amountSol) {
+      recordTransaction({ userId, amount: result.amountSol, timestamp: Date.now(), type: 'withdrawal' });
+      await logAuditEvent('wallet.withdraw_complete', { userId, agentId }, { amount: result.amountSol, destination: withdrawAddress, signature: result.signature }, true);
+    }
+
     return res.json(result);
   } catch (error) {
+    await logAuditEvent('wallet.withdraw_error', { agentId }, { error: error instanceof Error ? error.message : 'Unknown' }, false);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return res.status(500).json({ error: errorMessage });
   }

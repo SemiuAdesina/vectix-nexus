@@ -44,7 +44,7 @@ export function ProposalForm({ onSuccess, onCancel }: ProposalFormProps) {
           proposedValue: formData.proposedValue,
         }),
       };
-      
+
       const result = await createGovernanceProposal(proposalData);
       if (result.success) {
         resetForm();
@@ -61,15 +61,15 @@ export function ProposalForm({ onSuccess, onCancel }: ProposalFormProps) {
   };
 
   return (
-    <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.12)]">
+    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6 shadow-[0_0_24px_-8px_rgba(20,184,166,0.12)]">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-foreground">Create Proposal</h2>
+        <h2 className="text-xl font-semibold text-white">Create Proposal</h2>
         <button
           onClick={() => {
             resetForm();
             onCancel();
           }}
-          className="p-1.5 hover:bg-primary/10 hover:text-primary rounded-lg transition-colors text-muted-foreground"
+          className="p-1.5 hover:bg-teal-500/10 hover:text-teal-400 rounded-lg transition-colors text-slate-400"
         >
           <X className="w-5 h-5" />
         </button>
@@ -81,7 +81,7 @@ export function ProposalForm({ onSuccess, onCancel }: ProposalFormProps) {
           <button
             type="submit"
             disabled={submitting}
-            className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_0_14px_-4px_hsl(var(--primary)_/_0.4)]"
+            className="flex-1 px-4 py-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-teal-500/20"
           >
             {submitting ? (
               <>
@@ -101,7 +101,7 @@ export function ProposalForm({ onSuccess, onCancel }: ProposalFormProps) {
               resetForm();
               onCancel();
             }}
-            className="px-4 py-2 border border-primary/30 rounded-lg hover:bg-primary/10 hover:border-primary/50 hover:text-primary text-foreground transition-colors"
+            className="px-4 py-2 border border-teal-500/30 rounded-lg hover:bg-teal-500/10 hover:border-teal-500/50 hover:text-teal-400 text-white transition-colors"
           >
             Cancel
           </button>

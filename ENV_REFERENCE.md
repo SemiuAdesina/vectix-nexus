@@ -37,9 +37,37 @@ Required when deploying agents with API keys (Bring Your Own Keys). Backend uses
 SECRETS_ENCRYPTION_KEY=your_32_char_or_longer_secret_key
 ```
 
+## Optional - Security / Data APIs
+
+**Set only when you have a paid plan.** Leave unset to use free tier (rate-limited). No charges when unset.
+
+### DexScreener (trending tokens)
+```
+DEXSCREENER_API_KEY=your_key
+```
+
+### RugCheck (token security)
+```
+RUGCHECK_API_KEY=your_key
+```
+
+### GoPlus Labs (token security; use access token from their API)
+```
+GOPLUS_API_KEY=your_access_token
+```
+
+## Optional - TEE / Phala (secure enclave)
+
+**Set only when TEE_PROVIDER=phala.** Leave unset when using simulated TEE.
+```
+TEE_PROVIDER=phala
+PHALA_API_KEY=your_phala_key
+PHALA_ENDPOINT=https://api.phala.network
+```
+
 ## Optional - Narrative Tracking (Currently Disabled)
 
-These APIs enable the Narrative Clusters feature for tracking social sentiment:
+**Set only when subscribed.** These APIs enable Narrative Clusters; no API calls when unset.
 
 ### LunarCrush (Recommended)
 - Get key: https://lunarcrush.com/developers
@@ -108,4 +136,39 @@ Comma-separated for multiple origins (e.g. `https://app.example.com,https://www.
 ```
 NEXT_PUBLIC_API_URL=http://localhost:3002
 ```
+
+### Trade Limits (Production)
+Max live trade amount per transaction (SOL). Default: 50.
+```
+MAX_TRADE_AMOUNT_SOL=50
+```
+
+### Withdrawal Limits
+Max withdrawal per transaction (SOL). Default: 50. Set REDIS_URL for circuit breaker and rate limit persistence.
+```
+MAX_WITHDRAWAL_PER_TX_SOL=50
+MAX_WITHDRAWAL_PER_DAY_SOL=100
+REDIS_URL=redis://localhost:6379
+```
+
+### Supervisor Rules
+Delay before rule changes apply to live agents (ms). Default: 1 hour.
+```
+RULE_CHANGE_DELAY_MS=3600000
+```
+
+### Token Launch (Production)
+Treasury wallet for token royalties (1% of launched supply).
+```
+TREASURY_WALLET_ADDRESS=your_solana_wallet_address
+```
+
+## Production Checklist
+
+Before deploying to production (`NODE_ENV=production`), ensure:
+
+1. **Never set in production:** `ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION`, `MOCK_FLY_DEPLOY`, `FORCE_MOCK_DB`
+2. **Use live keys:** Stripe `sk_live_*`, Clerk production secret key
+3. **Use paid Solana RPC:** Helius, Alchemy, or similar (not public `api.mainnet-beta.solana.com`)
+4. **Health checks:** `/health` and `/ready` (DB connectivity) for load balancers
 

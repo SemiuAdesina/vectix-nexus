@@ -68,17 +68,13 @@ vi.mock('../services/security/token-security', () => ({
   }),
 }));
 
-class MockRuleEngine {
-  evaluate = vi.fn().mockReturnValue({
+vi.mock('../services/supervisor/supervisor-rules.service', () => ({
+  evaluateWithDbRules: vi.fn().mockResolvedValue({
     approved: true,
     violations: [],
     timestamp: new Date(),
     request: {},
-  });
-}
-
-vi.mock('../services/supervisor/rule-engine', () => ({
-  RuleEngine: MockRuleEngine,
+  }),
 }));
 
 vi.mock('../services/affiliate/affiliate.service', () => ({

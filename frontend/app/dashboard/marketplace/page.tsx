@@ -33,8 +33,6 @@ export default function MarketplacePage() {
     setPurchasing(strategy.id);
     try {
       const result = await purchaseStrategy(strategy.id);
-      console.log('Purchase result:', result);
-      
       if (result.success || result.alreadyOwned) {
         setOwnedIds(prev => new Set([...Array.from(prev), strategy.id]));
         router.push(`/create?strategy=${strategy.id}`);
@@ -66,17 +64,17 @@ export default function MarketplacePage() {
     <div className="w-full">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold mb-2">Strategy Marketplace</h1>
-          <p className="text-muted-foreground">Browse and purchase trading strategies</p>
+          <h1 className="text-2xl font-bold mb-2 text-white">Strategy Marketplace</h1>
+          <p className="text-slate-400">Browse and purchase trading strategies</p>
         </div>
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
           <input
             type="text"
             placeholder="Search strategies..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 pr-4 h-10 rounded-lg bg-secondary border border-border text-sm w-64"
+            className="pl-10 pr-4 h-10 rounded-lg bg-slate-800/80 border border-slate-700 text-white placeholder:text-slate-500 text-sm w-64 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-colors"
           />
         </div>
       </div>
@@ -84,17 +82,17 @@ export default function MarketplacePage() {
       {loading ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="glass rounded-xl p-6 animate-pulse">
-              <div className="h-10 w-10 bg-secondary rounded-lg mb-4" />
-              <div className="h-5 bg-secondary rounded w-2/3 mb-2" />
-              <div className="h-4 bg-secondary rounded w-full" />
+            <div key={i} className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-6 animate-pulse">
+              <div className="h-10 w-10 bg-slate-700 rounded-lg mb-4" />
+              <div className="h-5 bg-slate-700 rounded w-2/3 mb-2" />
+              <div className="h-4 bg-slate-700 rounded w-full" />
             </div>
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="glass rounded-xl p-12 text-center">
-          <Store className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">No strategies found</p>
+        <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-12 text-center">
+          <Store className="w-12 h-12 mx-auto mb-4 text-slate-500" />
+          <p className="text-slate-400">No strategies found</p>
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">

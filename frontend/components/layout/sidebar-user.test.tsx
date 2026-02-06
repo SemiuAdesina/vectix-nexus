@@ -84,13 +84,13 @@ describe('SidebarUser', () => {
 
     it('shows Pro sparkles indicator when plan is pro', () => {
       const { container } = render(<SidebarUser collapsed={false} plan="pro" />);
-      const sparkles = container.querySelector('.bg-gradient-to-br.from-amber-400');
+      const sparkles = container.querySelector('.bg-amber-500');
       expect(sparkles).toBeInTheDocument();
     });
 
     it('does not show Pro sparkles indicator when plan is free', () => {
       const { container } = render(<SidebarUser collapsed={false} plan="free" />);
-      const sparkles = container.querySelector('.bg-gradient-to-br.from-amber-400');
+      const sparkles = container.querySelector('.bg-amber-500');
       expect(sparkles).not.toBeInTheDocument();
     });
   });

@@ -20,7 +20,7 @@ describe('PlatformWatermark', () => {
   it('includes copyright notice in console output', () => {
     render(<PlatformWatermark />);
     const callArgs = (console.info as ReturnType<typeof vi.fn>).mock.calls[0];
-    expect(callArgs[0]).toContain('VectixLogic Platform');
+    expect(callArgs[0]).toContain('Vectix Foundry Platform');
     expect(callArgs[0]).toContain('2026 Vectix Logic LLC');
   });
 
@@ -43,9 +43,9 @@ describe('PlatformFooter', () => {
     expect(footer).toBeDefined();
   });
 
-  it('displays VectixLogic branding', () => {
+  it('displays Vectix Foundry branding', () => {
     render(<PlatformFooter />);
-    expect(screen.getByText('VectixLogic Compliance Engine™')).toBeDefined();
+    expect(screen.getByText('Vectix Foundry Compliance Engine™')).toBeDefined();
   });
 
   it('displays platform secured message', () => {

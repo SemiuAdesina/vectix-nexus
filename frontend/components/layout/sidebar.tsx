@@ -7,7 +7,7 @@ import { useSidebar } from './sidebar-context';
 import { SidebarNav } from './sidebar-nav';
 import { SidebarUser } from './sidebar-user';
 import { getBackendUrl } from '@/lib/api/auth';
-import { Shield, Menu, X, Sparkles, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Zap, Menu, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 export function Sidebar() {
   const { collapsed, setCollapsed } = useSidebar();
@@ -45,82 +45,91 @@ export function Sidebar() {
     </>
   );
 
+  const headerBlock = (
+    <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800/80 shrink-0">
+      <Link href="/" className="flex items-center gap-3 overflow-hidden group">
+        <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center shrink-0 shadow-lg shadow-teal-500/25 ring-1 ring-white/10">
+          <Zap className="w-5 h-5 text-white" />
+        </div>
+        {!collapsed && (
+          <div className="overflow-hidden min-w-0">
+            <span className="font-bold text-sm tracking-tight text-white block truncate">VECTIX FOUNDRY</span>
+            <span className="text-[10px] text-slate-400 tracking-widest uppercase font-medium">v1.0</span>
+          </div>
+        )}
+      </Link>
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className="p-2 rounded-lg hover:bg-slate-800/80 hover:text-teal-400 text-slate-400 shrink-0 transition-colors"
+        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      >
+        {collapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
+      </button>
+    </div>
+  );
+
+  const mobileOverlay = mobileOpen && (
+    <div className="md:hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40" onClick={() => setMobileOpen(false)} />
+  );
+
+  const mobileTrigger = (
+    <button
+      onClick={() => setMobileOpen(true)}
+      className="md:hidden fixed top-4 left-4 z-50 p-2.5 rounded-xl bg-slate-900/90 backdrop-blur border border-slate-700 shadow-lg text-slate-300 hover:text-teal-400 hover:border-teal-500/30"
+      aria-label="Open menu"
+    >
+      <Menu className="w-5 h-5" />
+    </button>
+  );
+
+  const desktopAside = (
+    <aside
+      className={`
+        hidden md:flex fixed left-0 top-0 h-screen flex-col z-40 transition-all duration-300 ease-out
+        bg-slate-950/95 backdrop-blur-xl border-r border-slate-800/80
+        shadow-[4px_0_32px_-8px_rgba(0,0,0,0.5)]
+        ${collapsed ? 'w-[72px]' : 'w-64'}
+      `}
+    >
+      <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-teal-500/40 via-cyan-500/20 to-transparent pointer-events-none" />
+      {headerBlock}
+      {sidebarContent}
+    </aside>
+  );
+
+  const mobileAside = (
+    <aside
+      className={`
+        md:hidden fixed left-0 top-0 h-screen w-72 flex flex-col z-50 transition-transform duration-300 ease-out
+        bg-slate-950 border-r border-slate-800 shadow-2xl
+        ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}
+    >
+      <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-teal-500/40 to-transparent pointer-events-none" />
+      <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800 shrink-0">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-teal-500/25">
+            <Zap className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <span className="font-bold text-sm tracking-tight text-white block">VECTIX FOUNDRY</span>
+            <span className="text-[10px] text-slate-400 tracking-widest uppercase">v1.0</span>
+          </div>
+        </Link>
+        <button onClick={() => setMobileOpen(false)} className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-teal-400">
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+      {sidebarContent}
+    </aside>
+  );
+
   return (
     <>
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2.5 rounded-xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-lg"
-      >
-        <Menu className="w-5 h-5" />
-      </button>
-
-      {mobileOpen && (
-        <div
-          className="md:hidden fixed inset-0 bg-primary/30 backdrop-blur-sm z-40"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-
-      <aside className={`
-        md:hidden fixed left-0 top-0 h-screen w-72 bg-card/95 backdrop-blur-xl border-r border-primary/10
-        flex flex-col z-50 transition-transform duration-300 ease-out shadow-2xl shadow-primary/5
-        ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}>
-        <div className="h-16 flex items-center justify-between px-5 border-b border-primary/10">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-primary/90 to-primary/70 flex items-center justify-center shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-all duration-300 group-hover:scale-105">
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
-              <Shield className="w-5 h-5 text-primary-foreground relative z-10" />
-              <Sparkles className="w-3 h-3 text-primary-foreground/60 absolute -top-0.5 -right-0.5 animate-pulse" />
-            </div>
-            <div className="overflow-hidden">
-              <span className="font-bold text-base tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent block leading-tight">VECTIX FOUNDRY</span>
-              <span className="text-[9px] text-muted-foreground tracking-wider uppercase font-medium">v1.0</span>
-            </div>
-          </Link>
-          <button
-            onClick={() => setMobileOpen(false)}
-            className="p-2 rounded-xl hover:bg-primary/10 hover:text-primary transition-all duration-200"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-        {sidebarContent}
-      </aside>
-
-      <aside className={`
-        hidden md:flex fixed left-0 top-0 h-screen bg-card/60 backdrop-blur-xl border-r border-primary/10
-        flex-col z-40 transition-all duration-300 ease-out shadow-[4px_0_24px_-8px_hsl(var(--primary)/0.15)]
-        ${collapsed ? 'w-[72px]' : 'w-64'}
-      `}>
-        <div className="h-16 flex items-center justify-between px-4 border-b border-primary/10 shrink-0">
-          <Link href="/" className="flex items-center gap-3 overflow-hidden group">
-            <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-primary/90 to-primary/70 flex items-center justify-center shrink-0 shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-all duration-300 group-hover:scale-105">
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
-              <Shield className="w-5 h-5 text-primary-foreground relative z-10" />
-              <Sparkles className="w-3 h-3 text-primary-foreground/60 absolute -top-0.5 -right-0.5 animate-pulse" />
-            </div>
-            {!collapsed && (
-              <div className="overflow-hidden">
-                <span className="font-bold text-base tracking-tight bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent block leading-tight">VECTIX FOUNDRY</span>
-                <span className="text-[9px] text-muted-foreground tracking-wider uppercase font-medium">v1.0</span>
-              </div>
-            )}
-          </Link>
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-lg hover:bg-primary/10 hover:text-primary shrink-0 transition-all duration-200 group"
-            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {collapsed ? (
-              <PanelLeftOpen className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-            ) : (
-              <PanelLeftClose className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-            )}
-          </button>
-        </div>
-        {sidebarContent}
-      </aside>
+      {mobileTrigger}
+      {mobileOverlay}
+      {mobileAside}
+      {desktopAside}
     </>
   );
 }

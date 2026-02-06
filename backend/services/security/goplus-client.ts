@@ -13,10 +13,10 @@ export async function fetchGoPlusData(tokenAddress: string): Promise<GoPlusToken
   try {
     const url = `${GOPLUS_BASE_URL}/token_security/${SOLANA_CHAIN_ID}?contract_addresses=${tokenAddress}`;
     
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const apiKey = process.env.GOPLUS_API_KEY?.trim();
+    if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
+    const response = await fetch(url, { method: 'GET', headers });
 
     if (!response.ok) {
       console.error('GoPlus API error:', response.status, response.statusText);

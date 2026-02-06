@@ -27,33 +27,33 @@ export function MultiSigCard() {
   };
 
   return (
-    <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.08)]">
+    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6 shadow-[0_0_24px_-8px_rgba(20,184,166,0.08)]">
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30">
-          <Users className="w-5 h-5 text-primary" />
+        <div className="w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
+          <Users className="w-5 h-5 text-teal-400" />
         </div>
-        <h3 className="font-semibold text-foreground">Multi-Signature Wallet</h3>
+        <h3 className="font-semibold text-white">Multi-Signature Wallet</h3>
       </div>
 
       <div className="space-y-3">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-slate-400">
           Require multiple signatures for critical operations
         </p>
 
         <div className="space-y-2">
           {proposals.map((proposal) => (
-            <div key={proposal.id} className="p-3 rounded-xl border border-primary/20 bg-card hover:border-primary/40 transition-colors">
+            <div key={proposal.id} className="p-3 rounded-xl border border-slate-700/50 bg-slate-800/50 hover:border-teal-500/40 transition-colors">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium capitalize text-foreground">{proposal.type}</span>
+                <span className="text-sm font-medium capitalize text-white">{proposal.type}</span>
                 <span className={`text-xs px-2.5 py-1 rounded-lg border font-medium ${
-                  proposal.status === 'approved' ? 'bg-primary/10 text-primary border-primary/20' :
-                  proposal.status === 'pending' ? 'bg-[hsl(var(--warning))]/10 text-[hsl(var(--warning))] border-[hsl(var(--warning))]/20' :
-                  'bg-secondary text-muted-foreground border-border'
+                  proposal.status === 'approved' ? 'bg-teal-500/10 text-teal-400 border-teal-500/30' :
+                  proposal.status === 'pending' ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' :
+                  'bg-slate-800 text-slate-400 border-slate-700'
                 }`}>
                   {proposal.status}
                 </span>
               </div>
-              <div className="text-xs text-muted-foreground mt-1">
+              <div className="text-xs text-slate-400 mt-1">
                 Signatures: {proposal.signatures.length}
               </div>
             </div>
@@ -63,7 +63,7 @@ export function MultiSigCard() {
         <button
           onClick={handleCreateProposal}
           disabled={loading}
-          className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_0_14px_-4px_hsl(var(--primary)_/_0.4)]"
+          className="w-full px-4 py-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-lg disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-teal-500/20"
         >
           {loading ? <Loader2 className="w-4 h-4 animate-spin shrink-0" /> : <CheckCircle2 className="w-4 h-4 shrink-0" />}
           Create Proposal

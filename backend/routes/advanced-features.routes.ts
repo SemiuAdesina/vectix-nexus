@@ -1,12 +1,59 @@
 import { Router, Request, Response } from 'express';
+import { VersionedTransaction } from '@solana/web3.js';
 import { getPreflightGuard } from '../services/simulation/preflight-guard';
-import { RuleEngine } from '../services/supervisor/rule-engine';
+import {
+  getEffectiveRules,
+  updateRule,
+  evaluateWithDbRules,
+} from '../services/supervisor/supervisor-rules.service';
 import { ShadowPortfolioManager } from '../services/shadow/shadow-portfolio';
 import { getSecureEnclave } from '../services/tee/secure-enclave';
 
 const router = Router();
-const ruleEngine = new RuleEngine();
 const shadowManager = new ShadowPortfolioManager();
+
+router.post('/preflight/evaluate', async (req: Request, res: Response) => {
+  try {
+    const { serializedTransaction, walletAddress, expectedBalanceChange, agentId, action } = req.body as {
+      serializedTransaction: string;
+      walletAddress: string;
+      expectedBalanceChange: number;
+      agentId: string;
+      action: string;
+    };
+    if (!serializedTransaction || !walletAddress || agentId == null) {
+      return res.status(400).json({
+        success: false,
+        approved: false,
+        error: 'serializedTransaction, walletAddress, and agentId required',
+      });
+    }
+    const buf = Buffer.from(serializedTransaction, 'base64');
+    const transaction = VersionedTransaction.deserialize(new Uint8Array(buf));
+    const decision = await getPreflightGuard().evaluate({
+      agentId,
+      walletAddress,
+      transaction,
+      expectedBalanceChange: typeof expectedBalanceChange === 'number' ? expectedBalanceChange : 0,
+      action: action ?? 'trade',
+    });
+    res.json({
+      success: true,
+      approved: decision.approved,
+      reason: decision.reason,
+      simulation: {
+        success: decision.simulation.success,
+        riskFlags: decision.simulation.riskFlags,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      approved: false,
+      error: err instanceof Error ? err.message : 'Preflight evaluation failed',
+    });
+  }
+});
 
 router.get('/preflight/stats/:agentId', (req: Request, res: Response) => {
   const agentId = Array.isArray(req.params.agentId) ? req.params.agentId[0] : req.params.agentId;
@@ -14,19 +61,20 @@ router.get('/preflight/stats/:agentId', (req: Request, res: Response) => {
   res.json({ success: true, stats });
 });
 
-router.post('/supervisor/evaluate', (req: Request, res: Response) => {
-  const decision = ruleEngine.evaluate(req.body);
+router.post('/supervisor/evaluate', async (req: Request, res: Response) => {
+  const decision = await evaluateWithDbRules(req.body);
   res.json({ success: true, decision });
 });
 
-router.get('/supervisor/rules', (_req: Request, res: Response) => {
-  res.json({ success: true, rules: ruleEngine.getRules() });
+router.get('/supervisor/rules', async (_req: Request, res: Response) => {
+  const rules = await getEffectiveRules();
+  res.json({ success: true, rules });
 });
 
-router.put('/supervisor/rules/:ruleId', (req: Request, res: Response) => {
+router.put('/supervisor/rules/:ruleId', async (req: Request, res: Response) => {
   const ruleId = Array.isArray(req.params.ruleId) ? req.params.ruleId[0] : req.params.ruleId;
-  ruleEngine.updateRule(ruleId, req.body);
-  res.json({ success: true, message: 'Rule updated' });
+  const { effectiveAt } = await updateRule(ruleId, req.body);
+  res.json({ success: true, message: 'Rule update scheduled', effectiveAt });
 });
 
 router.post('/shadow/create', (req: Request, res: Response) => {

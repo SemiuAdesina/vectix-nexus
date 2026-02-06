@@ -37,50 +37,50 @@ export function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen py-20">
+    <div className="min-h-screen py-20 bg-slate-950">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16 pt-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
             Choose Your Plan
           </h1>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+          <p className="text-lg text-slate-400 max-w-xl mx-auto">
             Start deploying AI agents that trade, tweet, and earn for you
           </p>
-          <div className="w-24 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mt-6 mx-auto" />
+          <div className="w-24 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500/50 mt-6 mx-auto" />
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {Object.entries(DEFAULT_PLANS).map(([key, plan]) => (
             <div
               key={key}
-              className={`relative rounded-2xl border bg-card p-8 transition-all duration-200 shadow-[0_0_24px_-8px_hsl(var(--primary)/0.08)] ${
+              className={`relative rounded-2xl border p-8 transition-all duration-200 ${
                 key === 'pro'
-                  ? 'border-primary/40 shadow-[0_0_28px_-10px_hsl(var(--primary)/0.18)] hover:shadow-[0_0_32px_-10px_hsl(var(--primary)/0.22)]'
-                  : 'border-primary/20 hover:border-primary/40 hover:shadow-[0_0_24px_-8px_hsl(var(--primary)/0.12)]'
+                  ? 'border-teal-500/40 bg-slate-900/50 shadow-[0_0_28px_-10px_rgba(20,184,166,0.18)] hover:shadow-[0_0_32px_-10px_rgba(20,184,166,0.22)]'
+                  : 'border-slate-700/50 bg-slate-900/50 hover:border-teal-500/30 hover:shadow-[0_0_24px_-8px_rgba(20,184,166,0.12)]'
               }`}
             >
               {key === 'pro' && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 border border-primary/30 shadow-[0_0_12px_-4px_hsl(var(--primary)/0.3)]">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-lg bg-teal-500 text-white text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 border border-teal-500/30 shadow-lg shadow-teal-500/25">
                   <Sparkles className="w-3 h-3" />
                   Most Popular
                 </div>
               )}
 
               <div className="mb-6">
-                <h3 className="text-xl font-bold mb-2 text-foreground">{plan.name}</h3>
+                <h3 className="text-xl font-bold mb-2 text-white">{plan.name}</h3>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold text-primary">${(plan.price / 100).toFixed(0)}</span>
-                  <span className="text-muted-foreground">/month</span>
+                  <span className="text-4xl font-bold text-teal-400">${(plan.price / 100).toFixed(0)}</span>
+                  <span className="text-slate-400">/month</span>
                 </div>
               </div>
 
               <ul className="space-y-3 mb-8">
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-lg bg-primary/15 flex items-center justify-center flex-shrink-0 border border-primary/20">
-                      <Check className="w-3.5 h-3.5 text-primary" />
+                    <div className="w-6 h-6 rounded-lg bg-teal-500/15 flex items-center justify-center flex-shrink-0 border border-teal-500/20">
+                      <Check className="w-3.5 h-3.5 text-teal-400" />
                     </div>
-                    <span className="text-muted-foreground text-sm">{feature}</span>
+                    <span className="text-slate-400 text-sm">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -88,7 +88,7 @@ export function PricingPage() {
               <Button
                 size="lg"
                 variant={key === 'pro' ? 'default' : 'outline'}
-                className={`w-full ${key === 'pro' ? 'shadow-[0_0_14px_-4px_hsl(var(--primary)/0.4)]' : 'border-primary/30 hover:bg-primary/10 hover:border-primary/50 hover:text-primary'}`}
+                className={`w-full ${key === 'pro' ? 'bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white border-0 shadow-lg shadow-teal-500/20' : 'border-slate-600 text-slate-400 hover:bg-teal-500/10 hover:border-teal-500/50 hover:text-teal-400'}`}
                 onClick={() => handleSubscribe(key)}
                 disabled={subscribing !== null}
               >

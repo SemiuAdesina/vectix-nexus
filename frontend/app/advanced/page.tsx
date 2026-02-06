@@ -2,29 +2,31 @@
 
 import { useState } from 'react';
 import { Shield, Brain, Ghost, Lock } from 'lucide-react';
-import { 
-  PreflightStatsCard, 
-  SupervisorRulesCard, 
-  ShadowModeCard, 
-  TEEStatusCard 
+import { RiskDisclaimer } from '@/components/risk-disclaimer';
+import {
+  PreflightStatsCard,
+  SupervisorRulesCard,
+  ShadowModeCard,
+  TEEStatusCard
 } from '@/components/advanced-features';
 
 export default function AdvancedFeaturesPage() {
   const [selectedAgentId] = useState('demo-agent-1');
 
   return (
-    <div className="w-full">
+    <div className="w-full space-y-6">
+      <RiskDisclaimer />
       <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-2 text-foreground">Security & Intelligence Suite</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl font-bold mb-2 text-white">Security & Intelligence Suite</h1>
+        <p className="text-slate-400">
           Enterprise-grade features that make your AI agents robust, secure, and profitable.
         </p>
-        <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mt-4" />
+        <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500/50 mt-4" />
       </div>
 
       <div className="grid gap-6">
         <FeatureSection
-          icon={<Shield className="w-5 h-5" />}
+          icon={<Shield className="w-5 h-5 text-teal-400" />}
           title="Transaction Protection"
           description="Pre-flight simulation prevents rug-pulls and bad trades"
         >
@@ -33,7 +35,7 @@ export default function AdvancedFeaturesPage() {
 
         <div className="grid lg:grid-cols-2 gap-6">
           <FeatureSection
-            icon={<Brain className="w-5 h-5" />}
+            icon={<Brain className="w-5 h-5 text-teal-400" />}
             title="Risk Management"
             description="Constitutional rules the AI cannot break"
           >
@@ -41,7 +43,7 @@ export default function AdvancedFeaturesPage() {
           </FeatureSection>
 
           <FeatureSection
-            icon={<Ghost className="w-5 h-5" />}
+            icon={<Ghost className="w-5 h-5 text-teal-400" />}
             title="Paper Trading"
             description="Test strategies risk-free with live data"
           >
@@ -50,7 +52,7 @@ export default function AdvancedFeaturesPage() {
         </div>
 
         <FeatureSection
-          icon={<Lock className="w-5 h-5" />}
+          icon={<Lock className="w-5 h-5 text-teal-400" />}
           title="Hardware Security"
           description="TEE-protected keys that even we cannot access"
         >
@@ -75,12 +77,12 @@ function FeatureSection({
   return (
     <section>
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center text-primary border border-primary/30 shadow-[0_0_12px_-4px_hsl(var(--primary)/0.2)]">
+        <div className="w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
           {icon}
         </div>
         <div>
-          <h3 className="font-semibold text-foreground">{title}</h3>
-          <p className="text-sm text-muted-foreground">{description}</p>
+          <h3 className="font-semibold text-white">{title}</h3>
+          <p className="text-sm text-slate-400">{description}</p>
         </div>
       </div>
       {children}

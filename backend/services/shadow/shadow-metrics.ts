@@ -29,7 +29,10 @@ function calcSharpe(returns: number[]): number {
   return std > 0 ? avg / std : 0;
 }
 
+const MIN_TRADES_FOR_GO_LIVE = 10;
+
 export function getRecommendation(m: PerformanceMetrics): 'GO_LIVE' | 'CONTINUE_TESTING' | 'NEEDS_ADJUSTMENT' {
+  if (m.totalTrades < MIN_TRADES_FOR_GO_LIVE) return 'CONTINUE_TESTING';
   if (m.totalPnlPercent > 5 && m.winRate > 50 && m.sharpeRatio > 0.5) return 'GO_LIVE';
   if (m.totalPnlPercent < -10 || m.winRate < 30) return 'NEEDS_ADJUSTMENT';
   return 'CONTINUE_TESTING';

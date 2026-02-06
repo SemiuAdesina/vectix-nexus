@@ -51,8 +51,6 @@ export function StrategyStore({ onSelectStrategy, onClose }: StrategyStoreProps)
     setPurchasing(strategy.id);
     try {
       const result = await purchaseStrategy(strategy.id);
-      console.log('Purchase result:', result);
-      
       if (result.success || result.alreadyOwned) {
         setOwnedIds((prev) => new Set([...Array.from(prev), strategy.id]));
         onSelectStrategy(strategy);
@@ -76,43 +74,42 @@ export function StrategyStore({ onSelectStrategy, onClose }: StrategyStoreProps)
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity duration-200"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md transition-opacity duration-200"
       style={{ opacity: mounted ? 1 : 0 }}
     >
       <div
-        className="rounded-2xl border border-primary/20 w-full max-w-4xl flex flex-col overflow-hidden shadow-2xl bg-card transition-[opacity,transform] duration-200"
+        className="rounded-2xl border border-slate-700/50 w-full max-w-4xl flex flex-col overflow-hidden shadow-2xl bg-slate-900 transition-[opacity,transform] duration-200"
         style={{
           height: MODAL_HEIGHT,
-          backgroundColor: 'hsl(var(--card))',
           opacity: mounted ? 1 : 0,
           transform: mounted ? 'scale(1)' : 'scale(0.98)',
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-primary/20">
+        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-slate-700/80">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30">
-              <Store className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
+              <Store className="w-5 h-5 text-teal-400" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-foreground">Strategy Store</h2>
-              <p className="text-sm text-muted-foreground">Choose a pre-built strategy</p>
+              <h2 className="text-xl font-bold text-white">Strategy Store</h2>
+              <p className="text-sm text-slate-400">Choose a pre-built strategy</p>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0 rounded-lg hover:bg-primary/10 hover:text-primary">
+          <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0 rounded-lg text-slate-400 hover:bg-teal-500/10 hover:text-teal-400">
             <X className="w-4 h-4" />
           </Button>
         </div>
 
-        <div className="shrink-0 flex gap-2 px-6 py-3 border-b border-primary/20 overflow-x-auto">
+        <div className="shrink-0 flex gap-2 px-6 py-3 border-b border-slate-700/80 overflow-x-auto">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setCategory(cat.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                 category === cat.id
-                  ? 'bg-primary text-primary-foreground shadow-[0_0_12px_-4px_hsl(var(--primary)_/_0.4)]'
-                  : 'bg-secondary text-muted-foreground border border-transparent hover:text-primary hover:bg-primary/10 hover:border-primary/20'
+                  ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/20'
+                  : 'bg-slate-800/80 text-slate-400 border border-slate-700 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/30'
               }`}
             >
               <cat.icon className="w-4 h-4 shrink-0" />
@@ -124,11 +121,11 @@ export function StrategyStore({ onSelectStrategy, onClose }: StrategyStoreProps)
         <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-6">
           {loading ? (
             <div className="flex items-center justify-center min-h-[200px]">
-              <Loader2 className="w-8 h-8 text-primary animate-spin" />
+              <Loader2 className="w-8 h-8 text-teal-400 animate-spin" />
             </div>
           ) : strategies.length === 0 ? (
-            <div className="flex flex-col items-center justify-center min-h-[200px] text-muted-foreground text-center">
-              <PackageOpen className="w-12 h-12 mb-4 text-muted-foreground/50" />
+            <div className="flex flex-col items-center justify-center min-h-[200px] text-slate-400 text-center">
+              <PackageOpen className="w-12 h-12 mb-4 text-slate-500" />
               <p>No strategies found in this category</p>
             </div>
           ) : (

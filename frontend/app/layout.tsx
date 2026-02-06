@@ -4,34 +4,56 @@ import "./globals.css";
 import { OwnershipWatermark, AuthTokenBridge } from "@/components/layout";
 
 export const metadata: Metadata = {
-  title: "VectixLogic | AI Agent Factory",
-  description: "Deploy profitable AI agents on Solana in minutes",
+  title: "Vectix Foundry | AI Agent Factory",
+  description: "Enterprise-grade autonomous AI trading agents on Solana with institutional security",
 };
 
 const clerkAppearance = {
   variables: {
-    colorPrimary: '#2dd4bf',
-    colorBackground: '#0d1117',
-    colorInputBackground: '#161b22',
-    colorInputText: '#e6edf3',
-    colorText: '#e6edf3',
-    colorTextSecondary: '#8b949e',
-    colorDanger: '#f85149',
+    colorPrimary: '#14b8a6',
+    colorBackground: '#020617',
+    colorInputBackground: '#1e293b',
+    colorInputText: '#f8fafc',
+    colorText: '#f8fafc',
+    colorTextSecondary: '#94a3b8',
+    colorDanger: '#dc2626',
     borderRadius: '0.5rem',
     fontFamily: 'Inter, system-ui, sans-serif',
   },
   elements: {
     rootBox: { display: 'flex', justifyContent: 'center', alignItems: 'center' },
-    modalBackdrop: { backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center' },
+    modalBackdrop: {
+      backgroundColor: 'rgba(2, 6, 23, 0.85)',
+      backdropFilter: 'blur(8px)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     modalContent: { margin: 'auto' },
-    card: { backgroundColor: '#0d1117', border: '1px solid #30363d', boxShadow: '0 16px 32px rgba(0,0,0,0.5)' },
-    headerTitle: { color: '#e6edf3' },
-    headerSubtitle: { color: '#8b949e' },
-    socialButtonsBlockButton: { backgroundColor: '#161b22', border: '1px solid #30363d', color: '#e6edf3' },
-    formFieldLabel: { color: '#e6edf3' },
-    formFieldInput: { backgroundColor: '#161b22', border: '1px solid #30363d', color: '#e6edf3' },
-    formButtonPrimary: { backgroundColor: '#2dd4bf', color: '#0d1117', fontWeight: '600' },
-    footerActionLink: { color: '#2dd4bf' },
+    card: {
+      backgroundColor: '#0f172a',
+      border: '1px solid #334155',
+      boxShadow: '0 16px 48px rgba(0,0,0,0.6)',
+    },
+    headerTitle: { color: '#f8fafc' },
+    headerSubtitle: { color: '#94a3b8' },
+    socialButtonsBlockButton: {
+      backgroundColor: '#1e293b',
+      border: '1px solid #334155',
+      color: '#f8fafc',
+    },
+    formFieldLabel: { color: '#f8fafc' },
+    formFieldInput: {
+      backgroundColor: '#1e293b',
+      border: '1px solid #334155',
+      color: '#f8fafc',
+    },
+    formButtonPrimary: {
+      backgroundColor: '#14b8a6',
+      color: '#ffffff',
+      fontWeight: '600',
+    },
+    footerActionLink: { color: '#14b8a6' },
   },
 };
 

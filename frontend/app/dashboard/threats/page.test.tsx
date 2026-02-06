@@ -53,7 +53,7 @@ describe('ThreatIntelligencePage', () => {
     
     await waitFor(() => {
       expect(screen.getByText('Threat Intelligence')).toBeInTheDocument();
-      expect(screen.getByText(/Real-time threat detection and community reporting by VectixLogic/i)).toBeInTheDocument();
+      expect(screen.getByText(/Real-time threat detection and community reporting by Vectix Foundry/i)).toBeInTheDocument();
     });
   });
 

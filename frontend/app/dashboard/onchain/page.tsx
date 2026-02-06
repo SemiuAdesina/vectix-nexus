@@ -33,7 +33,7 @@ export default function OnChainPage() {
   if (loading && !status) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        <Loader2 className="w-6 h-6 animate-spin text-teal-400" />
       </div>
     );
   }
@@ -41,11 +41,11 @@ export default function OnChainPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold mb-2 text-foreground">On-Chain Verification</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl font-bold mb-2 text-white">On-Chain Verification</h1>
+        <p className="text-slate-400">
           Verifiable security decisions stored on the Solana blockchain
         </p>
-        <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mt-4" />
+        <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500/50 mt-4" />
       </div>
 
       <StatusCard status={status} />

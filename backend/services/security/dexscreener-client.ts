@@ -2,6 +2,13 @@ import { SafeToken } from './security.types';
 
 const DEXSCREENER_BASE = 'https://api.dexscreener.com/latest/dex';
 
+function dexScreenerHeaders(): Record<string, string> {
+  const key = process.env.DEXSCREENER_API_KEY;
+  const headers: Record<string, string> = { 'Accept': 'application/json' };
+  if (key?.trim()) headers['X-API-KEY'] = key.trim();
+  return headers;
+}
+
 const SOLANA_ADDRESS_REGEX = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
 function isSolanaAddress(value: string): boolean {
@@ -31,7 +38,7 @@ export async function fetchSolanaTrending(): Promise<SafeToken[]> {
     const allPairs: DexScreenerPair[] = [];
 
     for (const query of queries) {
-      const response = await fetch(`${DEXSCREENER_BASE}/search?q=${query}`);
+      const response = await fetch(`${DEXSCREENER_BASE}/search?q=${query}`, { headers: dexScreenerHeaders() });
       if (response.ok) {
         const data = (await response.json()) as DexScreenerResponse;
         if (data.pairs) {
@@ -74,7 +81,7 @@ export async function fetchTokenByAddress(address: string): Promise<SafeToken | 
   if (!isSolanaAddress(address)) return null;
   try {
     const encoded = encodeURIComponent(address.trim());
-    const response = await fetch(`${DEXSCREENER_BASE}/tokens/${encoded}`);
+    const response = await fetch(`${DEXSCREENER_BASE}/tokens/${encoded}`, { headers: dexScreenerHeaders() });
     if (!response.ok) return null;
 
     const data = (await response.json()) as DexScreenerResponse;

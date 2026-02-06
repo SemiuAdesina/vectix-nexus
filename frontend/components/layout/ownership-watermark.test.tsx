@@ -20,7 +20,7 @@ describe('OwnershipWatermark', () => {
   it('includes copyright notice in console output', () => {
     render(<OwnershipWatermark />);
     const callArgs = (console.info as ReturnType<typeof vi.fn>).mock.calls[0];
-    expect(callArgs[0]).toContain('VectixLogic Platform');
+    expect(callArgs[0]).toContain('Vectix Foundry Platform');
     expect(callArgs[0]).toContain('2026 Vectix Logic LLC');
   });
 

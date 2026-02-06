@@ -30,9 +30,9 @@ export function TEEStatusCard() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-primary/20 bg-card p-6 animate-pulse shadow-[0_0_24px_-8px_hsl(var(--primary)/0.08)]">
-        <div className="h-6 bg-secondary/80 rounded w-1/3 mb-4" />
-        <div className="h-32 bg-secondary/80 rounded-xl" />
+      <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6 animate-pulse">
+        <div className="h-6 bg-slate-700 rounded w-1/3 mb-4" />
+        <div className="h-32 bg-slate-700 rounded-xl" />
       </div>
     );
   }
@@ -40,71 +40,40 @@ export function TEEStatusCard() {
   const isSecure = status?.available && status.attestationValid;
 
   return (
-    <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)/0.12)]">
+    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-[0_0_12px_-4px_hsl(var(--primary)/0.2)] ${
-          isSecure ? 'bg-primary/15 border-primary/30' : 'bg-destructive/10 border-destructive/30'
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
+          isSecure ? 'bg-teal-500/15 border-teal-500/30' : 'bg-red-500/10 border-red-500/30'
         }`}>
-          {isSecure
-            ? <ShieldCheck className="w-5 h-5 text-primary" />
-            : <ShieldAlert className="w-5 h-5 text-destructive" />
-          }
+          {isSecure ? <ShieldCheck className="w-5 h-5 text-teal-400" /> : <ShieldAlert className="w-5 h-5 text-red-400" />}
         </div>
         <div>
-          <h3 className="font-semibold text-foreground">Trusted Execution</h3>
-          <p className="text-xs text-muted-foreground">
-            Hardware-encrypted key storage
-          </p>
+          <h3 className="font-semibold text-white">Trusted Execution</h3>
+          <p className="text-xs text-slate-400">Hardware-encrypted key storage</p>
         </div>
       </div>
 
       <div className={`rounded-xl border p-4 mb-4 ${
-        isSecure
-          ? 'bg-primary/5 border-primary/30'
-          : 'bg-destructive/5 border-destructive/30'
+        isSecure ? 'bg-teal-500/5 border-teal-500/30' : 'bg-red-500/5 border-red-500/30'
       }`}>
         <div className="flex items-center gap-2 mb-2">
-          {isSecure
-            ? <CheckCircle2 className="w-5 h-5 text-primary" />
-            : <XCircle className="w-5 h-5 text-destructive" />
-          }
-          <span className={`font-semibold ${isSecure ? 'text-primary' : 'text-destructive'}`}>
+          {isSecure ? <CheckCircle2 className="w-5 h-5 text-teal-400" /> : <XCircle className="w-5 h-5 text-red-400" />}
+          <span className={`font-semibold ${isSecure ? 'text-teal-400' : 'text-red-400'}`}>
             {isSecure ? 'Enclave Active' : 'Enclave Unavailable'}
           </span>
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-slate-400">
           {isSecure
             ? 'Your private keys are protected in a hardware-encrypted environment. Even Vectix cannot access them.'
-            : 'TEE is not available. Keys are encrypted with software-level security.'
-          }
+            : 'TEE is not available. Keys are encrypted with software-level security.'}
         </p>
       </div>
 
       <div className="space-y-3">
-        <StatusRow
-          icon={<Server className="w-4 h-4" />}
-          label="Provider"
-          value={formatProvider(status?.provider)}
-          active={status?.available}
-        />
-        <StatusRow
-          icon={<Shield className="w-4 h-4" />}
-          label="Attestation"
-          value={status?.attestationValid ? 'Valid' : 'Invalid'}
-          active={status?.attestationValid}
-        />
-        <StatusRow
-          icon={<Key className="w-4 h-4" />}
-          label="Stored Keys"
-          value={`${status?.keyCount ?? 0} keys`}
-          active={(status?.keyCount ?? 0) > 0}
-        />
-        <StatusRow
-          icon={<Lock className="w-4 h-4" />}
-          label="Enclave ID"
-          value={status?.enclaveId ? truncateId(status.enclaveId) : 'N/A'}
-          active={!!status?.enclaveId}
-        />
+        <StatusRow icon={<Server className="w-4 h-4 text-slate-400" />} label="Provider" value={formatProvider(status?.provider)} active={status?.available} />
+        <StatusRow icon={<Shield className="w-4 h-4 text-slate-400" />} label="Attestation" value={status?.attestationValid ? 'Valid' : 'Invalid'} active={status?.attestationValid} />
+        <StatusRow icon={<Key className="w-4 h-4 text-slate-400" />} label="Stored Keys" value={`${status?.keyCount ?? 0} keys`} active={(status?.keyCount ?? 0) > 0} />
+        <StatusRow icon={<Lock className="w-4 h-4 text-slate-400" />} label="Enclave ID" value={status?.enclaveId ? truncateId(status.enclaveId) : 'N/A'} active={!!status?.enclaveId} />
       </div>
     </div>
   );
@@ -119,14 +88,12 @@ interface StatusRowProps {
 
 function StatusRow({ icon, label, value, active }: StatusRowProps) {
   return (
-    <div className="flex items-center justify-between p-3 rounded-xl border border-primary/20 bg-card">
-      <div className="flex items-center gap-2 text-muted-foreground">
+    <div className="flex items-center justify-between p-3 rounded-xl border border-slate-700/50 bg-slate-800/30">
+      <div className="flex items-center gap-2 text-slate-400">
         {icon}
         <span className="text-sm">{label}</span>
       </div>
-      <span className={`text-sm font-medium ${active ? 'text-primary' : 'text-muted-foreground'}`}>
-        {value}
-      </span>
+      <span className={`text-sm font-medium ${active ? 'text-teal-400' : 'text-slate-400'}`}>{value}</span>
     </div>
   );
 }

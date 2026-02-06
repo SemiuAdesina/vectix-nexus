@@ -36,26 +36,26 @@ export function NarrativeClustersCard() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-primary/20 bg-card p-6 flex items-center justify-center h-48 shadow-[0_0_24px_-8px_hsl(var(--primary)/0.08)]">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6 flex items-center justify-center h-48">
+        <Loader2 className="w-6 h-6 animate-spin text-teal-400" />
       </div>
     );
   }
 
   if (!available) {
     return (
-      <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)/0.08)]">
+      <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30">
-            <Layers className="w-5 h-5 text-primary" />
+          <div className="w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
+            <Layers className="w-5 h-5 text-teal-400" />
           </div>
-          <h3 className="font-semibold text-foreground">Narrative Tracking</h3>
-          <span className="text-xs bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-lg">Coming Soon</span>
+          <h3 className="font-semibold text-white">Narrative Tracking</h3>
+          <span className="text-xs bg-teal-500/10 text-teal-400 border border-teal-500/20 px-2 py-0.5 rounded-lg">Coming Soon</span>
         </div>
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-secondary/50 border border-border">
-          <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 shrink-0" />
-          <p className="text-sm text-muted-foreground">
-            Requires LunarCrush API key. Add <code className="text-xs bg-background px-1.5 py-0.5 rounded border border-border">LUNARCRUSH_API_KEY</code> to enable.
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+          <AlertCircle className="w-5 h-5 text-slate-400 mt-0.5 shrink-0" />
+          <p className="text-sm text-slate-400">
+            Requires LunarCrush API key. Add <code className="text-xs bg-slate-950 px-1.5 py-0.5 rounded border border-slate-700 text-slate-300">LUNARCRUSH_API_KEY</code> to enable.
           </p>
         </div>
       </div>
@@ -63,15 +63,15 @@ export function NarrativeClustersCard() {
   }
 
   return (
-    <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)/0.12)]">
+    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30 shadow-[0_0_12px_-4px_hsl(var(--primary)/0.2)]">
-            <Layers className="w-5 h-5 text-primary" />
+          <div className="w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
+            <Layers className="w-5 h-5 text-teal-400" />
           </div>
-          <h3 className="font-semibold text-foreground">Narrative Clusters</h3>
+          <h3 className="font-semibold text-white">Narrative Clusters</h3>
         </div>
-        <span className="text-xs text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-lg font-medium">Live</span>
+        <span className="text-xs text-teal-400 bg-teal-500/10 border border-teal-500/20 px-2 py-0.5 rounded-lg font-medium">Live</span>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
@@ -81,8 +81,8 @@ export function NarrativeClustersCard() {
       </div>
 
       {signals.length > 0 && (
-        <div className="border-t border-border pt-4">
-          <h4 className="text-sm font-medium mb-2 text-foreground">Active Signals</h4>
+        <div className="border-t border-slate-700 pt-4">
+          <h4 className="text-sm font-medium mb-2 text-white">Active Signals</h4>
           <div className="space-y-1">
             {signals.slice(0, 3).map(signal => (
               <SignalItem key={signal.clusterId} signal={signal} />
@@ -97,16 +97,16 @@ export function NarrativeClustersCard() {
 function ClusterCard({ cluster }: { cluster: NarrativeCluster }) {
   const isPositive = cluster.growthRate >= 0;
   return (
-    <div className="p-3 rounded-xl border border-primary/20 bg-card hover:border-primary/40 hover:shadow-[0_0_16px_-6px_hsl(var(--primary)/0.15)] transition-all duration-200">
+    <div className="p-3 rounded-xl border border-slate-700/50 bg-slate-800/30 hover:border-teal-500/30 transition-all duration-200">
       <div className="flex items-center justify-between mb-1">
-        <span className="font-medium text-sm text-foreground">{cluster.name}</span>
-        <span className={`text-xs font-medium ${isPositive ? 'text-primary' : 'text-destructive'}`}>
+        <span className="font-medium text-sm text-white">{cluster.name}</span>
+        <span className={`text-xs font-medium ${isPositive ? 'text-teal-400' : 'text-red-400'}`}>
           {isPositive ? '+' : ''}{cluster.growthRate.toFixed(1)}%
         </span>
       </div>
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <div className="flex items-center gap-2 text-xs text-slate-400">
         <span>{cluster.mentionCount.toLocaleString()} mentions</span>
-        <span className="w-1 h-1 rounded-full bg-muted-foreground" />
+        <span className="w-1 h-1 rounded-full bg-slate-500" />
         <span>Heat: {cluster.heatScore}</span>
       </div>
     </div>
@@ -115,14 +115,13 @@ function ClusterCard({ cluster }: { cluster: NarrativeCluster }) {
 
 function SignalItem({ signal }: { signal: NarrativeSignal }) {
   const Icon = signal.signalType === 'HEATING_UP' ? TrendingUp : TrendingDown;
-  const color = signal.signalType === 'HEATING_UP' ? 'text-primary' : 'text-destructive';
+  const color = signal.signalType === 'HEATING_UP' ? 'text-teal-400' : 'text-red-400';
   return (
-    <div className="flex items-center gap-3 py-2 rounded-lg px-2 hover:bg-secondary/50 transition-colors">
-      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+    <div className="flex items-center gap-3 py-2 rounded-lg px-2 hover:bg-slate-800/50 transition-colors">
+      <div className="w-8 h-8 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0 border border-teal-500/20">
         <Icon className={`w-4 h-4 ${color}`} />
       </div>
-      <span className="text-sm text-foreground">{signal.message}</span>
+      <span className="text-sm text-white">{signal.message}</span>
     </div>
   );
 }
-

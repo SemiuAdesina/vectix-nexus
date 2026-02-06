@@ -28,9 +28,9 @@ export function PreflightStatsCard({ agentId }: PreflightStatsCardProps) {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-primary/20 bg-card p-6 animate-pulse shadow-[0_0_24px_-8px_hsl(var(--primary)/0.08)]">
-        <div className="h-6 bg-secondary/80 rounded w-1/3 mb-4" />
-        <div className="h-20 bg-secondary/80 rounded-xl" />
+      <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6 animate-pulse">
+        <div className="h-6 bg-slate-700 rounded w-1/3 mb-4" />
+        <div className="h-20 bg-slate-700 rounded-xl" />
       </div>
     );
   }
@@ -40,58 +40,39 @@ export function PreflightStatsCard({ agentId }: PreflightStatsCardProps) {
     : 100;
 
   return (
-    <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)/0.12)]">
+    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30 shadow-[0_0_12px_-4px_hsl(var(--primary)/0.2)]">
-          <Shield className="w-5 h-5 text-primary" />
+        <div className="w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
+          <Shield className="w-5 h-5 text-teal-400" />
         </div>
         <div>
-          <h3 className="font-semibold text-foreground">Pre-Flight Protection</h3>
-          <p className="text-xs text-muted-foreground">
-            Simulates transactions before execution
-          </p>
+          <h3 className="font-semibold text-white">Pre-Flight Protection</h3>
+          <p className="text-xs text-slate-400">Simulates transactions before execution</p>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <StatBox
-          icon={<ShieldCheck className="w-4 h-4 text-primary" />}
-          label="Approved"
-          value={stats?.approved ?? 0}
-        />
-        <StatBox
-          icon={<ShieldX className="w-4 h-4 text-destructive" />}
-          label="Blocked"
-          value={stats?.blocked ?? 0}
-        />
-        <StatBox
-          icon={<AlertTriangle className="w-4 h-4 text-[hsl(var(--warning))]" />}
-          label="Total"
-          value={stats?.total ?? 0}
-        />
+        <StatBox icon={<ShieldCheck className="w-4 h-4 text-teal-400" />} label="Approved" value={stats?.approved ?? 0} />
+        <StatBox icon={<ShieldX className="w-4 h-4 text-red-400" />} label="Blocked" value={stats?.blocked ?? 0} />
+        <StatBox icon={<AlertTriangle className="w-4 h-4 text-amber-400" />} label="Total" value={stats?.total ?? 0} />
       </div>
 
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Approval Rate</span>
-          <span className="font-medium text-foreground">{approvalRate}%</span>
+          <span className="text-slate-400">Approval Rate</span>
+          <span className="font-medium text-white">{approvalRate}%</span>
         </div>
-        <div className="h-2 bg-secondary rounded-full overflow-hidden">
-          <div
-            className="h-full bg-primary transition-all duration-500"
-            style={{ width: `${approvalRate}%` }}
-          />
+        <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+          <div className="h-full bg-teal-500 transition-all duration-500" style={{ width: `${approvalRate}%` }} />
         </div>
       </div>
 
       {stats?.blockedReasons && stats.blockedReasons.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground mb-2">Recent Blocks</p>
+        <div className="mt-4 pt-4 border-t border-slate-700">
+          <p className="text-xs text-slate-400 mb-2">Recent Blocks</p>
           <div className="space-y-1">
             {stats.blockedReasons.slice(0, 3).map((reason, i) => (
-              <p key={i} className="text-xs text-destructive truncate">
-                {reason}
-              </p>
+              <p key={i} className="text-xs text-red-400 truncate">{reason}</p>
             ))}
           </div>
         </div>
@@ -100,21 +81,12 @@ export function PreflightStatsCard({ agentId }: PreflightStatsCardProps) {
   );
 }
 
-function StatBox({
-  icon,
-  label,
-  value
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: number;
-}) {
+function StatBox({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
   return (
-    <div className="rounded-xl border border-primary/20 bg-card p-3 text-center shadow-[0_0_12px_-4px_hsl(var(--primary)/0.08)]">
+    <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-3 text-center">
       <div className="flex justify-center mb-1">{icon}</div>
-      <p className="text-lg font-semibold text-foreground">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="text-lg font-semibold text-white">{value}</p>
+      <p className="text-xs text-slate-400">{label}</p>
     </div>
   );
 }
-

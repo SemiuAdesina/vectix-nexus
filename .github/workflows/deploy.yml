@@ -41,4 +41,4 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.REPO_LC }}-frontend:latest
           build-args: |
             NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-            NEXT_PUBLIC_API_URL=http://localhost:3002
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL || 'https://api.vectix-nexus.com' }}

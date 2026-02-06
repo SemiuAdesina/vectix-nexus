@@ -50,44 +50,44 @@ export function StrategyCard({ strategy, owned, onSelect, onPurchase, isPurchasi
       tabIndex={0}
       onClick={() => !isPurchasing && onSelect(strategy)}
       onKeyDown={(e) => e.key === 'Enter' && !isPurchasing && onSelect(strategy)}
-      className={`rounded-xl p-4 border bg-card transition-all duration-200 cursor-pointer group text-left ${
+      className={`rounded-xl p-4 border transition-all duration-200 cursor-pointer group text-left ${
         owned
-          ? 'border-success/30 hover:border-success/50'
-          : 'border-border hover:border-primary/40 hover:bg-card/95'
+          ? 'border-emerald-500/30 bg-slate-900/50 hover:border-emerald-500/50'
+          : 'border-slate-700/50 bg-slate-900/50 hover:border-teal-500/40 hover:shadow-[0_0_20px_-8px_rgba(20,184,166,0.15)]'
       }`}
     >
       <div className="flex items-start gap-3 mb-3">
-        <div className="w-11 h-11 shrink-0 rounded-lg bg-primary/15 flex items-center justify-center border border-primary/30 shadow-[0_0_12px_-4px_hsl(var(--primary)/0.25)]">
-          <IconComponent className="w-5 h-5 text-primary drop-shadow-[0_0_6px_hsl(var(--primary)/0.4)]" />
+        <div className="w-11 h-11 shrink-0 rounded-lg bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
+          <IconComponent className="w-5 h-5 text-teal-400" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap gap-y-1">
-            <h3 className="font-semibold text-sm text-foreground truncate group-hover:text-primary transition-colors">
+            <h3 className="font-semibold text-sm text-white truncate group-hover:text-teal-400 transition-colors">
               {strategy.name}
             </h3>
             {strategy.featured && (
-              <span className="shrink-0 px-1.5 py-0.5 rounded bg-primary/15 text-primary text-[10px] font-medium flex items-center gap-0.5">
+              <span className="shrink-0 px-1.5 py-0.5 rounded bg-teal-500/15 text-teal-400 text-[10px] font-medium flex items-center gap-0.5">
                 <Sparkles className="w-2.5 h-2.5" /> Featured
               </span>
             )}
           </div>
-          <p className="text-[11px] text-muted-foreground capitalize mt-0.5">{strategy.category}</p>
+          <p className="text-[11px] text-slate-500 capitalize mt-0.5">{strategy.category}</p>
         </div>
         {owned && (
-          <span className="shrink-0 px-1.5 py-0.5 rounded bg-success/15 text-success text-[10px] font-medium flex items-center gap-0.5">
+          <span className="shrink-0 px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-medium flex items-center gap-0.5">
             <Check className="w-2.5 h-2.5" /> Owned
           </span>
         )}
       </div>
 
-      <p className="text-xs text-muted-foreground mb-3 line-clamp-2 leading-relaxed">{strategy.description}</p>
+      <p className="text-xs text-slate-400 mb-3 line-clamp-2 leading-relaxed">{strategy.description}</p>
 
       <div className="flex items-center justify-between gap-2">
         <span className="text-base font-bold">
           {isFree ? (
-            <span className="text-success">Free</span>
+            <span className="text-emerald-400">Free</span>
           ) : (
-            <span className="text-primary">${(strategy.priceUsd / 100).toFixed(0)}</span>
+            <span className="text-teal-400">${(strategy.priceUsd / 100).toFixed(0)}</span>
           )}
         </span>
         <Button
@@ -97,8 +97,8 @@ export function StrategyCard({ strategy, owned, onSelect, onPurchase, isPurchasi
           disabled={isPurchasing}
           className={
             owned
-              ? 'shrink-0 border-success/50 text-success bg-success/10 hover:bg-success/20'
-              : 'shrink-0 shadow-[0_0_14px_-4px_hsl(var(--primary)/0.5)] ring-2 ring-primary/20'
+              ? 'shrink-0 border-emerald-500/50 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20'
+              : 'shrink-0 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white border-0 shadow-lg shadow-teal-500/20'
           }
         >
           {isPurchasing ? (
@@ -108,7 +108,7 @@ export function StrategyCard({ strategy, owned, onSelect, onPurchase, isPurchasi
           ) : isFree ? (
             'Get Free'
           ) : (
-            <><ShoppingCart className="w-3 h-3 mr-1 text-primary-foreground" /> Buy</>
+            <><ShoppingCart className="w-3 h-3 mr-1" /> Buy</>
           )}
         </Button>
       </div>

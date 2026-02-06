@@ -35,15 +35,15 @@ export default function GovernancePage() {
 
   const handleVote = async (proposalId: string, support: boolean) => {
     if (voting === proposalId) return;
-    
+
     setVoting(proposalId);
     try {
-      const result = await voteOnProposal(proposalId, { 
-        voter: getVoterId(), 
-        support, 
-        weight: 1 
+      const result = await voteOnProposal(proposalId, {
+        voter: getVoterId(),
+        support,
+        weight: 1
       });
-      
+
       if (result.success) {
         toast.success('Vote submitted successfully!');
         await fetchProposals();
@@ -67,7 +67,7 @@ export default function GovernancePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        <Loader2 className="w-6 h-6 animate-spin text-teal-400" />
       </div>
     );
   }
@@ -76,13 +76,13 @@ export default function GovernancePage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold mb-2 text-foreground">Security Governance</h1>
-          <p className="text-muted-foreground">DAO-style voting on security rules and parameters</p>
-          <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mt-4" />
+          <h1 className="text-2xl font-bold mb-2 text-white">Security Governance</h1>
+          <p className="text-slate-400">DAO-style voting on security rules and parameters</p>
+          <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500/50 mt-4" />
         </div>
         <button
           onClick={() => setShowCreate(!showCreate)}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 flex items-center gap-2 shrink-0 shadow-[0_0_14px_-4px_hsl(var(--primary)_/_0.4)]"
+          className="px-4 py-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-lg flex items-center gap-2 shrink-0 shadow-lg shadow-teal-500/20"
         >
           <Plus className="w-4 h-4 shrink-0" />
           New Proposal
@@ -107,11 +107,11 @@ export default function GovernancePage() {
         ))}
 
         {proposals.length === 0 && (
-          <div className="rounded-2xl border border-primary/20 bg-card p-12 text-center shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.08)]">
-            <div className="w-16 h-16 rounded-xl bg-primary/15 flex items-center justify-center mx-auto mb-4 border border-primary/30 shadow-[0_0_16px_-6px_hsl(var(--primary)_/_0.2)]">
-              <Users className="w-8 h-8 text-primary" />
+          <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-12 text-center shadow-[0_0_24px_-8px_rgba(20,184,166,0.08)]">
+            <div className="w-16 h-16 rounded-xl bg-teal-500/15 flex items-center justify-center mx-auto mb-4 border border-teal-500/30">
+              <Users className="w-8 h-8 text-teal-400" />
             </div>
-            <p className="text-muted-foreground">No active proposals</p>
+            <p className="text-slate-400">No active proposals</p>
           </div>
         )}
       </div>

@@ -11,22 +11,22 @@ export function IntegrityCard({ integrityCheck }: IntegrityCardProps) {
 
   const valid = integrityCheck.valid;
   return (
-    <div className={`rounded-2xl border p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.08)] ${
-      valid ? 'border-primary/30 bg-primary/5' : 'border-destructive/30 bg-destructive/5'
+    <div className={`rounded-2xl border p-6 shadow-[0_0_24px_-8px_rgba(20,184,166,0.08)] ${
+      valid ? 'border-teal-500/30 bg-teal-500/5' : 'border-red-500/30 bg-red-500/5'
     }`}>
       <div className="flex items-center gap-3 mb-2">
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 ${
-          valid ? 'bg-primary/15 border-primary/30' : 'bg-destructive/10 border-destructive/30'
+          valid ? 'bg-teal-500/15 border-teal-500/30' : 'bg-red-500/10 border-red-500/30'
         }`}>
           {valid ? (
-            <CheckCircle2 className="w-5 h-5 text-primary" />
+            <CheckCircle2 className="w-5 h-5 text-teal-400" />
           ) : (
-            <XCircle className="w-5 h-5 text-destructive" />
+            <XCircle className="w-5 h-5 text-red-400" />
           )}
         </div>
-        <h2 className="text-xl font-semibold text-foreground">Audit Trail Integrity</h2>
+        <h2 className="text-xl font-semibold text-white">Audit Trail Integrity</h2>
       </div>
-      <p className={valid ? 'text-primary' : 'text-destructive'}>
+      <p className={valid ? 'text-teal-400' : 'text-red-400'}>
         {valid
           ? 'All entries verified - trail integrity intact'
           : `Invalid entries detected: ${integrityCheck.invalidEntries.length}`}

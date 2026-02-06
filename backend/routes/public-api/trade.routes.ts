@@ -1,21 +1,22 @@
 import { Router, Response } from 'express';
 import { requireScope, ApiAuthRequest } from '../../middleware/api-auth.middleware';
 import { prisma } from '../../lib/prisma';
+import { checkTradeAmount } from '../../lib/trade-limits';
 import { recordReferralEarning } from '../../services/affiliate/affiliate.service';
 import { circuitBreakerService } from '../../../onchain/services/circuit-breaker';
 import { auditTrailService } from '../../../onchain/services/audit-trail';
 import { threatIntelligenceService } from '../../../onchain/services/threat-intelligence';
 import { analyzeToken } from '../../services/security/token-security';
-import { RuleEngine } from '../../services/supervisor/rule-engine';
+import { evaluateWithDbRules } from '../../services/supervisor/supervisor-rules.service';
 import { getParam } from '../../lib/route-helpers';
 
 const router = Router();
 
-interface TradeRequest { 
-  action: 'buy' | 'sell'; 
-  token: string; 
-  amount: number; 
-  mode?: 'paper' | 'live'; 
+interface TradeRequest {
+  action: 'buy' | 'sell';
+  token: string;
+  amount: number;
+  mode?: 'paper' | 'live';
 }
 
 router.post('/agents/:id/trade', requireScope('write:trade'), async (req: ApiAuthRequest, res: Response) => {
@@ -23,9 +24,14 @@ router.post('/agents/:id/trade', requireScope('write:trade'), async (req: ApiAut
   if (!agent) return res.status(404).json({ error: 'Agent not found' });
 
   const { action, token, amount, mode = 'paper' } = req.body as TradeRequest;
-  if (!action || !token || !amount) return res.status(400).json({ error: 'action, token, and amount required' });
+  if (!action || !token || amount == null) return res.status(400).json({ error: 'action, token, and amount required' });
 
   const effectiveMode = req.apiAuth!.tier === 'free' ? 'paper' : mode;
+
+  const limitCheck = checkTradeAmount(amount, effectiveMode);
+  if (!limitCheck.allowed) {
+    return res.status(400).json({ error: limitCheck.reason });
+  }
   if (mode === 'live' && req.apiAuth!.tier === 'free') {
     return res.status(403).json({ error: 'Live trading requires Pro subscription. Trade executed as paper.' });
   }
@@ -60,8 +66,7 @@ router.post('/agents/:id/trade', requireScope('write:trade'), async (req: ApiAut
 
   const tokenAnalysis = await analyzeToken(token);
   if (tokenAnalysis) {
-    const ruleEngine = new RuleEngine();
-    const supervisorDecision = ruleEngine.evaluate({
+    const supervisorDecision = await evaluateWithDbRules({
       agentId: agent.id,
       action: action.toUpperCase() as 'BUY' | 'SELL',
       tokenAddress: token,

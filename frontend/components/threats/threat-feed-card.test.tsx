@@ -39,7 +39,7 @@ describe('ThreatFeedCard', () => {
     render(<ThreatFeedCard threats={[]} />);
     
     expect(screen.getByText('No threats detected')).toBeInTheDocument();
-    expect(screen.getByText(/Threats will appear here as they are detected or reported by VectixLogic/i)).toBeInTheDocument();
+    expect(screen.getByText(/Threats will appear here as they are detected or reported by Vectix Foundry/i)).toBeInTheDocument();
   });
 
   it('renders threats when provided', () => {

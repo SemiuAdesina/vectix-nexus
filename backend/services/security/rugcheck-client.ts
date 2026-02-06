@@ -40,9 +40,10 @@ export async function fetchRugCheckData(tokenAddress: string): Promise<RugCheckR
   if (!isSolanaAddress(tokenAddress)) return null;
   try {
     const encoded = encodeURIComponent(tokenAddress.trim());
-    const response = await fetch(`${RUGCHECK_BASE}/tokens/${encoded}/report`, {
-      headers: { 'Accept': 'application/json' },
-    });
+    const headers: Record<string, string> = { 'Accept': 'application/json' };
+    const apiKey = process.env.RUGCHECK_API_KEY?.trim();
+    if (apiKey) headers['X-API-KEY'] = apiKey;
+    const response = await fetch(`${RUGCHECK_BASE}/tokens/${encoded}/report`, { headers });
 
     if (!response.ok) {
       return null;

@@ -29,10 +29,10 @@ export function SecurityAlertsCard() {
   };
 
   const severityColors = {
-    low: 'text-blue-500',
-    medium: 'text-warning',
-    high: 'text-orange-500',
-    critical: 'text-destructive',
+    low: 'text-sky-400',
+    medium: 'text-amber-400',
+    high: 'text-orange-400',
+    critical: 'text-red-400',
   };
 
   const typeIcons = {
@@ -43,27 +43,27 @@ export function SecurityAlertsCard() {
   };
 
   return (
-    <div className="rounded-2xl border border-primary/20 bg-card p-6 shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.08)]">
+    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6 shadow-[0_0_24px_-8px_rgba(20,184,166,0.08)]">
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/30">
-          <AlertTriangle className="w-5 h-5 text-primary" />
+        <div className="w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
+          <AlertTriangle className="w-5 h-5 text-teal-400" />
         </div>
-        <h3 className="font-semibold text-foreground">Security Alerts</h3>
-        <span className="text-sm text-muted-foreground">({alerts.length})</span>
+        <h3 className="font-semibold text-white">Security Alerts</h3>
+        <span className="text-sm text-slate-400">({alerts.length})</span>
       </div>
 
       <div className="space-y-2">
         {alerts.slice(0, 5).map((alert) => {
           const Icon = typeIcons[alert.type] || AlertTriangle;
           return (
-            <div key={alert.id} className="p-3 rounded-xl border border-primary/20 bg-card hover:border-primary/40 transition-colors">
+            <div key={alert.id} className="p-3 rounded-xl border border-slate-700/50 bg-slate-800/50 hover:border-teal-500/40 transition-colors">
               <div className="flex items-start gap-2">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+                <div className="w-8 h-8 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0 border border-teal-500/20">
                   <Icon className={`w-4 h-4 ${severityColors[alert.severity]}`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">{alert.message}</p>
-                  <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                  <p className="text-sm font-medium text-white">{alert.message}</p>
+                  <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
                     <span className="capitalize">{alert.severity}</span>
                     <span>•</span>
                     <span>{alert.timestamp.toLocaleString()}</span>

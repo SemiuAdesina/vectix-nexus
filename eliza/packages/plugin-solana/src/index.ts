@@ -3,7 +3,7 @@ import * as actions from './actions/index.ts';
 
 export const solanaPlugin: Plugin = {
   name: 'solana',
-  description: 'Solana plugin: transfer SOL, check balance, swap placeholder (Vectix Colosseum)',
+  description: 'Solana plugin: transfer SOL, check balance, swap placeholder',
   actions: [actions.solanaBalanceAction, actions.solanaTransferAction, actions.solanaSwapAction],
 };
 

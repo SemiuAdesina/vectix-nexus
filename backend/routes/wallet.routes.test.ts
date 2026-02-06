@@ -30,11 +30,26 @@ vi.mock('../services/withdrawal-confirm.service', () => ({
   verifyWithdrawalToken: vi.fn(),
 }));
 
+vi.mock('../services/security/whitelist.service', () => ({
+  checkWithdrawalAllowed: vi.fn(),
+}));
+
+vi.mock('../services/security/aml-monitoring.service', () => ({
+  checkAmlCompliance: vi.fn(),
+  recordTransaction: vi.fn(),
+}));
+
+vi.mock('../services/audit', () => ({
+  logAuditEvent: vi.fn().mockResolvedValue(undefined),
+}));
+
 import { getUserIdFromRequest } from '../lib/auth';
 import { prisma } from '../lib/prisma';
 import { WalletManager } from '../services/solana';
 import { getWalletBalance, validateWalletAddress, withdrawFunds } from '../services/solana-balance';
 import { decryptSecrets } from '../services/secrets';
+import * as whitelistService from '../services/security/whitelist.service';
+import * as amlService from '../services/security/aml-monitoring.service';
 
 const mockRequest = (overrides = {}) => ({ params: {}, query: {}, body: {}, ...overrides });
 const mockResponse = () => {
@@ -78,9 +93,13 @@ describe('wallet.routes', () => {
       vi.mocked(getUserIdFromRequest).mockResolvedValue('u1');
       vi.mocked(prisma.agent.findFirst).mockResolvedValue({
         id: 'a1',
+        walletAddress: 'agentWallet',
         user: { walletAddress: '' },
         encryptedSecrets: 'encrypted',
       } as any);
+      vi.mocked(whitelistService.checkWithdrawalAllowed).mockResolvedValue({ allowed: true });
+      vi.mocked(getWalletBalance).mockResolvedValue({ sol: 5, lamports: 5e9 });
+      vi.mocked(amlService.checkAmlCompliance).mockResolvedValue({ allowed: true, reason: '', requiresReview: false, flags: [] });
       vi.mocked(validateWalletAddress).mockResolvedValue(false);
       const { default: router } = await import('./wallet.routes');
       const handler = (router as any).stack.find(
@@ -102,14 +121,18 @@ describe('wallet.routes', () => {
       vi.mocked(getUserIdFromRequest).mockResolvedValue('u1');
       vi.mocked(prisma.agent.findFirst).mockResolvedValue({
         id: 'a1',
+        walletAddress: 'agentWallet',
         user: { walletAddress: 'validWallet' },
         encryptedSecrets: 'encrypted',
       } as any);
+      vi.mocked(whitelistService.checkWithdrawalAllowed).mockResolvedValue({ allowed: true });
+      vi.mocked(getWalletBalance).mockResolvedValue({ sol: 5, lamports: 5e9 });
+      vi.mocked(amlService.checkAmlCompliance).mockResolvedValue({ allowed: true, reason: '', requiresReview: false, flags: [] });
       vi.mocked(validateWalletAddress).mockResolvedValue(true);
       vi.mocked(decryptSecrets).mockReturnValue({
         customEnvVars: { AGENT_ENCRYPTED_PRIVATE_KEY: 'key123' },
       } as any);
-      vi.mocked(withdrawFunds).mockResolvedValue({ success: true, signature: 'sig123' });
+      vi.mocked(withdrawFunds).mockResolvedValue({ success: true, signature: 'sig123', amountSol: 5 });
       const { default: router } = await import('./wallet.routes');
       const handler = (router as any).stack.find(
         (r: any) => r.route?.path === '/agents/:id/withdraw' && r.route.methods.post

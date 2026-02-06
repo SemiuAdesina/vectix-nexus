@@ -62,7 +62,7 @@ export default function AuditDashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        <Loader2 className="w-6 h-6 animate-spin text-teal-400" />
       </div>
     );
   }
@@ -71,15 +71,15 @@ export default function AuditDashboardPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold mb-2 text-foreground">Security Audit Dashboard</h1>
-          <p className="text-muted-foreground">Comprehensive security audit trail and compliance reports</p>
-          <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mt-4" />
+          <h1 className="text-2xl font-bold mb-2 text-white">Security Audit Dashboard</h1>
+          <p className="text-slate-400">Comprehensive security audit trail and compliance reports</p>
+          <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500/50 mt-4" />
         </div>
         <div className="flex gap-2 shrink-0">
           <button
             onClick={() => handleExport('json')}
             disabled={exporting}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 flex items-center gap-2 shadow-[0_0_14px_-4px_hsl(var(--primary)_/_0.4)]"
+            className="px-4 py-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-lg disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-teal-500/20"
           >
             <Download className="w-4 h-4 shrink-0" />
             Export JSON
@@ -87,7 +87,7 @@ export default function AuditDashboardPage() {
           <button
             onClick={() => handleExport('csv')}
             disabled={exporting}
-            className="px-4 py-2 border border-primary/30 rounded-lg hover:bg-primary/10 hover:border-primary/50 hover:text-primary text-foreground disabled:opacity-50 flex items-center gap-2 transition-colors"
+            className="px-4 py-2 border border-teal-500/30 rounded-lg hover:bg-teal-500/10 hover:border-teal-500/50 hover:text-teal-400 text-white disabled:opacity-50 flex items-center gap-2 transition-colors"
           >
             <Download className="w-4 h-4 shrink-0" />
             Export CSV

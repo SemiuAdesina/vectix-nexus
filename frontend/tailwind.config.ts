@@ -59,11 +59,20 @@ const config: Config = {
         },
         success: 'hsl(var(--success))',
         warning: 'hsl(var(--warning))',
-        border: {
-          DEFAULT: 'hsl(var(--border))',
-        },
+        border: { DEFAULT: 'hsl(var(--border))' },
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
+        vectix: {
+          bg: '#020617',
+          surface: '#1e293b',
+          primary: '#14b8a6',
+          'primary-hover': '#0d9488',
+          secondary: '#06b6d4',
+          text: '#ffffff',
+          'text-muted': '#94a3b8',
+          border: '#334155',
+          error: '#dc2626',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',

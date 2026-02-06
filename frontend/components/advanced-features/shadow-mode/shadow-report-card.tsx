@@ -13,26 +13,26 @@ export function ShadowReportCard({ report, onRestart }: ShadowReportCardProps) {
   const isPositive = metrics.totalPnlSol >= 0;
 
   const recommendationStyles = {
-    GO_LIVE: 'bg-primary/10 text-primary border-primary/30',
-    CONTINUE_TESTING: 'bg-[hsl(var(--warning))]/10 text-[hsl(var(--warning))] border-[hsl(var(--warning))]/30',
-    NEEDS_ADJUSTMENT: 'bg-destructive/10 text-destructive border-destructive/30',
+    GO_LIVE: 'bg-teal-500/10 text-teal-400 border-teal-500/30',
+    CONTINUE_TESTING: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+    NEEDS_ADJUSTMENT: 'bg-red-500/10 text-red-400 border-red-500/30',
   };
 
   return (
     <div className="space-y-4">
-      <p className="text-xs text-muted-foreground">
+      <p className="text-xs text-slate-400">
         Session report from backend (live metrics).
       </p>
       <div className={`rounded-xl border p-4 ${recommendationStyles[recommendation]}`}>
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center border border-primary/20">
-            <Trophy className="w-4 h-4 text-primary" />
+          <div className="w-8 h-8 rounded-lg bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
+            <Trophy className="w-4 h-4 text-teal-400" />
           </div>
-          <span className="font-semibold text-foreground">
+          <span className="font-semibold text-white">
             {recommendation.replace(/_/g, ' ')}
           </span>
         </div>
-        <p className="text-sm text-muted-foreground">{report.summary}</p>
+        <p className="text-sm text-slate-400">{report.summary}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -59,7 +59,7 @@ export function ShadowReportCard({ report, onRestart }: ShadowReportCardProps) {
 
       <button
         onClick={onRestart}
-        className="w-full h-10 rounded-lg border border-primary/30 bg-secondary/80 hover:bg-primary/10 hover:border-primary/50 hover:text-primary text-sm font-medium transition-all text-foreground"
+        className="w-full h-10 rounded-lg border border-teal-500/30 bg-slate-800/80 hover:bg-teal-500/10 hover:border-teal-500/50 hover:text-teal-400 text-sm font-medium transition-all text-white"
       >
         Start New Session
       </button>
@@ -77,14 +77,13 @@ function MetricBox({
   positive?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-primary/20 bg-card p-3 shadow-[0_0_8px_-2px_hsl(var(--primary)/0.06)]">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className={`text-lg font-semibold text-foreground ${
-        positive === undefined ? '' : positive ? 'text-primary' : 'text-destructive'
+    <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-3 shadow-[0_0_8px_-2px_rgba(20,184,166,0.06)]">
+      <p className="text-xs text-slate-400">{label}</p>
+      <p className={`text-lg font-semibold text-white ${
+        positive === undefined ? '' : positive ? 'text-teal-400' : 'text-red-400'
       }`}>
         {value}
       </p>
     </div>
   );
 }
-

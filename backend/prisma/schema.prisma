@@ -140,3 +140,14 @@ model ApiRequestLog {
   status    Int
   createdAt DateTime @default(now())
 }
+
+model SupervisorRuleVersion {
+  id          String   @id @default(cuid())
+  ruleId      String
+  type        String
+  params      Json
+  enabled     Boolean
+  description String
+  effectiveAt DateTime
+  createdAt   DateTime @default(now())
+}

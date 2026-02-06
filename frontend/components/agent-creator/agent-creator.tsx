@@ -63,12 +63,12 @@ export function AgentCreator() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">Create Your AI Agent</h1>
-        <p className="text-muted-foreground text-base">Configure, connect, and deploy in minutes</p>
-        <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-primary to-primary/50 mx-auto mt-4" />
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-white">Create Your AI Agent</h1>
+        <p className="text-slate-400 text-base">Configure, connect, and deploy in minutes</p>
+        <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500/50 mx-auto mt-4" />
       </div>
 
-      <div className="mb-10 rounded-2xl border border-primary/20 bg-card/60 p-4 shadow-[0_0_24px_-8px_hsl(var(--primary)_/_0.08)]">
+      <div className="mb-10 rounded-2xl border border-slate-700/50 bg-slate-900/50 p-4">
         <div className="flex items-center justify-between">
           {STEPS.map((s, i) => {
             const stepIndex = STEPS.findIndex((st) => st.id === step);
@@ -91,23 +91,23 @@ export function AgentCreator() {
                   <div
                     className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-200 ${
                       isActive
-                        ? 'border-primary bg-primary/20 text-primary shadow-[0_0_16px_-4px_hsl(var(--primary)_/_0.35)]'
+                        ? 'border-teal-500 bg-teal-500/20 text-teal-400 shadow-[0_0_16px_-4px_rgba(20,184,166,0.35)]'
                         : isCompleted
-                          ? 'border-primary/40 bg-primary/10 text-primary'
-                          : 'border-primary/20 bg-background/80 text-muted-foreground group-hover:border-primary/40 group-hover:bg-primary/5'
-                    } ${isDisabled ? 'group-hover:border-primary/20 group-hover:bg-background/80' : ''}`}
+                          ? 'border-teal-500/40 bg-teal-500/10 text-teal-400'
+                          : 'border-slate-600 bg-slate-800/80 text-slate-400 group-hover:border-teal-500/40 group-hover:bg-teal-500/5'
+                    } ${isDisabled ? 'group-hover:border-slate-600 group-hover:bg-slate-800/80' : ''}`}
                   >
                     {isCompleted ? <Check className="h-5 w-5" /> : <s.icon className="h-5 w-5" />}
                   </div>
                   <div className="text-center sm:text-left">
-                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground sm:text-xs">Step {i + 1}</span>
-                    <p className={`text-sm font-semibold ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>{s.label}</p>
+                    <span className="text-[10px] uppercase tracking-wider text-slate-500 sm:text-xs">Step {i + 1}</span>
+                    <p className={`text-sm font-semibold ${isActive ? 'text-white' : 'text-slate-400'}`}>{s.label}</p>
                   </div>
                 </button>
                 {i < STEPS.length - 1 && (
                   <div
                     className={`h-0.5 min-w-6 flex-1 max-w-16 rounded-full ${
-                      stepIndex > i ? 'bg-primary/60' : 'bg-primary/20'
+                      stepIndex > i ? 'bg-teal-500/60' : 'bg-slate-700'
                     }`}
                     aria-hidden
                   />
@@ -118,20 +118,20 @@ export function AgentCreator() {
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-card/80 backdrop-blur-sm p-8 shadow-[0_0_40px_-12px_hsl(var(--primary)_/_0.15),inset_0_1px_0_hsl(var(--primary)_/_0.05)]">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-8">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/8 to-transparent transition-opacity duration-500 ease-out"
+          className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-500/10 via-teal-500/5 to-transparent transition-opacity duration-500 ease-out"
           style={{ opacity: step === 'config' ? 1 : 0 }}
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-tl from-primary/25 via-primary/10 to-transparent transition-opacity duration-500 ease-out"
+          className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-tl from-teal-500/10 via-teal-500/5 to-transparent transition-opacity duration-500 ease-out"
           style={{ opacity: step === 'secrets' ? 1 : 0 }}
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/30 via-primary/12 to-primary/5 transition-opacity duration-500 ease-out"
+          className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-teal-500/15 via-cyan-500/5 to-transparent transition-opacity duration-500 ease-out"
           style={{ opacity: step === 'review' ? 1 : 0 }}
         />
         <div className="relative z-10">

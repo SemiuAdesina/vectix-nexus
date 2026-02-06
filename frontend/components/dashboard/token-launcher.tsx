@@ -73,7 +73,7 @@ export function TokenLauncher({ agentId, agentName }: TokenLauncherProps) {
             <Gem className="w-5 h-5 text-primary" />
             <span className="font-semibold">Platform Fee</span>
           </div>
-          <p className="text-sm text-muted-foreground">1% of token supply goes to VectixLogic treasury.</p>
+          <p className="text-sm text-muted-foreground">1% of token supply goes to Vectix Foundry treasury.</p>
         </div>
       </div>
 

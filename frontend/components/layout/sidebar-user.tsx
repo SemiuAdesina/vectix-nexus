@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { UserButton, useUser, useClerk } from '@clerk/nextjs';
 import { Sparkles, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,22 +22,32 @@ export function SidebarUser({ collapsed, plan }: SidebarUserProps) {
   };
 
   return (
-    <div className={`p-4 border-t border-primary/10 shrink-0 space-y-3 bg-gradient-to-t from-primary/5 to-transparent ${collapsed ? 'flex flex-col items-center' : ''}`}>
-      <div className={`flex items-center gap-3 ${collapsed ? 'flex-col' : 'px-1'}`}>
-        <div className="relative ring-2 ring-border/50 rounded-full ring-offset-2 ring-offset-transparent hover:ring-primary/40 transition-all duration-200">
+    <div
+      className={`
+        shrink-0 border-t border-slate-800/80 bg-gradient-to-t from-slate-900/80 to-transparent
+        p-4 space-y-3
+        ${collapsed ? 'flex flex-col items-center' : ''}
+      `}
+    >
+      <div className={`flex items-center gap-3 ${collapsed ? 'flex-col' : ''}`}>
+        <div className="relative rounded-full ring-2 ring-slate-700 ring-offset-2 ring-offset-slate-950 hover:ring-teal-500/40 transition-all">
           <UserButton afterSignOutUrl="/" />
           {plan === 'pro' && (
-            <div className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(251,191,36,0.5)]">
+            <div className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-amber-500 rounded-full flex items-center justify-center shadow-lg shadow-amber-500/30">
               <Sparkles className="w-2 h-2 text-white" />
             </div>
           )}
         </div>
         {!collapsed && (
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold truncate text-foreground">{user?.firstName || user?.emailAddresses[0]?.emailAddress || 'Operator'}</p>
+            <p className="text-sm font-semibold truncate text-white">
+              {user?.firstName || user?.emailAddresses[0]?.emailAddress || 'Operator'}
+            </p>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${plan === 'pro' ? 'bg-amber-500 shadow-[0_0_6px_rgba(251,191,36,0.4)]' : 'bg-primary/60 shadow-[0_0_6px_hsl(var(--primary)/0.3)]'}`} />
-              <span className={`text-[11px] font-medium truncate ${plan === 'pro' ? 'text-amber-400/90' : 'text-primary/90'}`}>
+              <div
+                className={`w-1.5 h-1.5 rounded-full shrink-0 ${plan === 'pro' ? 'bg-amber-500' : 'bg-teal-500'}`}
+              />
+              <span className={`text-[11px] font-medium truncate ${plan === 'pro' ? 'text-amber-400' : 'text-teal-400'}`}>
                 {plan === 'pro' ? 'Pro Tier' : 'Free Tier'}
               </span>
             </div>
@@ -49,8 +58,8 @@ export function SidebarUser({ collapsed, plan }: SidebarUserProps) {
         <Button
           onClick={handleSignOut}
           variant="outline"
-          className="w-full justify-start gap-2 text-sm border-border/60 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200"
           size="sm"
+          className="w-full justify-start gap-2 text-sm border-slate-700 hover:border-teal-500/40 hover:bg-teal-500/10 hover:text-teal-400 text-slate-400"
         >
           <LogOut className="w-4 h-4" />
           Sign Out
@@ -61,7 +70,7 @@ export function SidebarUser({ collapsed, plan }: SidebarUserProps) {
           onClick={handleSignOut}
           variant="outline"
           size="icon"
-          className="w-10 h-10 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200"
+          className="w-10 h-10 border-slate-700 hover:border-teal-500/40 hover:bg-teal-500/10 hover:text-teal-400 text-slate-400"
           aria-label="Sign out"
         >
           <LogOut className="w-4 h-4" />

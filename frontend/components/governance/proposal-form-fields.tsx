@@ -12,39 +12,42 @@ interface ProposalFormFieldsProps {
   onChange: (field: string, value: string | number) => void;
 }
 
+const inputClass = 'w-full px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all';
+const labelClass = 'block text-sm font-medium mb-2 text-white';
+
 export function ProposalFormFields({ formData, onChange }: ProposalFormFieldsProps) {
   return (
     <>
       <div>
-        <label className="block text-sm font-medium mb-2">Title *</label>
+        <label className={labelClass}>Title *</label>
         <input
           type="text"
           required
           value={formData.title}
           onChange={(e) => onChange('title', e.target.value)}
           placeholder="e.g., Increase Minimum Trust Score"
-          className="w-full px-4 py-2 bg-secondary/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className={inputClass}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">Description *</label>
+        <label className={labelClass}>Description *</label>
         <textarea
           required
           value={formData.description}
           onChange={(e) => onChange('description', e.target.value)}
           placeholder="Describe the proposal and its impact..."
           rows={4}
-          className="w-full px-4 py-2 bg-secondary/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+          className={`${inputClass} resize-none`}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">Type *</label>
+        <label className={labelClass}>Type *</label>
         <select
           value={formData.type}
           onChange={(e) => onChange('type', e.target.value)}
-          className="w-full px-4 py-2 bg-secondary/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className={inputClass}
         >
           <option value="security_rule">Security Rule</option>
           <option value="parameter_update">Parameter Update</option>
@@ -56,31 +59,31 @@ export function ProposalFormFields({ formData, onChange }: ProposalFormFieldsPro
       {formData.type === 'security_rule' && (
         <>
           <div>
-            <label className="block text-sm font-medium mb-2">Target Rule</label>
+            <label className={labelClass}>Target Rule</label>
             <input
               type="text"
               value={formData.targetRule}
               onChange={(e) => onChange('targetRule', e.target.value)}
               placeholder="e.g., MIN_TRUST_SCORE"
-              className="w-full px-4 py-2 bg-secondary/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Proposed Value</label>
+            <label className={labelClass}>Proposed Value</label>
             <input
               type="text"
               value={formData.proposedValue}
               onChange={(e) => onChange('proposedValue', e.target.value)}
               placeholder="e.g., 75"
-              className="w-full px-4 py-2 bg-secondary/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className={inputClass}
             />
           </div>
         </>
       )}
 
       <div>
-        <label className="block text-sm font-medium mb-2">Quorum *</label>
+        <label className={labelClass}>Quorum *</label>
         <input
           type="number"
           required
@@ -88,9 +91,9 @@ export function ProposalFormFields({ formData, onChange }: ProposalFormFieldsPro
           value={formData.quorum}
           onChange={(e) => onChange('quorum', parseInt(e.target.value) || 0)}
           placeholder="Minimum votes required"
-          className="w-full px-4 py-2 bg-secondary/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className={inputClass}
         />
-        <p className="text-xs text-muted-foreground mt-1">Minimum number of votes required for proposal to pass</p>
+        <p className="text-xs text-slate-400 mt-1">Minimum number of votes required for proposal to pass</p>
       </div>
     </>
   );

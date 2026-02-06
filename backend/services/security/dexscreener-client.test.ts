@@ -66,7 +66,8 @@ describe('dexscreener-client', () => {
       expect(token).toBeTruthy();
       expect(token?.address).toBe(validSolanaAddress);
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining(encodeURIComponent(validSolanaAddress))
+        expect.stringContaining(encodeURIComponent(validSolanaAddress)),
+        expect.objectContaining({ headers: expect.any(Object) })
       );
     });
 

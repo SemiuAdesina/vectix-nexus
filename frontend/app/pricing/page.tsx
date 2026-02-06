@@ -20,19 +20,19 @@ export default function Pricing() {
 
   return (
     <>
-      <nav className="glass fixed top-0 left-0 right-0 z-50 border-b border-border">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
               <Button variant="ghost" size="icon" className="h-9 w-9">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                <Zap className="w-4 h-4 text-background" />
+            <Link href="/" className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-teal-500/20">
+                <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="font-semibold">VectixLogic</span>
+              <span className="font-bold text-lg text-white tracking-tight">Vectix Foundry</span>
             </Link>
           </div>
         </div>

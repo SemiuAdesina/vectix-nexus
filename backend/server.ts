@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { validateProductionEnv } from './lib/env-validation';
+import healthRoutes from './routes/health.routes';
 import stripeRoutes from './routes/stripe.routes';
 import deployRoutes from './routes/deploy.routes';
 import agentsRoutes from './routes/agents.routes';
@@ -18,6 +20,7 @@ import apiKeysRoutes from './routes/api-keys.routes';
 import publicApiRoutes from './routes/public-api.routes';
 import publicSecurityRoutes from './routes/public-security.routes';
 import onchainRoutes from './routes/onchain.routes';
+import bugBountyRoutes from './routes/bug-bounty.routes';
 
 dotenv.config();
 
@@ -39,6 +42,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
+validateProductionEnv();
+
+app.use(healthRoutes);
 app.use('/api', stripeRoutes);
 app.use('/api', deployRoutes);
 app.use('/api', agentsRoutes);
@@ -55,11 +61,8 @@ app.use('/api', protectionRoutes);
 app.use('/api', apiKeysRoutes);
 app.use('/api', onchainRoutes);
 app.use('/api', publicSecurityRoutes);
+app.use('/api', bugBountyRoutes);
 app.use('/v1', publicApiRoutes);
-
-app.get('/health', (_req, res) => {
-  res.status(200).json({ status: 'ok' });
-});
 
 app.listen(PORT, () => {
   console.log(`Backend server running on port ${PORT}`);

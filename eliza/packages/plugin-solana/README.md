@@ -1,6 +1,6 @@
 # Vectix Solana Plugin
 
-ElizaOS plugin for Solana: transfer SOL, check balance, and a swap placeholder. Part of the Vectix Foundry Colosseum submission.
+ElizaOS plugin for Solana: transfer SOL, check balance, and a swap placeholder.
 
 ## Actions
 
@@ -18,4 +18,4 @@ ElizaOS plugin for Solana: transfer SOL, check balance, and a swap placeholder. 
 
 Run the agent from the `eliza/` directory of vectix-nexus. Add `@elizaos/plugin-solana` to your agent's plugins in the project config.
 
-**If chat hangs on "Check my balance":** set `SOLANA_PUBLIC_KEY` (and optionally `SOLANA_RPC_URL`) in `eliza/.env`, then restart the agent. See `eliza/COLOSSEUM_SOLANA_PLUGIN.md` §5 for full troubleshooting.
+**If chat hangs on "Check my balance":** set `SOLANA_PUBLIC_KEY` (and optionally `SOLANA_RPC_URL`) in `eliza/.env`, then restart the agent.

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { logAuditEvent } from '../services/audit/audit.service';
+import { rateLimitBugReport } from '../middleware/rate-limit-public';
 
 const router = Router();
 
@@ -15,7 +16,7 @@ interface BugReport {
   reporterWallet?: string;
 }
 
-router.post('/security/bug-report', async (req: Request, res: Response) => {
+router.post('/security/bug-report', rateLimitBugReport, async (req: Request, res: Response) => {
   try {
     const report: BugReport = req.body;
 
