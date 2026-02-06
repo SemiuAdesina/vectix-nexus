@@ -54,4 +54,4 @@ var/
 .vercel
 .netlify
 
-docs/architecture.png
+docs/architecture.svg

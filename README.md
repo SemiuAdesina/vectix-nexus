@@ -60,9 +60,9 @@ cd backend && npm install && cd ..
 
 ## Architecture
 
-![System Architecture](docs/architecture.svg)
+![System Architecture](docs/architecture.png)
 
-> Diagram source: [`docs/architecture.d2`](docs/architecture.d2). Render locally with `d2 docs/architecture.d2 docs/architecture.svg --layout elk --pad 60`.
+> Diagram source: [`docs/architecture.d2`](docs/architecture.d2). Render locally with `d2 docs/architecture.d2 docs/architecture.png --layout elk --pad 80`.
 
 | Layer | Stack |
 |-------|--------|
