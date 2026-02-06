@@ -5,278 +5,186 @@ title: |md
 | { near: top-center }
 
 classes: {
-  external: {
-    style: {
-      fill: "#f0f4ff"
-      stroke: "#6366f1"
-      border-radius: 8
-      font-color: "#312e81"
-    }
-  }
   layer: {
     style: {
-      fill: "#fafafa"
-      stroke: "#d4d4d8"
-      border-radius: 12
+      fill: "#f8fafc"
+      stroke: "#94a3b8"
+      border-radius: 10
+      font-size: 18
+      bold: true
     }
   }
-  service: {
+  box: {
     style: {
       fill: "#ffffff"
-      stroke: "#a1a1aa"
+      stroke: "#cbd5e1"
       border-radius: 6
+      font-size: 13
+    }
+  }
+  ext: {
+    style: {
+      fill: "#eef2ff"
+      stroke: "#6366f1"
+      border-radius: 6
+      font-size: 13
+      font-color: "#3730a3"
     }
   }
 }
 
-clients: Client Layer {
+# ── 1. Clients ────────────────────────────────────────────
+
+clients: "1  CLIENT LAYER" {
   class: layer
+  grid-columns: 2
 
-  frontend: Next.js Frontend {
-    class: service
-    dashboard: Dashboard
-    agents: Agent Management
-    billing: Billing & Pricing
-    marketplace: Strategy Marketplace
-    advanced: Advanced Features
-    onchain-ui: On-chain Verification
-    governance-ui: Governance
-    threats-ui: Threat Intelligence
-    landing: Landing Page
-  }
+  frontend: |md
+    **Next.js Frontend**
+    Dashboard · Agents · Billing
+    Marketplace · Advanced
+    On-chain · Governance · Threats
+  | { class: box }
 
-  m2m: M2M / API Clients {
-    class: service
-    rest: REST API (v1)
-    webhooks: Webhook Consumers
-  }
+  m2m: |md
+    **M2M / API Clients**
+    REST API (v1)
+    Webhook Consumers
+  | { class: box }
 }
 
-gateway: Authentication & API Gateway {
-  class: layer
+# ── 2. Auth ───────────────────────────────────────────────
 
-  clerk: Clerk Auth {
-    class: service
-  }
-  api-keys: API Key Service {
-    class: service
-    scopes: "Scoped Access (vx_*)"
-    tiers: "Tier-based Rate Limits"
-  }
-  middleware: Express Middleware {
-    class: service
-    cors: CORS
-    rate-limit: Rate Limiter
-    security-headers: Security Headers
-    request-logger: Request Logger
-  }
+gateway: "2  AUTH & API GATEWAY" {
+  class: layer
+  grid-columns: 3
+
+  clerk: "Clerk Auth\nJWT · Identity" { class: box }
+  api-keys: "API Key Service\nvx_* · Scopes · Tiers" { class: box }
+  middleware: "Express Middleware\nCORS · Rate Limit\nSecurity Headers" { class: box }
 }
 
-business: Business Logic {
+# ── 3. Business Logic ─────────────────────────────────────
+
+business: "3  BUSINESS LOGIC" {
   class: layer
+  grid-columns: 2
 
-  core: Core Services {
-    class: service
-    agents: Agent CRUD & Deploy
-    wallet: Wallet & Withdrawals
-    trading: Trading Engine
-    fly-lifecycle: Fly Machine Lifecycle
-    fly-logs: Fly Logs
-  }
+  core: |md
+    **Core**
+    Agents · Wallet
+    Trading · Fly Deploy
+  | { class: box }
 
-  monetization: Monetization {
-    class: service
-    stripe-checkout: Stripe Checkout
-    stripe-webhook: Stripe Webhooks
-    subscriptions: Subscription Management
-    affiliate: Affiliate Program
-    marketplace-svc: Strategy Marketplace
-  }
+  monetization: |md
+    **Monetization**
+    Stripe · Subscriptions
+    Affiliate · Marketplace
+  | { class: box }
 
-  security: Security & Compliance {
-    class: service
-    token-security: Token Security Analysis
-    trust-score: Trust Score Engine
-    safe-trending: Safe Trending Filter
-    mev: MEV Protection
-    sanctions: OFAC / SDN Sanctions
-    aml: AML Monitoring
-    geo-blocking: Geo-blocking
-    whitelist: Wallet Whitelist
-    account-lockout: Account Lockout
-  }
+  security: |md
+    **Security & Compliance**
+    Token Security · Trust Score
+    OFAC · AML · Geo-block
+    MEV · Whitelist · Lockout
+  | { class: box }
 
-  advanced: Advanced Features {
-    class: service
-    preflight: Preflight Guard
-    tx-simulator: Transaction Simulator
-    supervisor: Supervisor Rule Engine
-    shadow-portfolio: Shadow Portfolio
-    shadow-metrics: Shadow Metrics
-    tee-enclave: TEE Secure Enclave
-    tee-crypto: Enclave Cryptography
-    narrative: Narrative Service
-    cluster-builder: Cluster Builder
-    signal-gen: Signal Generator
-  }
+  advanced: |md
+    **Advanced**
+    Preflight · Tx Simulator
+    Supervisor Rules
+    Shadow Mode · TEE
+    Narrative · Signals
+  | { class: box }
 
-  api-mgmt: API Management {
-    class: service
-    public-api: Public REST API
-    webhook-svc: Webhook Dispatch
-    bug-bounty: Bug Bounty
-  }
+  api-mgmt: |md
+    **API Management**
+    Public API · Webhooks
+    Bug Bounty
+  | { class: box }
 }
 
-onchain: On-chain Layer {
-  class: layer
+# ── 4. On-chain ───────────────────────────────────────────
 
-  verification: On-chain Verification {
-    class: service
-  }
-  multisig: Multi-signature {
-    class: service
-  }
-  circuit-breaker: Circuit Breaker {
-    class: service
-  }
-  governance: Governance {
-    class: service
-  }
-  audit-trail: Audit Trail {
-    class: service
-  }
-  timelock: Time-lock {
-    class: service
-  }
-  sec-scanning: Security Scanning {
-    class: service
-  }
-  threat-intel: Threat Intelligence {
-    class: service
-  }
+onchain: "4  ON-CHAIN LAYER" {
+  class: layer
+  grid-columns: 4
+
+  verification: "Verification" { class: box }
+  multisig: "Multi-sig" { class: box }
+  circuit: "Circuit Breaker" { class: box }
+  governance: "Governance" { class: box }
+  audit: "Audit Trail" { class: box }
+  timelock: "Time-lock" { class: box }
+  scanning: "Security Scan" { class: box }
+  threat: "Threat Intel" { class: box }
 }
 
-data: Data Layer {
+# ── 5. Data ───────────────────────────────────────────────
+
+data: "5  DATA LAYER" {
   class: layer
+  grid-columns: 2
 
-  postgres: PostgreSQL {
-    class: service
-    users: Users & Subscriptions
-    agents-db: Agents & Strategies
-    api-keys-db: API Keys & Logs
-    audit-db: Audit Events
-    supervisor-db: Supervisor Rule Versions
-    referrals: Referral Payouts
-  }
-
-  prisma: Prisma ORM {
-    class: service
-  }
+  prisma: "Prisma ORM\nType-safe · Pooled" { class: box }
+  postgres: "PostgreSQL\nUsers · Agents · Keys\nAudit · Rules · Referrals" { class: box }
 }
 
-external: External Services {
-  class: layer
+# ── 6. External Services ─────────────────────────────────
 
-  fly: Fly.io {
-    class: external
-    label: "Agent Hosting"
-  }
-  stripe: Stripe {
-    class: external
-    label: "Payments"
-  }
-  solana: Solana RPC {
-    class: external
-    label: "Blockchain (Helius / Alchemy)"
-  }
-  dexscreener: DexScreener {
-    class: external
-    label: "Token Data"
-  }
-  rugcheck: RugCheck {
-    class: external
-    label: "Rug Analysis"
-  }
-  goplus: GoPlus {
-    class: external
-    label: "Security Data"
-  }
-  lunarcrush: LunarCrush {
-    class: external
-    label: "Social Intelligence"
-  }
-  phala: Phala Network {
-    class: external
-    label: "TEE Provider"
-  }
-  clerk-ext: Clerk {
-    class: external
-    label: "User Auth"
-  }
+external: "6  EXTERNAL SERVICES" {
+  class: layer
+  grid-columns: 3
+
+  fly: "Fly.io\nAgent Hosting" { class: ext }
+  stripe: "Stripe\nPayments" { class: ext }
+  solana: "Solana RPC\nHelius / Alchemy" { class: ext }
+  dexscreener: "DexScreener\nToken Data" { class: ext }
+  rugcheck: "RugCheck\nRug Analysis" { class: ext }
+  goplus: "GoPlus\nSecurity Data" { class: ext }
+  lunarcrush: "LunarCrush\nSocial Intel" { class: ext }
+  phala: "Phala Network\nTEE Provider" { class: ext }
+  clerk-ext: "Clerk\nUser Auth" { class: ext }
 }
 
-infra: Infrastructure & CI/CD {
-  class: layer
+# ── 7. Infrastructure ─────────────────────────────────────
 
-  ghcr: GitHub Container Registry {
-    class: service
-  }
-  ci: GitHub Actions {
-    class: service
-    ci-pipeline: CI Pipeline
-    code-quality: Code Quality
-    security-scan: Security Scan
-    db-migrate: DB Migrations
-    deploy-pipeline: Deploy Pipeline
-    release: Release
-  }
-  docker: Docker {
-    class: service
-    backend-img: Backend Image
-    frontend-img: Frontend Image
-    eliza-img: Eliza Agent Image
-  }
+infra: "7  INFRASTRUCTURE & CI/CD" {
+  class: layer
+  grid-columns: 3
+
+  ci: "GitHub Actions\nCI · Quality · Security\nDeploy · Migrate · Release" { class: box }
+  docker: "Docker\nBackend · Frontend\nEliza Agent" { class: box }
+  ghcr: "GHCR\nContainer Registry" { class: box }
 }
 
-clients.frontend -> gateway.clerk: "Clerk token"
-clients.frontend -> gateway.middleware: HTTPS
-clients.m2m -> gateway.api-keys: "API key (vx_*)"
-clients.m2m -> gateway.middleware: HTTPS
+# ── Connections (strict vertical flow) ────────────────────
 
-gateway.clerk -> business.core: Authenticated
-gateway.api-keys -> business.api-mgmt: Scoped access
-gateway.middleware -> business: Validated requests
-
-business.core -> data.prisma: Read / Write
-business.monetization -> data.prisma: Read / Write
-business.security -> data.prisma: Read / Write
-business.advanced -> data.prisma: Read / Write
-business.api-mgmt -> data.prisma: Read / Write
-data.prisma -> data.postgres: SQL
-
-business.core.agents -> external.fly: Deploy machines
-business.core.fly-lifecycle -> external.fly: Start / Stop / Destroy
-business.core.fly-logs -> external.fly: Stream logs
-business.core.wallet -> external.solana: Transactions
-business.monetization.stripe-checkout -> external.stripe: Create sessions
-business.monetization.stripe-webhook -> external.stripe: Webhooks
-
-business.security.token-security -> external.dexscreener: Token data
-business.security.token-security -> external.rugcheck: Rug analysis
-business.security.token-security -> external.goplus: Security data
-business.security.safe-trending -> external.dexscreener: Trending tokens
-
-business.advanced.narrative -> external.lunarcrush: Social metrics
-business.advanced.tee-enclave -> external.phala: TEE attestation
-business.advanced.preflight -> external.solana: Simulate tx
-business.advanced.tx-simulator -> external.solana: Simulate tx
-
-business -> onchain: On-chain operations
-onchain -> external.solana: Write proofs
-
-gateway.clerk -> external.clerk-ext: Verify tokens
-
-infra.ci -> infra.docker: Build images
-infra.docker -> infra.ghcr: Push images
-infra.ghcr -> external.fly: Deploy
+clients -> gateway: "HTTPS / JWT / API Key" {
+  style.stroke: "#6366f1"
+  style.font-size: 11
+}
+gateway -> business: "Authenticated requests" {
+  style.stroke: "#6366f1"
+  style.font-size: 11
+}
+business -> onchain: "On-chain ops" {
+  style.stroke: "#6366f1"
+  style.font-size: 11
+}
+business -> data: "Read / Write" {
+  style.stroke: "#6366f1"
+  style.font-size: 11
+}
+onchain -> data: "Persist state" {
+  style.stroke: "#6366f1"
+  style.font-size: 11
+}
+data -> external: "API calls & blockchain tx" {
+  style.stroke: "#6366f1"
+  style.font-size: 11
+}
+external -> infra: "Deployed via" {
+  style.stroke: "#6366f1"
+  style.font-size: 11
+}
