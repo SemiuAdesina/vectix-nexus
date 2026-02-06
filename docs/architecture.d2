@@ -1,34 +1,42 @@
 direction: down
 
 title: |md
-  # Vectix Nexus — System Architecture
-| { near: top-center }
+  # Vectix Nexus -- System Architecture
+| {
+  near: top-center
+  style.font-size: 36
+}
 
 classes: {
   layer: {
     style: {
-      fill: "#f8fafc"
-      stroke: "#94a3b8"
+      fill: "#f1f5f9"
+      stroke: "#334155"
       border-radius: 10
-      font-size: 18
+      font-size: 28
       bold: true
+      font-color: "#0f172a"
+      stroke-width: 2
     }
   }
   box: {
     style: {
       fill: "#ffffff"
-      stroke: "#cbd5e1"
+      stroke: "#64748b"
       border-radius: 6
-      font-size: 13
+      font-size: 20
+      font-color: "#1e293b"
+      stroke-width: 1
     }
   }
   ext: {
     style: {
-      fill: "#eef2ff"
-      stroke: "#6366f1"
+      fill: "#dbeafe"
+      stroke: "#2563eb"
       border-radius: 6
-      font-size: 13
-      font-color: "#3730a3"
+      font-size: 20
+      font-color: "#1e3a8a"
+      stroke-width: 1
     }
   }
 }
@@ -37,71 +45,86 @@ classes: {
 
 clients: "1  CLIENT LAYER" {
   class: layer
-  grid-columns: 2
 
   frontend: |md
     **Next.js Frontend**
     Dashboard · Agents · Billing
-    Marketplace · Advanced
+    Marketplace · Advanced Features
     On-chain · Governance · Threats
   | { class: box }
 
   m2m: |md
     **M2M / API Clients**
-    REST API (v1)
-    Webhook Consumers
+    REST API (v1) · Webhooks
   | { class: box }
+
+  frontend -> m2m: {style.opacity: 0}
 }
 
-# ── 2. Auth ───────────────────────────────────────────────
+# ── 2. Auth & Gateway ─────────────────────────────────────
 
 gateway: "2  AUTH & API GATEWAY" {
   class: layer
-  grid-columns: 3
 
-  clerk: "Clerk Auth\nJWT · Identity" { class: box }
-  api-keys: "API Key Service\nvx_* · Scopes · Tiers" { class: box }
-  middleware: "Express Middleware\nCORS · Rate Limit\nSecurity Headers" { class: box }
+  clerk: |md
+    **Clerk Auth**
+    JWT · User Identity
+  | { class: box }
+
+  keys: |md
+    **API Key Service**
+    vx_* Scopes · Tier Limits
+  | { class: box }
+
+  mw: |md
+    **Express Middleware**
+    CORS · Rate Limiter
+    Security Headers
+  | { class: box }
+
+  clerk -> keys: {style.opacity: 0}
+  keys -> mw: {style.opacity: 0}
 }
 
 # ── 3. Business Logic ─────────────────────────────────────
 
 business: "3  BUSINESS LOGIC" {
   class: layer
-  grid-columns: 2
 
   core: |md
-    **Core**
-    Agents · Wallet
-    Trading · Fly Deploy
+    **Core Services**
+    Agents · Wallet · Trading
+    Fly Deploy & Lifecycle
   | { class: box }
 
-  monetization: |md
+  money: |md
     **Monetization**
     Stripe · Subscriptions
     Affiliate · Marketplace
   | { class: box }
 
-  security: |md
+  sec: |md
     **Security & Compliance**
     Token Security · Trust Score
     OFAC · AML · Geo-block
     MEV · Whitelist · Lockout
   | { class: box }
 
-  advanced: |md
-    **Advanced**
+  adv: |md
+    **Advanced Features**
     Preflight · Tx Simulator
-    Supervisor Rules
-    Shadow Mode · TEE
-    Narrative · Signals
+    Supervisor · Shadow Mode
+    TEE · Narrative · Signals
   | { class: box }
 
-  api-mgmt: |md
+  api: |md
     **API Management**
     Public API · Webhooks
     Bug Bounty
   | { class: box }
+
+  core -> money: {style.opacity: 0}
+  sec -> adv: {style.opacity: 0}
 }
 
 # ── 4. On-chain ───────────────────────────────────────────
@@ -110,24 +133,34 @@ onchain: "4  ON-CHAIN LAYER" {
   class: layer
   grid-columns: 4
 
-  verification: "Verification" { class: box }
-  multisig: "Multi-sig" { class: box }
-  circuit: "Circuit Breaker" { class: box }
-  governance: "Governance" { class: box }
-  audit: "Audit Trail" { class: box }
-  timelock: "Time-lock" { class: box }
-  scanning: "Security Scan" { class: box }
-  threat: "Threat Intel" { class: box }
+  a: "Verification" { class: box }
+  b: "Circuit Breaker" { class: box }
+  c: "Audit Trail" { class: box }
+  d: "Security Scan" { class: box }
+  e: "Multi-sig" { class: box }
+  f: "Governance" { class: box }
+  g: "Time-lock" { class: box }
+  h: "Threat Intel" { class: box }
 }
 
 # ── 5. Data ───────────────────────────────────────────────
 
 data: "5  DATA LAYER" {
   class: layer
-  grid-columns: 2
 
-  prisma: "Prisma ORM\nType-safe · Pooled" { class: box }
-  postgres: "PostgreSQL\nUsers · Agents · Keys\nAudit · Rules · Referrals" { class: box }
+  prisma: |md
+    **Prisma ORM**
+    Type-safe · Connection Pool
+  | { class: box }
+
+  pg: |md
+    **PostgreSQL**
+    Users · Agents · Strategies
+    API Keys · Audit Events
+    Supervisor Rules · Referrals
+  | { class: box }
+
+  prisma -> pg: {style.opacity: 0}
 }
 
 # ── 6. External Services ─────────────────────────────────
@@ -139,52 +172,94 @@ external: "6  EXTERNAL SERVICES" {
   fly: "Fly.io\nAgent Hosting" { class: ext }
   stripe: "Stripe\nPayments" { class: ext }
   solana: "Solana RPC\nHelius / Alchemy" { class: ext }
-  dexscreener: "DexScreener\nToken Data" { class: ext }
-  rugcheck: "RugCheck\nRug Analysis" { class: ext }
+  dex: "DexScreener\nToken Data" { class: ext }
+  rug: "RugCheck\nRug Analysis" { class: ext }
   goplus: "GoPlus\nSecurity Data" { class: ext }
-  lunarcrush: "LunarCrush\nSocial Intel" { class: ext }
+  lunar: "LunarCrush\nSocial Intel" { class: ext }
   phala: "Phala Network\nTEE Provider" { class: ext }
-  clerk-ext: "Clerk\nUser Auth" { class: ext }
+  clerk: "Clerk\nUser Auth" { class: ext }
 }
 
 # ── 7. Infrastructure ─────────────────────────────────────
 
 infra: "7  INFRASTRUCTURE & CI/CD" {
   class: layer
-  grid-columns: 3
 
-  ci: "GitHub Actions\nCI · Quality · Security\nDeploy · Migrate · Release" { class: box }
-  docker: "Docker\nBackend · Frontend\nEliza Agent" { class: box }
-  ghcr: "GHCR\nContainer Registry" { class: box }
+  ci: |md
+    **GitHub Actions**
+    CI · Code Quality · Security
+    Deploy · Migrations · Release
+  | { class: box }
+
+  docker: |md
+    **Docker**
+    Backend · Frontend
+    Eliza Agent Images
+  | { class: box }
+
+  ghcr: |md
+    **GHCR**
+    Container Registry
+  | { class: box }
+
+  ci -> docker: {style.opacity: 0}
+  docker -> ghcr: {style.opacity: 0}
 }
 
-# ── Connections (strict vertical flow) ────────────────────
+# ── Main vertical flow ────────────────────────────────────
 
 clients -> gateway: "HTTPS / JWT / API Key" {
-  style.stroke: "#6366f1"
-  style.font-size: 11
+  style.stroke: "#2563eb"
+  style.stroke-width: 2
+  style.font-size: 18
+  style.font-color: "#1e3a8a"
+  style.bold: true
 }
+
 gateway -> business: "Authenticated requests" {
-  style.stroke: "#6366f1"
-  style.font-size: 11
+  style.stroke: "#2563eb"
+  style.stroke-width: 2
+  style.font-size: 18
+  style.font-color: "#1e3a8a"
+  style.bold: true
 }
-business -> onchain: "On-chain ops" {
-  style.stroke: "#6366f1"
-  style.font-size: 11
+
+business -> onchain: "On-chain operations" {
+  style.stroke: "#2563eb"
+  style.stroke-width: 2
+  style.font-size: 18
+  style.font-color: "#1e3a8a"
+  style.bold: true
 }
+
 business -> data: "Read / Write" {
-  style.stroke: "#6366f1"
-  style.font-size: 11
+  style.stroke: "#2563eb"
+  style.stroke-width: 2
+  style.font-size: 18
+  style.font-color: "#1e3a8a"
+  style.bold: true
 }
-onchain -> data: "Persist state" {
-  style.stroke: "#6366f1"
-  style.font-size: 11
+
+onchain -> data: "Persist proofs" {
+  style.stroke: "#2563eb"
+  style.stroke-width: 2
+  style.font-size: 18
+  style.font-color: "#1e3a8a"
+  style.bold: true
 }
+
 data -> external: "API calls & blockchain tx" {
-  style.stroke: "#6366f1"
-  style.font-size: 11
+  style.stroke: "#2563eb"
+  style.stroke-width: 2
+  style.font-size: 18
+  style.font-color: "#1e3a8a"
+  style.bold: true
 }
-external -> infra: "Deployed via" {
-  style.stroke: "#6366f1"
-  style.font-size: 11
+
+external -> infra: "Deployed via CI/CD" {
+  style.stroke: "#2563eb"
+  style.stroke-width: 2
+  style.font-size: 18
+  style.font-color: "#1e3a8a"
+  style.bold: true
 }
