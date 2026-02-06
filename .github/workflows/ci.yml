@@ -45,7 +45,7 @@ jobs:
         run: curl -fsSL https://d2lang.com/install.sh | sh -s --
 
       - name: Render PNG
-        run: d2 docs/architecture.d2 docs/architecture.png --layout elk --pad 80 --scale 3
+        run: d2 docs/architecture.d2 docs/architecture.png --layout elk --pad 80 --scale 2
 
       - name: Verify output
         run: test -f docs/architecture.png

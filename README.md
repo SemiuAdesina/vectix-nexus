@@ -238,7 +238,7 @@ npm run dev
 
 Flow is top-down: clients → auth/gateway → business logic → data → external services.
 
-![System Architecture](docs/architecture.svg)
+![System Architecture](docs/architecture.png)
 
 **Components by layer (reference)**
 
