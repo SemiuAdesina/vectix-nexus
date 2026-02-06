@@ -1,13 +1,11 @@
 direction: down
 
-title: |md
-  # Vectix Nexus
-  ### System Architecture
-| {
+title: "VECTIX NEXUS — SYSTEM ARCHITECTURE" {
   near: top-center
-  style.font-size: 40
+  style.font-size: 48
   style.font-color: "#0f172a"
   style.bold: true
+  style.underline: true
 }
 
 # ── 1. Clients ────────────────────────────────────────────
@@ -17,34 +15,28 @@ clients: "CLIENT LAYER" {
   style.stroke: "#059669"
   style.stroke-width: 3
   style.border-radius: 14
-  style.font-size: 32
+  style.font-size: 36
   style.bold: true
   style.font-color: "#064e3b"
 
-  frontend: |md
-    ### Next.js Frontend
-    Dashboard · Agent Management · Billing & Pricing
-    Strategy Marketplace · Advanced Features
-    On-chain Verification · Governance · Threat Intelligence
-  | {
+  frontend: "Next.js Frontend\nDashboard · Agents · Billing · Marketplace\nAdvanced Features · On-chain · Governance · Threats" {
     style.fill: "#ffffff"
     style.stroke: "#059669"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#064e3b"
+    style.bold: true
   }
 
-  m2m: |md
-    ### M2M / API Clients
-    REST API (v1) · Webhook Consumers
-  | {
+  m2m: "M2M / API Clients\nREST API (v1) · Webhook Consumers" {
     style.fill: "#ffffff"
     style.stroke: "#059669"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#064e3b"
+    style.bold: true
   }
 
   frontend -> m2m: {style.opacity: 0}
@@ -57,44 +49,38 @@ gateway: "AUTH & API GATEWAY" {
   style.stroke: "#2563eb"
   style.stroke-width: 3
   style.border-radius: 14
-  style.font-size: 32
+  style.font-size: 36
   style.bold: true
   style.font-color: "#1e3a8a"
 
-  clerk: |md
-    ### Clerk Auth
-    JWT Verification · User Identity
-  | {
+  clerk: "Clerk Auth\nJWT Verification · User Identity" {
     style.fill: "#ffffff"
     style.stroke: "#2563eb"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#1e3a8a"
+    style.bold: true
   }
 
-  keys: |md
-    ### API Key Service
-    Scoped Access (vx_*) · Tier-based Rate Limits
-  | {
+  keys: "API Key Service\nScoped Access (vx_*) · Tier-based Rate Limits" {
     style.fill: "#ffffff"
     style.stroke: "#2563eb"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#1e3a8a"
+    style.bold: true
   }
 
-  mw: |md
-    ### Express Middleware
-    CORS · Rate Limiter · Security Headers · Request Logger
-  | {
+  mw: "Express Middleware\nCORS · Rate Limiter · Security Headers" {
     style.fill: "#ffffff"
     style.stroke: "#2563eb"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#1e3a8a"
+    style.bold: true
   }
 
   clerk -> keys: {style.opacity: 0}
@@ -108,74 +94,58 @@ business: "BUSINESS LOGIC" {
   style.stroke: "#7c3aed"
   style.stroke-width: 3
   style.border-radius: 14
-  style.font-size: 32
+  style.font-size: 36
   style.bold: true
   style.font-color: "#4c1d95"
 
-  core: |md
-    ### Core Services
-    Agent CRUD & Deploy · Wallet & Withdrawals
-    Trading Engine · Fly Machine Lifecycle & Logs
-  | {
+  core: "Core Services\nAgents · Wallet · Trading\nFly Deploy & Lifecycle" {
     style.fill: "#ffffff"
     style.stroke: "#7c3aed"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#4c1d95"
+    style.bold: true
   }
 
-  money: |md
-    ### Monetization
-    Stripe Checkout & Webhooks · Subscription Management
-    Affiliate Program · Strategy Marketplace
-  | {
+  money: "Monetization\nStripe · Subscriptions\nAffiliate · Marketplace" {
     style.fill: "#ffffff"
     style.stroke: "#7c3aed"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#4c1d95"
+    style.bold: true
   }
 
-  sec: |md
-    ### Security & Compliance
-    Token Security · Trust Score · Safe Trending
-    OFAC / SDN · AML Monitoring · Geo-blocking
-    MEV Protection · Wallet Whitelist · Account Lockout
-  | {
+  sec: "Security & Compliance\nToken Security · Trust Score\nOFAC · AML · Geo-block\nMEV · Whitelist · Lockout" {
     style.fill: "#ffffff"
     style.stroke: "#7c3aed"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#4c1d95"
+    style.bold: true
   }
 
-  adv: |md
-    ### Advanced Features
-    Preflight Guard · Transaction Simulator
-    Supervisor Rule Engine · Shadow Mode & Metrics
-    TEE Secure Enclave · Narrative · Signal Generator
-  | {
+  adv: "Advanced Features\nPreflight · Tx Simulator\nSupervisor · Shadow Mode\nTEE · Narrative · Signals" {
     style.fill: "#ffffff"
     style.stroke: "#7c3aed"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#4c1d95"
+    style.bold: true
   }
 
-  api: |md
-    ### API Management
-    Public REST API · Webhook Dispatch · Bug Bounty
-  | {
+  api: "API Management\nPublic API · Webhooks\nBug Bounty" {
     style.fill: "#ffffff"
     style.stroke: "#7c3aed"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#4c1d95"
+    style.bold: true
   }
 
   core -> money: {style.opacity: 0}
@@ -189,17 +159,17 @@ onchain: "ON-CHAIN LAYER" {
   style.stroke: "#ea580c"
   style.stroke-width: 3
   style.border-radius: 14
-  style.font-size: 32
+  style.font-size: 36
   style.bold: true
   style.font-color: "#7c2d12"
   grid-columns: 4
 
-  a: "Verification" {
+  a: Verification {
     style.fill: "#ffffff"
     style.stroke: "#ea580c"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#7c2d12"
     style.bold: true
   }
@@ -207,8 +177,8 @@ onchain: "ON-CHAIN LAYER" {
     style.fill: "#ffffff"
     style.stroke: "#ea580c"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#7c2d12"
     style.bold: true
   }
@@ -216,8 +186,8 @@ onchain: "ON-CHAIN LAYER" {
     style.fill: "#ffffff"
     style.stroke: "#ea580c"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#7c2d12"
     style.bold: true
   }
@@ -225,8 +195,8 @@ onchain: "ON-CHAIN LAYER" {
     style.fill: "#ffffff"
     style.stroke: "#ea580c"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#7c2d12"
     style.bold: true
   }
@@ -234,17 +204,17 @@ onchain: "ON-CHAIN LAYER" {
     style.fill: "#ffffff"
     style.stroke: "#ea580c"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#7c2d12"
     style.bold: true
   }
-  f: "Governance" {
+  f: Governance {
     style.fill: "#ffffff"
     style.stroke: "#ea580c"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#7c2d12"
     style.bold: true
   }
@@ -252,8 +222,8 @@ onchain: "ON-CHAIN LAYER" {
     style.fill: "#ffffff"
     style.stroke: "#ea580c"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#7c2d12"
     style.bold: true
   }
@@ -261,8 +231,8 @@ onchain: "ON-CHAIN LAYER" {
     style.fill: "#ffffff"
     style.stroke: "#ea580c"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#7c2d12"
     style.bold: true
   }
@@ -275,33 +245,28 @@ data: "DATA LAYER" {
   style.stroke: "#dc2626"
   style.stroke-width: 3
   style.border-radius: 14
-  style.font-size: 32
+  style.font-size: 36
   style.bold: true
   style.font-color: "#7f1d1d"
 
-  prisma: |md
-    ### Prisma ORM
-    Type-safe Queries · Connection Pooling
-  | {
+  prisma: "Prisma ORM\nType-safe Queries · Connection Pool" {
     style.fill: "#ffffff"
     style.stroke: "#dc2626"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#7f1d1d"
+    style.bold: true
   }
 
-  pg: |md
-    ### PostgreSQL
-    Users · Agents · Strategies · API Keys
-    Audit Events · Supervisor Rules · Referrals
-  | {
+  pg: "PostgreSQL\nUsers · Agents · Strategies\nAPI Keys · Audit Events\nSupervisor Rules · Referrals" {
     style.fill: "#ffffff"
     style.stroke: "#dc2626"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#7f1d1d"
+    style.bold: true
   }
 
   prisma -> pg: {style.opacity: 0}
@@ -314,7 +279,7 @@ external: "EXTERNAL SERVICES" {
   style.stroke: "#0284c7"
   style.stroke-width: 3
   style.border-radius: 14
-  style.font-size: 32
+  style.font-size: 36
   style.bold: true
   style.font-color: "#0c4a6e"
   grid-columns: 3
@@ -323,8 +288,8 @@ external: "EXTERNAL SERVICES" {
     style.fill: "#e0f2fe"
     style.stroke: "#0284c7"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#0c4a6e"
     style.bold: true
   }
@@ -332,8 +297,8 @@ external: "EXTERNAL SERVICES" {
     style.fill: "#e0f2fe"
     style.stroke: "#0284c7"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#0c4a6e"
     style.bold: true
   }
@@ -341,8 +306,8 @@ external: "EXTERNAL SERVICES" {
     style.fill: "#e0f2fe"
     style.stroke: "#0284c7"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#0c4a6e"
     style.bold: true
   }
@@ -350,8 +315,8 @@ external: "EXTERNAL SERVICES" {
     style.fill: "#e0f2fe"
     style.stroke: "#0284c7"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#0c4a6e"
     style.bold: true
   }
@@ -359,8 +324,8 @@ external: "EXTERNAL SERVICES" {
     style.fill: "#e0f2fe"
     style.stroke: "#0284c7"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#0c4a6e"
     style.bold: true
   }
@@ -368,8 +333,8 @@ external: "EXTERNAL SERVICES" {
     style.fill: "#e0f2fe"
     style.stroke: "#0284c7"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#0c4a6e"
     style.bold: true
   }
@@ -377,8 +342,8 @@ external: "EXTERNAL SERVICES" {
     style.fill: "#e0f2fe"
     style.stroke: "#0284c7"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#0c4a6e"
     style.bold: true
   }
@@ -386,8 +351,8 @@ external: "EXTERNAL SERVICES" {
     style.fill: "#e0f2fe"
     style.stroke: "#0284c7"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#0c4a6e"
     style.bold: true
   }
@@ -395,8 +360,8 @@ external: "EXTERNAL SERVICES" {
     style.fill: "#e0f2fe"
     style.stroke: "#0284c7"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#0c4a6e"
     style.bold: true
   }
@@ -409,45 +374,38 @@ infra: "INFRASTRUCTURE & CI/CD" {
   style.stroke: "#57534e"
   style.stroke-width: 3
   style.border-radius: 14
-  style.font-size: 32
+  style.font-size: 36
   style.bold: true
   style.font-color: "#1c1917"
 
-  ci: |md
-    ### GitHub Actions
-    CI · Code Quality · Security Scan
-    Deploy · DB Migrations · Release
-  | {
+  ci: "GitHub Actions\nCI · Code Quality · Security\nDeploy · Migrations · Release" {
     style.fill: "#ffffff"
     style.stroke: "#57534e"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#1c1917"
+    style.bold: true
   }
 
-  docker: |md
-    ### Docker
-    Backend · Frontend · Eliza Agent Images
-  | {
+  docker: "Docker\nBackend · Frontend\nEliza Agent Images" {
     style.fill: "#ffffff"
     style.stroke: "#57534e"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#1c1917"
+    style.bold: true
   }
 
-  ghcr: |md
-    ### GHCR
-    GitHub Container Registry
-  | {
+  ghcr: "GHCR\nGitHub Container Registry" {
     style.fill: "#ffffff"
     style.stroke: "#57534e"
     style.stroke-width: 2
-    style.border-radius: 8
-    style.font-size: 22
+    style.border-radius: 10
+    style.font-size: 26
     style.font-color: "#1c1917"
+    style.bold: true
   }
 
   ci -> docker: {style.opacity: 0}
@@ -458,56 +416,56 @@ infra: "INFRASTRUCTURE & CI/CD" {
 
 clients -> gateway: "HTTPS / JWT / API Key" {
   style.stroke: "#059669"
-  style.stroke-width: 3
-  style.font-size: 20
+  style.stroke-width: 4
+  style.font-size: 24
   style.font-color: "#064e3b"
   style.bold: true
 }
 
 gateway -> business: "Authenticated Requests" {
   style.stroke: "#2563eb"
-  style.stroke-width: 3
-  style.font-size: 20
+  style.stroke-width: 4
+  style.font-size: 24
   style.font-color: "#1e3a8a"
   style.bold: true
 }
 
 business -> onchain: "On-chain Operations" {
   style.stroke: "#7c3aed"
-  style.stroke-width: 3
-  style.font-size: 20
+  style.stroke-width: 4
+  style.font-size: 24
   style.font-color: "#4c1d95"
   style.bold: true
 }
 
 business -> data: "Read / Write" {
   style.stroke: "#7c3aed"
-  style.stroke-width: 3
-  style.font-size: 20
+  style.stroke-width: 4
+  style.font-size: 24
   style.font-color: "#4c1d95"
   style.bold: true
 }
 
 onchain -> data: "Persist Proofs" {
   style.stroke: "#ea580c"
-  style.stroke-width: 3
-  style.font-size: 20
+  style.stroke-width: 4
+  style.font-size: 24
   style.font-color: "#7c2d12"
   style.bold: true
 }
 
 data -> external: "API Calls & Blockchain Tx" {
   style.stroke: "#dc2626"
-  style.stroke-width: 3
-  style.font-size: 20
+  style.stroke-width: 4
+  style.font-size: 24
   style.font-color: "#7f1d1d"
   style.bold: true
 }
 
 external -> infra: "Deployed via CI/CD" {
   style.stroke: "#0284c7"
-  style.stroke-width: 3
-  style.font-size: 20
+  style.stroke-width: 4
+  style.font-size: 24
   style.font-color: "#0c4a6e"
   style.bold: true
 }
