@@ -1,86 +1,101 @@
 direction: down
 
 title: |md
-  # Vectix Nexus -- System Architecture
+  # Vectix Nexus
+  ### System Architecture
 | {
   near: top-center
-  style.font-size: 36
-}
-
-classes: {
-  layer: {
-    style: {
-      fill: "#f1f5f9"
-      stroke: "#334155"
-      border-radius: 10
-      font-size: 28
-      bold: true
-      font-color: "#0f172a"
-      stroke-width: 2
-    }
-  }
-  box: {
-    style: {
-      fill: "#ffffff"
-      stroke: "#64748b"
-      border-radius: 6
-      font-size: 20
-      font-color: "#1e293b"
-      stroke-width: 1
-    }
-  }
-  ext: {
-    style: {
-      fill: "#dbeafe"
-      stroke: "#2563eb"
-      border-radius: 6
-      font-size: 20
-      font-color: "#1e3a8a"
-      stroke-width: 1
-    }
-  }
+  style.font-size: 40
+  style.font-color: "#0f172a"
+  style.bold: true
 }
 
 # ── 1. Clients ────────────────────────────────────────────
 
-clients: "1  CLIENT LAYER" {
-  class: layer
+clients: "CLIENT LAYER" {
+  style.fill: "#ecfdf5"
+  style.stroke: "#059669"
+  style.stroke-width: 3
+  style.border-radius: 14
+  style.font-size: 32
+  style.bold: true
+  style.font-color: "#064e3b"
 
   frontend: |md
-    **Next.js Frontend**
-    Dashboard · Agents · Billing
-    Marketplace · Advanced Features
-    On-chain · Governance · Threats
-  | { class: box }
+    ### Next.js Frontend
+    Dashboard · Agent Management · Billing & Pricing
+    Strategy Marketplace · Advanced Features
+    On-chain Verification · Governance · Threat Intelligence
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#059669"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#064e3b"
+  }
 
   m2m: |md
-    **M2M / API Clients**
-    REST API (v1) · Webhooks
-  | { class: box }
+    ### M2M / API Clients
+    REST API (v1) · Webhook Consumers
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#059669"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#064e3b"
+  }
 
   frontend -> m2m: {style.opacity: 0}
 }
 
 # ── 2. Auth & Gateway ─────────────────────────────────────
 
-gateway: "2  AUTH & API GATEWAY" {
-  class: layer
+gateway: "AUTH & API GATEWAY" {
+  style.fill: "#eff6ff"
+  style.stroke: "#2563eb"
+  style.stroke-width: 3
+  style.border-radius: 14
+  style.font-size: 32
+  style.bold: true
+  style.font-color: "#1e3a8a"
 
   clerk: |md
-    **Clerk Auth**
-    JWT · User Identity
-  | { class: box }
+    ### Clerk Auth
+    JWT Verification · User Identity
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#2563eb"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#1e3a8a"
+  }
 
   keys: |md
-    **API Key Service**
-    vx_* Scopes · Tier Limits
-  | { class: box }
+    ### API Key Service
+    Scoped Access (vx_*) · Tier-based Rate Limits
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#2563eb"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#1e3a8a"
+  }
 
   mw: |md
-    **Express Middleware**
-    CORS · Rate Limiter
-    Security Headers
-  | { class: box }
+    ### Express Middleware
+    CORS · Rate Limiter · Security Headers · Request Logger
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#2563eb"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#1e3a8a"
+  }
 
   clerk -> keys: {style.opacity: 0}
   keys -> mw: {style.opacity: 0}
@@ -88,40 +103,80 @@ gateway: "2  AUTH & API GATEWAY" {
 
 # ── 3. Business Logic ─────────────────────────────────────
 
-business: "3  BUSINESS LOGIC" {
-  class: layer
+business: "BUSINESS LOGIC" {
+  style.fill: "#faf5ff"
+  style.stroke: "#7c3aed"
+  style.stroke-width: 3
+  style.border-radius: 14
+  style.font-size: 32
+  style.bold: true
+  style.font-color: "#4c1d95"
 
   core: |md
-    **Core Services**
-    Agents · Wallet · Trading
-    Fly Deploy & Lifecycle
-  | { class: box }
+    ### Core Services
+    Agent CRUD & Deploy · Wallet & Withdrawals
+    Trading Engine · Fly Machine Lifecycle & Logs
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#7c3aed"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#4c1d95"
+  }
 
   money: |md
-    **Monetization**
-    Stripe · Subscriptions
-    Affiliate · Marketplace
-  | { class: box }
+    ### Monetization
+    Stripe Checkout & Webhooks · Subscription Management
+    Affiliate Program · Strategy Marketplace
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#7c3aed"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#4c1d95"
+  }
 
   sec: |md
-    **Security & Compliance**
-    Token Security · Trust Score
-    OFAC · AML · Geo-block
-    MEV · Whitelist · Lockout
-  | { class: box }
+    ### Security & Compliance
+    Token Security · Trust Score · Safe Trending
+    OFAC / SDN · AML Monitoring · Geo-blocking
+    MEV Protection · Wallet Whitelist · Account Lockout
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#7c3aed"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#4c1d95"
+  }
 
   adv: |md
-    **Advanced Features**
-    Preflight · Tx Simulator
-    Supervisor · Shadow Mode
-    TEE · Narrative · Signals
-  | { class: box }
+    ### Advanced Features
+    Preflight Guard · Transaction Simulator
+    Supervisor Rule Engine · Shadow Mode & Metrics
+    TEE Secure Enclave · Narrative · Signal Generator
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#7c3aed"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#4c1d95"
+  }
 
   api: |md
-    **API Management**
-    Public API · Webhooks
-    Bug Bounty
-  | { class: box }
+    ### API Management
+    Public REST API · Webhook Dispatch · Bug Bounty
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#7c3aed"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#4c1d95"
+  }
 
   core -> money: {style.opacity: 0}
   sec -> adv: {style.opacity: 0}
@@ -129,137 +184,330 @@ business: "3  BUSINESS LOGIC" {
 
 # ── 4. On-chain ───────────────────────────────────────────
 
-onchain: "4  ON-CHAIN LAYER" {
-  class: layer
+onchain: "ON-CHAIN LAYER" {
+  style.fill: "#fff7ed"
+  style.stroke: "#ea580c"
+  style.stroke-width: 3
+  style.border-radius: 14
+  style.font-size: 32
+  style.bold: true
+  style.font-color: "#7c2d12"
   grid-columns: 4
 
-  a: "Verification" { class: box }
-  b: "Circuit Breaker" { class: box }
-  c: "Audit Trail" { class: box }
-  d: "Security Scan" { class: box }
-  e: "Multi-sig" { class: box }
-  f: "Governance" { class: box }
-  g: "Time-lock" { class: box }
-  h: "Threat Intel" { class: box }
+  a: "Verification" {
+    style.fill: "#ffffff"
+    style.stroke: "#ea580c"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#7c2d12"
+    style.bold: true
+  }
+  b: "Circuit Breaker" {
+    style.fill: "#ffffff"
+    style.stroke: "#ea580c"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#7c2d12"
+    style.bold: true
+  }
+  c: "Audit Trail" {
+    style.fill: "#ffffff"
+    style.stroke: "#ea580c"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#7c2d12"
+    style.bold: true
+  }
+  d: "Security Scan" {
+    style.fill: "#ffffff"
+    style.stroke: "#ea580c"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#7c2d12"
+    style.bold: true
+  }
+  e: "Multi-sig" {
+    style.fill: "#ffffff"
+    style.stroke: "#ea580c"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#7c2d12"
+    style.bold: true
+  }
+  f: "Governance" {
+    style.fill: "#ffffff"
+    style.stroke: "#ea580c"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#7c2d12"
+    style.bold: true
+  }
+  g: "Time-lock" {
+    style.fill: "#ffffff"
+    style.stroke: "#ea580c"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#7c2d12"
+    style.bold: true
+  }
+  h: "Threat Intel" {
+    style.fill: "#ffffff"
+    style.stroke: "#ea580c"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#7c2d12"
+    style.bold: true
+  }
 }
 
 # ── 5. Data ───────────────────────────────────────────────
 
-data: "5  DATA LAYER" {
-  class: layer
+data: "DATA LAYER" {
+  style.fill: "#fef2f2"
+  style.stroke: "#dc2626"
+  style.stroke-width: 3
+  style.border-radius: 14
+  style.font-size: 32
+  style.bold: true
+  style.font-color: "#7f1d1d"
 
   prisma: |md
-    **Prisma ORM**
-    Type-safe · Connection Pool
-  | { class: box }
+    ### Prisma ORM
+    Type-safe Queries · Connection Pooling
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#dc2626"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#7f1d1d"
+  }
 
   pg: |md
-    **PostgreSQL**
-    Users · Agents · Strategies
-    API Keys · Audit Events
-    Supervisor Rules · Referrals
-  | { class: box }
+    ### PostgreSQL
+    Users · Agents · Strategies · API Keys
+    Audit Events · Supervisor Rules · Referrals
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#dc2626"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#7f1d1d"
+  }
 
   prisma -> pg: {style.opacity: 0}
 }
 
 # ── 6. External Services ─────────────────────────────────
 
-external: "6  EXTERNAL SERVICES" {
-  class: layer
+external: "EXTERNAL SERVICES" {
+  style.fill: "#f0f9ff"
+  style.stroke: "#0284c7"
+  style.stroke-width: 3
+  style.border-radius: 14
+  style.font-size: 32
+  style.bold: true
+  style.font-color: "#0c4a6e"
   grid-columns: 3
 
-  fly: "Fly.io\nAgent Hosting" { class: ext }
-  stripe: "Stripe\nPayments" { class: ext }
-  solana: "Solana RPC\nHelius / Alchemy" { class: ext }
-  dex: "DexScreener\nToken Data" { class: ext }
-  rug: "RugCheck\nRug Analysis" { class: ext }
-  goplus: "GoPlus\nSecurity Data" { class: ext }
-  lunar: "LunarCrush\nSocial Intel" { class: ext }
-  phala: "Phala Network\nTEE Provider" { class: ext }
-  clerk: "Clerk\nUser Auth" { class: ext }
+  fly: "Fly.io\nAgent Hosting" {
+    style.fill: "#e0f2fe"
+    style.stroke: "#0284c7"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#0c4a6e"
+    style.bold: true
+  }
+  stripe: "Stripe\nPayments" {
+    style.fill: "#e0f2fe"
+    style.stroke: "#0284c7"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#0c4a6e"
+    style.bold: true
+  }
+  solana: "Solana RPC\nHelius / Alchemy" {
+    style.fill: "#e0f2fe"
+    style.stroke: "#0284c7"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#0c4a6e"
+    style.bold: true
+  }
+  dex: "DexScreener\nToken Data" {
+    style.fill: "#e0f2fe"
+    style.stroke: "#0284c7"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#0c4a6e"
+    style.bold: true
+  }
+  rug: "RugCheck\nRug Analysis" {
+    style.fill: "#e0f2fe"
+    style.stroke: "#0284c7"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#0c4a6e"
+    style.bold: true
+  }
+  goplus: "GoPlus\nSecurity Data" {
+    style.fill: "#e0f2fe"
+    style.stroke: "#0284c7"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#0c4a6e"
+    style.bold: true
+  }
+  lunar: "LunarCrush\nSocial Intel" {
+    style.fill: "#e0f2fe"
+    style.stroke: "#0284c7"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#0c4a6e"
+    style.bold: true
+  }
+  phala: "Phala Network\nTEE Provider" {
+    style.fill: "#e0f2fe"
+    style.stroke: "#0284c7"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#0c4a6e"
+    style.bold: true
+  }
+  clerk: "Clerk\nUser Auth" {
+    style.fill: "#e0f2fe"
+    style.stroke: "#0284c7"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#0c4a6e"
+    style.bold: true
+  }
 }
 
 # ── 7. Infrastructure ─────────────────────────────────────
 
-infra: "7  INFRASTRUCTURE & CI/CD" {
-  class: layer
+infra: "INFRASTRUCTURE & CI/CD" {
+  style.fill: "#f5f5f4"
+  style.stroke: "#57534e"
+  style.stroke-width: 3
+  style.border-radius: 14
+  style.font-size: 32
+  style.bold: true
+  style.font-color: "#1c1917"
 
   ci: |md
-    **GitHub Actions**
-    CI · Code Quality · Security
-    Deploy · Migrations · Release
-  | { class: box }
+    ### GitHub Actions
+    CI · Code Quality · Security Scan
+    Deploy · DB Migrations · Release
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#57534e"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#1c1917"
+  }
 
   docker: |md
-    **Docker**
-    Backend · Frontend
-    Eliza Agent Images
-  | { class: box }
+    ### Docker
+    Backend · Frontend · Eliza Agent Images
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#57534e"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#1c1917"
+  }
 
   ghcr: |md
-    **GHCR**
-    Container Registry
-  | { class: box }
+    ### GHCR
+    GitHub Container Registry
+  | {
+    style.fill: "#ffffff"
+    style.stroke: "#57534e"
+    style.stroke-width: 2
+    style.border-radius: 8
+    style.font-size: 22
+    style.font-color: "#1c1917"
+  }
 
   ci -> docker: {style.opacity: 0}
   docker -> ghcr: {style.opacity: 0}
 }
 
-# ── Main vertical flow ────────────────────────────────────
+# ── Connections ───────────────────────────────────────────
 
 clients -> gateway: "HTTPS / JWT / API Key" {
+  style.stroke: "#059669"
+  style.stroke-width: 3
+  style.font-size: 20
+  style.font-color: "#064e3b"
+  style.bold: true
+}
+
+gateway -> business: "Authenticated Requests" {
   style.stroke: "#2563eb"
-  style.stroke-width: 2
-  style.font-size: 18
+  style.stroke-width: 3
+  style.font-size: 20
   style.font-color: "#1e3a8a"
   style.bold: true
 }
 
-gateway -> business: "Authenticated requests" {
-  style.stroke: "#2563eb"
-  style.stroke-width: 2
-  style.font-size: 18
-  style.font-color: "#1e3a8a"
-  style.bold: true
-}
-
-business -> onchain: "On-chain operations" {
-  style.stroke: "#2563eb"
-  style.stroke-width: 2
-  style.font-size: 18
-  style.font-color: "#1e3a8a"
+business -> onchain: "On-chain Operations" {
+  style.stroke: "#7c3aed"
+  style.stroke-width: 3
+  style.font-size: 20
+  style.font-color: "#4c1d95"
   style.bold: true
 }
 
 business -> data: "Read / Write" {
-  style.stroke: "#2563eb"
-  style.stroke-width: 2
-  style.font-size: 18
-  style.font-color: "#1e3a8a"
+  style.stroke: "#7c3aed"
+  style.stroke-width: 3
+  style.font-size: 20
+  style.font-color: "#4c1d95"
   style.bold: true
 }
 
-onchain -> data: "Persist proofs" {
-  style.stroke: "#2563eb"
-  style.stroke-width: 2
-  style.font-size: 18
-  style.font-color: "#1e3a8a"
+onchain -> data: "Persist Proofs" {
+  style.stroke: "#ea580c"
+  style.stroke-width: 3
+  style.font-size: 20
+  style.font-color: "#7c2d12"
   style.bold: true
 }
 
-data -> external: "API calls & blockchain tx" {
-  style.stroke: "#2563eb"
-  style.stroke-width: 2
-  style.font-size: 18
-  style.font-color: "#1e3a8a"
+data -> external: "API Calls & Blockchain Tx" {
+  style.stroke: "#dc2626"
+  style.stroke-width: 3
+  style.font-size: 20
+  style.font-color: "#7f1d1d"
   style.bold: true
 }
 
 external -> infra: "Deployed via CI/CD" {
-  style.stroke: "#2563eb"
-  style.stroke-width: 2
-  style.font-size: 18
-  style.font-color: "#1e3a8a"
+  style.stroke: "#0284c7"
+  style.stroke-width: 3
+  style.font-size: 20
+  style.font-color: "#0c4a6e"
   style.bold: true
 }
