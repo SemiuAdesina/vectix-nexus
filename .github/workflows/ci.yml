@@ -35,6 +35,21 @@ jobs:
           NEXT_PUBLIC_API_URL: http://localhost:3002
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
 
+  architecture:
+    name: Architecture Diagram
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install D2
+        run: curl -fsSL https://d2lang.com/install.sh | sh -s --
+
+      - name: Render SVG
+        run: d2 docs/architecture.d2 docs/architecture.svg --theme 200 --pad 40
+
+      - name: Verify output
+        run: test -f docs/architecture.svg
+
   backend:
     name: Backend
     runs-on: ubuntu-latest

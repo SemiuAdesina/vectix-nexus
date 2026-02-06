@@ -1,0 +1,282 @@
+direction: down
+
+title: |md
+  # Vectix Nexus — System Architecture
+| { near: top-center }
+
+classes: {
+  external: {
+    style: {
+      fill: "#f0f4ff"
+      stroke: "#6366f1"
+      border-radius: 8
+      font-color: "#312e81"
+    }
+  }
+  layer: {
+    style: {
+      fill: "#fafafa"
+      stroke: "#d4d4d8"
+      border-radius: 12
+    }
+  }
+  service: {
+    style: {
+      fill: "#ffffff"
+      stroke: "#a1a1aa"
+      border-radius: 6
+    }
+  }
+}
+
+clients: Client Layer {
+  class: layer
+
+  frontend: Next.js Frontend {
+    class: service
+    dashboard: Dashboard
+    agents: Agent Management
+    billing: Billing & Pricing
+    marketplace: Strategy Marketplace
+    advanced: Advanced Features
+    onchain-ui: On-chain Verification
+    governance-ui: Governance
+    threats-ui: Threat Intelligence
+    landing: Landing Page
+  }
+
+  m2m: M2M / API Clients {
+    class: service
+    rest: REST API (v1)
+    webhooks: Webhook Consumers
+  }
+}
+
+gateway: Authentication & API Gateway {
+  class: layer
+
+  clerk: Clerk Auth {
+    class: service
+  }
+  api-keys: API Key Service {
+    class: service
+    scopes: "Scoped Access (vx_*)"
+    tiers: "Tier-based Rate Limits"
+  }
+  middleware: Express Middleware {
+    class: service
+    cors: CORS
+    rate-limit: Rate Limiter
+    security-headers: Security Headers
+    request-logger: Request Logger
+  }
+}
+
+business: Business Logic {
+  class: layer
+
+  core: Core Services {
+    class: service
+    agents: Agent CRUD & Deploy
+    wallet: Wallet & Withdrawals
+    trading: Trading Engine
+    fly-lifecycle: Fly Machine Lifecycle
+    fly-logs: Fly Logs
+  }
+
+  monetization: Monetization {
+    class: service
+    stripe-checkout: Stripe Checkout
+    stripe-webhook: Stripe Webhooks
+    subscriptions: Subscription Management
+    affiliate: Affiliate Program
+    marketplace-svc: Strategy Marketplace
+  }
+
+  security: Security & Compliance {
+    class: service
+    token-security: Token Security Analysis
+    trust-score: Trust Score Engine
+    safe-trending: Safe Trending Filter
+    mev: MEV Protection
+    sanctions: OFAC / SDN Sanctions
+    aml: AML Monitoring
+    geo-blocking: Geo-blocking
+    whitelist: Wallet Whitelist
+    account-lockout: Account Lockout
+  }
+
+  advanced: Advanced Features {
+    class: service
+    preflight: Preflight Guard
+    tx-simulator: Transaction Simulator
+    supervisor: Supervisor Rule Engine
+    shadow-portfolio: Shadow Portfolio
+    shadow-metrics: Shadow Metrics
+    tee-enclave: TEE Secure Enclave
+    tee-crypto: Enclave Cryptography
+    narrative: Narrative Service
+    cluster-builder: Cluster Builder
+    signal-gen: Signal Generator
+  }
+
+  api-mgmt: API Management {
+    class: service
+    public-api: Public REST API
+    webhook-svc: Webhook Dispatch
+    bug-bounty: Bug Bounty
+  }
+}
+
+onchain: On-chain Layer {
+  class: layer
+
+  verification: On-chain Verification {
+    class: service
+  }
+  multisig: Multi-signature {
+    class: service
+  }
+  circuit-breaker: Circuit Breaker {
+    class: service
+  }
+  governance: Governance {
+    class: service
+  }
+  audit-trail: Audit Trail {
+    class: service
+  }
+  timelock: Time-lock {
+    class: service
+  }
+  sec-scanning: Security Scanning {
+    class: service
+  }
+  threat-intel: Threat Intelligence {
+    class: service
+  }
+}
+
+data: Data Layer {
+  class: layer
+
+  postgres: PostgreSQL {
+    class: service
+    users: Users & Subscriptions
+    agents-db: Agents & Strategies
+    api-keys-db: API Keys & Logs
+    audit-db: Audit Events
+    supervisor-db: Supervisor Rule Versions
+    referrals: Referral Payouts
+  }
+
+  prisma: Prisma ORM {
+    class: service
+  }
+}
+
+external: External Services {
+  class: layer
+
+  fly: Fly.io {
+    class: external
+    label: "Agent Hosting"
+  }
+  stripe: Stripe {
+    class: external
+    label: "Payments"
+  }
+  solana: Solana RPC {
+    class: external
+    label: "Blockchain (Helius / Alchemy)"
+  }
+  dexscreener: DexScreener {
+    class: external
+    label: "Token Data"
+  }
+  rugcheck: RugCheck {
+    class: external
+    label: "Rug Analysis"
+  }
+  goplus: GoPlus {
+    class: external
+    label: "Security Data"
+  }
+  lunarcrush: LunarCrush {
+    class: external
+    label: "Social Intelligence"
+  }
+  phala: Phala Network {
+    class: external
+    label: "TEE Provider"
+  }
+  clerk-ext: Clerk {
+    class: external
+    label: "User Auth"
+  }
+}
+
+infra: Infrastructure & CI/CD {
+  class: layer
+
+  ghcr: GitHub Container Registry {
+    class: service
+  }
+  ci: GitHub Actions {
+    class: service
+    ci-pipeline: CI Pipeline
+    code-quality: Code Quality
+    security-scan: Security Scan
+    db-migrate: DB Migrations
+    deploy-pipeline: Deploy Pipeline
+    release: Release
+  }
+  docker: Docker {
+    class: service
+    backend-img: Backend Image
+    frontend-img: Frontend Image
+    eliza-img: Eliza Agent Image
+  }
+}
+
+clients.frontend -> gateway.clerk: "Clerk token"
+clients.frontend -> gateway.middleware: HTTPS
+clients.m2m -> gateway.api-keys: "API key (vx_*)"
+clients.m2m -> gateway.middleware: HTTPS
+
+gateway.clerk -> business.core: Authenticated
+gateway.api-keys -> business.api-mgmt: Scoped access
+gateway.middleware -> business: Validated requests
+
+business.core -> data.prisma: Read / Write
+business.monetization -> data.prisma: Read / Write
+business.security -> data.prisma: Read / Write
+business.advanced -> data.prisma: Read / Write
+business.api-mgmt -> data.prisma: Read / Write
+data.prisma -> data.postgres: SQL
+
+business.core.agents -> external.fly: Deploy machines
+business.core.fly-lifecycle -> external.fly: Start / Stop / Destroy
+business.core.fly-logs -> external.fly: Stream logs
+business.core.wallet -> external.solana: Transactions
+business.monetization.stripe-checkout -> external.stripe: Create sessions
+business.monetization.stripe-webhook -> external.stripe: Webhooks
+
+business.security.token-security -> external.dexscreener: Token data
+business.security.token-security -> external.rugcheck: Rug analysis
+business.security.token-security -> external.goplus: Security data
+business.security.safe-trending -> external.dexscreener: Trending tokens
+
+business.advanced.narrative -> external.lunarcrush: Social metrics
+business.advanced.tee-enclave -> external.phala: TEE attestation
+business.advanced.preflight -> external.solana: Simulate tx
+business.advanced.tx-simulator -> external.solana: Simulate tx
+
+business -> onchain: On-chain operations
+onchain -> external.solana: Write proofs
+
+gateway.clerk -> external.clerk-ext: Verify tokens
+
+infra.ci -> infra.docker: Build images
+infra.docker -> infra.ghcr: Push images
+infra.ghcr -> external.fly: Deploy

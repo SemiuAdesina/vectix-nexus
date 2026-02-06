@@ -60,6 +60,10 @@ cd backend && npm install && cd ..
 
 ## Architecture
 
+![System Architecture](docs/architecture.svg)
+
+> Diagram source: [`docs/architecture.d2`](docs/architecture.d2). Render locally with `d2 docs/architecture.d2 docs/architecture.svg --theme 200`.
+
 | Layer | Stack |
 |-------|--------|
 | Core | ElizaOS (TypeScript) |
@@ -232,38 +236,9 @@ npm run dev
 
 ### System Architecture
 
-The following diagram is plain text so it renders in any Markdown viewer. Flow is top-down: clients → auth/gateway → business logic → data → external services.
+Flow is top-down: clients → auth/gateway → business logic → data → external services.
 
-```
-+--------------------------------------------------------------------------------------------------+
-| CLIENT LAYER                                                                                     |
-|   Next.js Frontend (dashboard, agents, billing, marketplace)  |  M2M / API clients  |
-+----------------------------------------------------------+-----------------------------------+
-                                                           |
-+----------------------------------------------------------v-----------------------------------+
-| AUTHENTICATION & API GATEWAY                                                                     |
-|   Clerk (user auth)  |  API Key Service (vx_*, scopes)  |  Express  |  Security middleware  |  CORS  |  Rate limit |
-+----------------------------------------------------------+-----------------------------------+
-                                                           |
-+----------------------------------------------------------v-----------------------------------+
-| BUSINESS LOGIC (backend + onchain)                                                              |
-|   Agents  |  Wallet  |  Trading  |  Stripe  |  Deploy (Fly)  |  Affiliate  |  Marketplace  |  Protection (whitelist) |
-|   Security: token-security, OFAC, AML, geo-blocking, DexScreener, RugCheck, GoPlus, safe-trending |
-|   On-chain: audit-trail, circuit-breaker, governance, multisig, security-scanning, threat-intel, time-lock |
-|   Narrative (LunarCrush)  |  Shadow (portfolio + metrics)  |  Simulation (preflight, tx simulator) |
-|   Supervisor (rule engine)  |  TEE (secure enclave)  |  Webhooks  |  Bug bounty  |  Public API  |
-+----------------------------------------------------------+-----------------------------------+
-                                                           |
-+----------------------------------------------------------v-----------------------------------+
-| DATA LAYER                                                                                       |
-|   PostgreSQL  |  Prisma ORM  |  Audit trail (security-relevant events)                           |
-+----------------------------------------------------------+-----------------------------------+
-                                                           |
-+----------------------------------------------------------v-----------------------------------+
-| EXTERNAL SERVICES                                                                                |
-|   Fly.io (agent hosting)  |  Stripe  |  Solana  |  DexScreener  |  RugCheck  |  GoPlus  |  LunarCrush  |  TEE (e.g. Phala) |
-+--------------------------------------------------------------------------------------------------+
-```
+![System Architecture](docs/architecture.svg)
 
 **Components by layer (reference)**
 
