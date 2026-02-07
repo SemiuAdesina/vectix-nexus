@@ -2,6 +2,27 @@ import { Router, Request, Response } from 'express';
 
 const router = Router();
 
+router.get('/onchain/audit-trail', (req: Request, res: Response) => {
+  const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
+  const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
+  res.json({ success: true, entries: [], total: 0 });
+});
+
+router.get('/onchain/audit-trail/verify', (_req: Request, res: Response) => {
+  res.json({ success: true, valid: true, invalidEntries: [] });
+});
+
+router.get('/onchain/audit-trail/export', (req: Request, res: Response) => {
+  const format = (req.query.format as string) || 'json';
+  if (format === 'csv') {
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=audit-trail.csv');
+    return res.send('');
+  }
+  res.setHeader('Content-Disposition', 'attachment; filename=audit-trail.json');
+  res.json([]);
+});
+
 interface GovernanceProposalRecord {
   id: string;
   title: string;

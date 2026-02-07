@@ -15,6 +15,11 @@ router.get('/affiliate/stats/:userId', async (req: Request, res: Response) => {
     const stats = await getAffiliateStats(userId);
     res.json({ success: true, ...stats });
   } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to get affiliate stats';
+    if (message === 'User not found') {
+      res.json({ success: true, referralCode: '', totalReferrals: 0, totalEarnings: 0, pendingPayouts: 0 });
+      return;
+    }
     res.status(500).json({ success: false, error: 'Failed to get affiliate stats' });
   }
 });
