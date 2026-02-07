@@ -62,14 +62,14 @@ export function AgentCreator() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-white">Create Your AI Agent</h1>
-        <p className="text-slate-400 text-base">Configure, connect, and deploy in minutes</p>
-        <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500/50 mx-auto mt-4" />
+      <div className="text-center mb-6 sm:mb-10">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-white">Create Your AI Agent</h1>
+        <p className="text-slate-400 text-sm sm:text-base">Configure, connect, and deploy in minutes</p>
+        <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500/50 mx-auto mt-3 sm:mt-4" />
       </div>
 
-      <div className="mb-10 rounded-2xl border border-slate-700/50 bg-slate-900/50 p-4">
-        <div className="flex items-center justify-between">
+      <div className="mb-6 sm:mb-10 rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-900/50 p-3 sm:p-4">
+        <div className="flex items-center justify-between gap-1">
           {STEPS.map((s, i) => {
             const stepIndex = STEPS.findIndex((st) => st.id === step);
             const isActive = step === s.id;
@@ -89,7 +89,7 @@ export function AgentCreator() {
                   }`}
                 >
                   <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-200 ${
+                    className={`flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-lg sm:rounded-xl border transition-all duration-200 ${
                       isActive
                         ? 'border-teal-500 bg-teal-500/20 text-teal-400 shadow-[0_0_16px_-4px_rgba(20,184,166,0.35)]'
                         : isCompleted
@@ -97,7 +97,7 @@ export function AgentCreator() {
                           : 'border-slate-600 bg-slate-800/80 text-slate-400 group-hover:border-teal-500/40 group-hover:bg-teal-500/5'
                     } ${isDisabled ? 'group-hover:border-slate-600 group-hover:bg-slate-800/80' : ''}`}
                   >
-                    {isCompleted ? <Check className="h-5 w-5" /> : <s.icon className="h-5 w-5" />}
+                    {isCompleted ? <Check className="h-4 w-4 sm:h-5 sm:w-5" /> : <s.icon className="h-4 w-4 sm:h-5 sm:w-5" />}
                   </div>
                   <div className="text-center sm:text-left">
                     <span className="text-[10px] uppercase tracking-wider text-slate-500 sm:text-xs">Step {i + 1}</span>
@@ -118,7 +118,7 @@ export function AgentCreator() {
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-8">
+      <div className="relative overflow-hidden rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-4 sm:p-8">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-500/10 via-teal-500/5 to-transparent transition-opacity duration-500 ease-out"

@@ -6,12 +6,16 @@ primary_region = "iad"
 
 [env]
   NODE_ENV = "production"
+  SERVER_HOST = "0.0.0.0"
+  PORT = "3000"
 
-[[services]]
+[http_service]
   internal_port = 3000
-  protocol = "tcp"
 
-  [[services.ports]]
-    port = 80
-    handlers = ["http"]
+  [[http_service.checks]]
+    grace_period = "120s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/"
 

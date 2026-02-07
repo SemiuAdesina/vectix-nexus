@@ -9,6 +9,6 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"] || "postgresql://macbok:vectix_secure_2026@localhost:5432/vectix_nexus",
+    url: process.env["DATABASE_URL"] || "postgresql://vectix:password@localhost:5432/vectix_nexus",
   },
 });

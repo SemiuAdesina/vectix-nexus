@@ -41,11 +41,11 @@ export function SupervisorRulesCard() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6 animate-pulse">
-        <div className="h-6 bg-slate-700 rounded w-1/3 mb-4" />
-        <div className="space-y-3">
+      <div className="rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-900/50 p-4 sm:p-6 animate-pulse">
+        <div className="h-5 sm:h-6 bg-slate-700 rounded w-1/3 mb-3 sm:mb-4" />
+        <div className="space-y-2 sm:space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-16 bg-slate-700 rounded-xl" />
+            <div key={i} className="h-14 sm:h-16 bg-slate-700 rounded-lg sm:rounded-xl" />
           ))}
         </div>
       </div>
@@ -53,18 +53,18 @@ export function SupervisorRulesCard() {
   }
 
   return (
-    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
-          <Brain className="w-5 h-5 text-teal-400" />
+    <div className="rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-900/50 p-4 sm:p-6">
+      <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30 shrink-0">
+          <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-teal-400" />
         </div>
-        <div>
-          <h3 className="font-semibold text-white">Supervisor AI</h3>
-          <p className="text-xs text-slate-400">Constitutional rules the agent cannot break</p>
+        <div className="min-w-0">
+          <h3 className="font-semibold text-sm sm:text-base text-white">Supervisor AI</h3>
+          <p className="text-[10px] sm:text-xs text-slate-400">Constitutional rules the agent cannot break</p>
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3 min-w-0">
         {rules.map(rule => (
           <RuleItem
             key={rule.id}
@@ -76,8 +76,8 @@ export function SupervisorRulesCard() {
         ))}
       </div>
 
-      <div className="mt-4 pt-4 border-t border-slate-700">
-        <div className="flex items-center justify-between text-sm">
+      <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-700">
+        <div className="flex items-center justify-between text-xs sm:text-sm">
           <span className="text-slate-400">Active Rules</span>
           <span className="font-medium text-teal-400">
             {rules.filter(r => r.enabled).length}/{rules.length}
@@ -108,34 +108,34 @@ function RuleItem({ rule, toggling, onToggle, onEdit }: RuleItemProps) {
       aria-label={rule.enabled ? `Disable rule: ${rule.description}` : `Enable rule: ${rule.description}`}
       onClick={toggling ? undefined : onToggle}
       onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && !toggling) { e.preventDefault(); onToggle(); } }}
-      className={`rounded-xl border p-3 transition-all cursor-pointer select-none ${
+      className={`rounded-lg sm:rounded-xl border p-2.5 sm:p-3 transition-all cursor-pointer select-none ${
         rule.enabled
           ? 'border-teal-500/30 bg-teal-500/5 hover:border-teal-500/40'
           : 'border-slate-700 bg-slate-800/30 hover:border-teal-500/20'
       } ${toggling ? 'opacity-70 pointer-events-none' : ''}`}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-2 sm:gap-3">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <div
-              className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors shrink-0 ring-2 ring-offset-2 ring-offset-slate-950 ${
+              className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md sm:rounded-lg flex items-center justify-center transition-colors shrink-0 ring-1 sm:ring-2 ring-offset-1 sm:ring-offset-2 ring-offset-slate-950 ${
                 rule.enabled ? 'bg-teal-500 text-white ring-teal-500/30' : 'bg-slate-700 text-slate-400 ring-slate-600'
               }`}
               aria-hidden
             >
-              {rule.enabled ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
+              {rule.enabled ? <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> : <X className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
             </div>
-            <p className="font-medium text-sm truncate text-white">{rule.description}</p>
+            <p className="font-medium text-xs sm:text-sm truncate text-white">{rule.description}</p>
           </div>
-          <p className="text-xs text-slate-400 mt-1 ml-9">{paramDisplay}</p>
+          <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5 sm:mt-1 ml-7 sm:ml-9 truncate">{paramDisplay}</p>
         </div>
         <button
           type="button"
           onClick={onEdit}
-          className="p-1.5 rounded-lg hover:bg-teal-500/10 hover:text-teal-400 transition-colors shrink-0"
+          className="p-1 sm:p-1.5 rounded-lg hover:bg-teal-500/10 hover:text-teal-400 transition-colors shrink-0"
           aria-label="Edit rule"
         >
-          <Settings2 className="w-4 h-4 text-slate-400" />
+          <Settings2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
         </button>
       </div>
     </div>

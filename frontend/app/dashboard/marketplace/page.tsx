@@ -62,40 +62,41 @@ export default function MarketplacePage() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-2xl font-bold mb-2 text-white">Strategy Marketplace</h1>
-          <p className="text-slate-400">Browse and purchase trading strategies</p>
+          <h1 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 text-white">Strategy Marketplace</h1>
+          <p className="text-sm sm:text-base text-slate-400">Browse and purchase trading strategies</p>
+          <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500/50 mt-3" />
         </div>
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
           <input
             type="text"
             placeholder="Search strategies..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 pr-4 h-10 rounded-lg bg-slate-800/80 border border-slate-700 text-white placeholder:text-slate-500 text-sm w-64 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-colors"
+            className="pl-10 pr-4 h-10 rounded-lg bg-slate-800/80 border border-slate-700 text-white placeholder:text-slate-500 text-sm w-full sm:w-64 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-colors"
           />
         </div>
       </div>
 
       {loading ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-6 animate-pulse">
-              <div className="h-10 w-10 bg-slate-700 rounded-lg mb-4" />
-              <div className="h-5 bg-slate-700 rounded w-2/3 mb-2" />
-              <div className="h-4 bg-slate-700 rounded w-full" />
+            <div key={i} className="rounded-lg sm:rounded-xl border border-slate-700/50 bg-slate-900/50 p-4 sm:p-6 animate-pulse">
+              <div className="h-9 w-9 sm:h-10 sm:w-10 bg-slate-700 rounded-lg mb-3 sm:mb-4" />
+              <div className="h-4 sm:h-5 bg-slate-700 rounded w-2/3 mb-2" />
+              <div className="h-3 sm:h-4 bg-slate-700 rounded w-full" />
             </div>
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-12 text-center">
-          <Store className="w-12 h-12 mx-auto mb-4 text-slate-500" />
-          <p className="text-slate-400">No strategies found</p>
+        <div className="rounded-lg sm:rounded-xl border border-slate-700/50 bg-slate-900/50 p-8 sm:p-12 text-center">
+          <Store className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 text-slate-500" />
+          <p className="text-sm sm:text-base text-slate-400">No strategies found</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {filtered.map(strategy => (
             <StrategyCard
               key={strategy.id}

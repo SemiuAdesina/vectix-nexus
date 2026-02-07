@@ -73,18 +73,18 @@ export default function GovernancePage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold mb-2 text-white">Security Governance</h1>
-          <p className="text-slate-400">DAO-style voting on security rules and parameters</p>
-          <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500/50 mt-4" />
+          <h1 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 text-white">Security Governance</h1>
+          <p className="text-sm sm:text-base text-slate-400">DAO-style voting on security rules and parameters</p>
+          <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500/50 mt-3 sm:mt-4" />
         </div>
         <button
           onClick={() => setShowCreate(!showCreate)}
-          className="px-4 py-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-lg flex items-center gap-2 shrink-0 shadow-lg shadow-teal-500/20"
+          className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-lg flex items-center gap-1.5 sm:gap-2 shrink-0 shadow-lg shadow-teal-500/20 self-start sm:self-auto"
         >
-          <Plus className="w-4 h-4 shrink-0" />
+          <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
           New Proposal
         </button>
       </div>
@@ -96,7 +96,7 @@ export default function GovernancePage() {
         />
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {proposals.map((proposal) => (
           <ProposalCard
             key={proposal.id}
@@ -107,11 +107,11 @@ export default function GovernancePage() {
         ))}
 
         {proposals.length === 0 && (
-          <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-12 text-center shadow-[0_0_24px_-8px_rgba(20,184,166,0.08)]">
-            <div className="w-16 h-16 rounded-xl bg-teal-500/15 flex items-center justify-center mx-auto mb-4 border border-teal-500/30">
-              <Users className="w-8 h-8 text-teal-400" />
+          <div className="rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-900/50 p-8 sm:p-12 text-center shadow-[0_0_24px_-8px_rgba(20,184,166,0.08)]">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg sm:rounded-xl bg-teal-500/15 flex items-center justify-center mx-auto mb-3 sm:mb-4 border border-teal-500/30">
+              <Users className="w-6 h-6 sm:w-8 sm:h-8 text-teal-400" />
             </div>
-            <p className="text-slate-400">No active proposals</p>
+            <p className="text-sm sm:text-base text-slate-400">No active proposals</p>
           </div>
         )}
       </div>

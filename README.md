@@ -48,11 +48,14 @@ The platform protects users and the broader ecosystem through:
 
 ## Installation
 
+**Production (VPS with Docker Compose – recommended)**  
+See [HOSTINGER_DEPLOY.md](HOSTINGER_DEPLOY.md) for full steps. One `.env` at repo root; run `docker compose up -d --build`. Frontend, backend, PostgreSQL, and ElizaOS agent run as four services.
+
+**Local development** (optional):
+
 ```bash
 git clone https://github.com/SemiuAdesina/vectix-nexus.git
 cd vectix-nexus
-
-# Backend (optional; for full platform)
 cd backend && npm install && cd ..
 ```
 
@@ -114,7 +117,8 @@ cd backend && npm install && cd ../frontend && npm install && cd ..
 # 2. Configure environment
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env.local
-# Edit backend/.env and frontend/.env.local with your keys (Clerk, Stripe, DB, etc.)
+# Edit backend/.env and frontend/.env.local with your keys (Clerk, Stripe, DB, etc.).
+# For VPS: copy backend/.env to repo root as .env and set public URLs; see HOSTINGER_DEPLOY.md.
 
 # 3. Database & launch
 cd backend && npx prisma migrate deploy && npx prisma generate && cd ..
@@ -123,16 +127,18 @@ cd backend && npx prisma migrate deploy && npx prisma generate && cd ..
 ```
 
 - **Frontend:** http://localhost:3000  
-- **Backend API:** http://localhost:3002
+- **Backend API:** http://localhost:3002  
+
+**VPS:** After `docker compose up -d --build`, use `http://YOUR_VPS_IP:3000` and `http://YOUR_VPS_IP:3002`.
 
 ### Prerequisites
 
 - Node.js 18 or higher
-- PostgreSQL 14 or higher
+- PostgreSQL 14 or higher (or use Docker for full stack)
 - npm or pnpm package manager
 - Clerk account for authentication
 - Stripe account for payments
-- Fly.io account for agent hosting
+- For production: VPS (e.g. Hostinger) with Docker; agent runs in Docker (no Fly.io required)
 
 ### Installation (detailed)
 
@@ -157,11 +163,16 @@ npm install
 
 #### 3. Configure Environment Variables
 
-**Backend** (`backend/.env`):
+**Backend** (`backend/.env` for local; for VPS use a single `.env` at repo root – see [HOSTINGER_DEPLOY.md](HOSTINGER_DEPLOY.md) and [.env.example](.env.example)):
 ```env
 PORT=3002
 NODE_ENV=development
 DATABASE_URL=postgresql://user:password@localhost:5432/vectix_nexus
+
+# VPS/Docker: set POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB; Compose sets DATABASE_URL
+POSTGRES_USER=vectix
+POSTGRES_PASSWORD=your-secure-password
+POSTGRES_DB=vectix_nexus
 
 CLERK_SECRET_KEY=sk_test_xxxxx
 WALLET_MASTER_SECRET=your-32-char-secret
@@ -172,17 +183,15 @@ STRIPE_WEBHOOK_SECRET=whsec_xxxxx
 STRIPE_HOBBY_PRICE_ID=price_xxxxx
 STRIPE_PRO_PRICE_ID=price_xxxxx
 
+NEXT_PUBLIC_API_URL=http://localhost:3002
 TRUSTED_ORIGINS=http://localhost:3000
 FRONTEND_URL=http://localhost:3000
-FLY_API_TOKEN=your-fly-token
-SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+CORS_ORIGIN=http://localhost:3000
 
-# TEE Configuration (Optional - for hardware-secured key storage)
-TEE_PROVIDER=simulated
-# For Phala Network:
-# TEE_PROVIDER=phala
-# PHALA_API_KEY=your-phala-api-key
-# PHALA_ENDPOINT=https://api.phala.network
+SOLANA_RPC_URL=https://mainnet.helius-rpc.com/?api-key=YOUR_KEY
+
+# VPS: set MOCK_FLY_DEPLOY=true; do not set FLY_* (agent runs in Docker)
+# TEE (Optional): TEE_PROVIDER=simulated | phala; PHALA_API_KEY; PHALA_ENDPOINT
 ```
 
 **Frontend** (`frontend/.env.local`):
@@ -195,16 +204,13 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxxxx
 
 #### 4. Setup Database
 
+**VPS:** Database runs in Docker; after `docker compose up -d --build`, run `docker compose exec backend npx prisma migrate deploy`.
+
+**Local:**
 ```bash
 cd backend
-
-# Start PostgreSQL (if using Docker)
-docker-compose up -d db
-
-# Run migrations
+# Start PostgreSQL (if using Docker): docker compose up -d db
 npx prisma migrate deploy
-
-# Generate Prisma client
 npx prisma generate
 ```
 
@@ -246,9 +252,9 @@ Flow is top-down: clients → auth/gateway → business logic → data → exter
 |-------|------------|
 | **Client** | Next.js frontend, M2M/API clients |
 | **Auth & Gateway** | Clerk, API Key Service, Express, security middleware, rate limit, CORS |
-| **Business** | Agents, Wallet, Trading, Stripe, Deploy (Fly), Affiliate, Marketplace, Protection/Whitelist, Narrative, Shadow, Simulation, Supervisor, TEE, Webhooks, Bug bounty, Public API; Security (OFAC, AML, geo, token-security, DexScreener, RugCheck, GoPlus, safe-trending); On-chain (audit-trail, circuit-breaker, governance, multisig, security-scanning, threat-intelligence, time-lock) |
+| **Business** | Agents, Wallet, Trading, Stripe, Deploy (VPS Docker / Fly optional), Affiliate, Marketplace, Protection/Whitelist, Narrative, Shadow, Simulation, Supervisor, TEE, Webhooks, Bug bounty, Public API; Security (OFAC, AML, geo, token-security, DexScreener, RugCheck, GoPlus, safe-trending); On-chain (audit-trail, circuit-breaker, governance, multisig, security-scanning, threat-intelligence, time-lock) |
 | **Data** | PostgreSQL, Prisma, Audit trail |
-| **External** | Fly.io, Stripe, Solana, DexScreener, RugCheck, GoPlus, LunarCrush, TEE (e.g. Phala) |
+| **External** | VPS Docker (full stack); optional Fly.io; Stripe, Solana, DexScreener, RugCheck, GoPlus, LunarCrush, TEE (e.g. Phala) |
 
 ### Technology Stack
 
@@ -267,10 +273,10 @@ Flow is top-down: clients → auth/gateway → business logic → data → exter
 - Zod for runtime validation
 
 **Infrastructure**
-- Fly.io for agent container hosting
+- Docker Compose for production (VPS): PostgreSQL, backend, frontend, ElizaOS agent in one stack; see [HOSTINGER_DEPLOY.md](HOSTINGER_DEPLOY.md)
+- Optional Fly.io for remote agent hosting (not required when using VPS)
 - Stripe for payment processing
 - Solana Web3.js for blockchain interaction
-- Docker for containerization
 
 **Security**
 - AES-256-GCM encryption
@@ -1370,9 +1376,9 @@ graph TB
     
     subgraph Agent Lifecycle
         CREATE[Agent Creation]
-        CONFIG[Configuration]
-        DEPLOYMENT[Fly.io Deployment]
-        RUNTIME_EXEC[Runtime Execution]
+    CONFIG[Configuration]
+    DEPLOYMENT[VPS Docker / Deployment]
+    RUNTIME_EXEC[Runtime Execution]
         TRADING[Trade Execution]
     end
     
@@ -1996,69 +2002,58 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()
 
 ## Deployment Guide
 
-### Production Checklist
+### VPS deployment (recommended)
 
-See `PRODUCTION_CHECKLIST.md` for the full pre-launch list. Key items:
+Full stack (PostgreSQL, backend, frontend, ElizaOS agent) on a single VPS with Docker Compose:
+
+1. See **[HOSTINGER_DEPLOY.md](HOSTINGER_DEPLOY.md)** for SSH, Docker install, clone, and `.env` setup.
+2. Copy `.env.example` to `.env` at repo root; set `POSTGRES_PASSWORD`, public URLs (`NEXT_PUBLIC_API_URL`, `FRONTEND_URL`, `CORS_ORIGIN`), Clerk, Stripe, `SOLANA_RPC_URL`, `SECRETS_ENCRYPTION_KEY`, `WALLET_MASTER_SECRET`.
+3. Run `docker compose up -d --build`.
+4. On first deploy: `docker compose exec backend npx prisma migrate deploy`.
+
+Access: frontend `http://YOUR_VPS_IP:3000`, backend `http://YOUR_VPS_IP:3002`. Full env reference: [ENV_REFERENCE.md](ENV_REFERENCE.md).
+
+### Production checklist
+
+See [PRODUCTION_CHECKLIST.md](PRODUCTION_CHECKLIST.md) for the full list. Summary:
 
 - [ ] Set `NODE_ENV=production`
 - [ ] Use live Stripe and Clerk keys (no test keys)
 - [ ] Use paid Solana RPC (Helius, Alchemy); avoid public RPCs
-- [ ] Set `SECRETS_ENCRYPTION_KEY` (32+ chars)
-- [ ] Set `TREASURY_WALLET_ADDRESS` for token launch
-- [ ] Unset `ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION` and `MOCK_FLY_DEPLOY`
-- [ ] Wire Preflight into Eliza trade execution path (build tx → `POST /api/preflight/evaluate` → sign only if `approved`)
-- [ ] Set `REDIS_URL` for circuit breaker and rate limit persistence
-- [ ] Run migrations: `npx prisma migrate deploy`
+- [ ] Set `SECRETS_ENCRYPTION_KEY` (32+ chars) and `WALLET_MASTER_SECRET`
+- [ ] Set `TREASURY_WALLET_ADDRESS` for token launch (if used)
+- [ ] **VPS:** Set `MOCK_FLY_DEPLOY=true`; do not set `FLY_*`. Unset `ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION` and `ENABLE_NARRATIVE_DEMO`
+- [ ] Wire Preflight into Eliza trade execution (build tx → `POST /api/preflight/evaluate` → sign only if `approved`)
+- [ ] Set `REDIS_URL` for circuit breaker and rate limit persistence (optional)
+- [ ] Run migrations: `npx prisma migrate deploy` (or via `docker compose exec backend` on VPS)
 
-Full env reference: `ENV_REFERENCE.md`
+### Environment variables
 
-### Environment Variables
+**VPS (single `.env` at repo root):** Use [.env.example](.env.example) and [ENV_REFERENCE.md](ENV_REFERENCE.md). Key backend vars: `POSTGRES_*`, `DATABASE_URL` (set by Compose on VPS), `CLERK_SECRET_KEY`, `WALLET_MASTER_SECRET`, `SECRETS_ENCRYPTION_KEY`, `STRIPE_*`, `SOLANA_RPC_URL`, `NEXT_PUBLIC_API_URL`, `FRONTEND_URL`, `CORS_ORIGIN`, `TRUSTED_ORIGINS`. Do not set `FLY_*` for VPS; set `MOCK_FLY_DEPLOY=true`.
 
-**Required Backend Variables**:
-- `DATABASE_URL` - PostgreSQL connection string
-- `CLERK_SECRET_KEY` - Clerk authentication secret
-- `WALLET_MASTER_SECRET` - Wallet encryption key (32+ chars)
-- `SECRETS_ENCRYPTION_KEY` - Secrets encryption key (32+ chars)
-- `STRIPE_SECRET_KEY` - Stripe API secret
-- `STRIPE_WEBHOOK_SECRET` - Webhook signature verification
-- `FLY_API_TOKEN` - Fly.io API token
-- `SOLANA_RPC_URL` - Solana RPC endpoint
-- `TEE_PROVIDER` - TEE provider (simulated, phala, intel-sgx, aws-nitro, azure, google-cloud)
-- `PHALA_API_KEY` - Phala Network API key (if using Phala)
-- `PHALA_ENDPOINT` - Phala Network endpoint (default: https://api.phala.network)
-- `REDIS_URL` - Redis connection URL for horizontal scaling (optional, uses in-memory if not set)
+**Required frontend (build-time / runtime):** `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`.
 
-**Required Frontend Variables**:
-- `NEXT_PUBLIC_API_URL` - Backend API URL
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Clerk public key
-- `CLERK_SECRET_KEY` - Clerk secret key
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Stripe public key
-
-### Database Migrations
+### Database migrations
 
 ```bash
-# Generate migration
+# Generate migration (local)
 npx prisma migrate dev --name description
 
-# Deploy to production
+# Deploy (local or in container)
 npx prisma migrate deploy
 
-# Generate Prisma client
-npx prisma generate
+# VPS: after docker compose up
+docker compose exec backend npx prisma migrate deploy
 ```
 
-### Docker Deployment
+### Docker (full stack)
+
+From repo root:
 
 ```bash
-# Build backend
-cd backend
-docker build -t vectix-backend .
-
-# Run with environment
-docker run -d \
-  --env-file .env \
-  -p 3002:3002 \
-  vectix-backend
+cp .env.example .env
+# Edit .env with your values
+docker compose up -d --build
 ```
 
 **[↑ Table of Contents](#table-of-contents)**

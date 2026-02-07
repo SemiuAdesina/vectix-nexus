@@ -1,5 +1,18 @@
 # Environment Variables Reference
 
+## VPS / Docker Compose (recommended)
+
+On a VPS (e.g. Hostinger) you run the stack with one `.env` at the **repo root**. Docker Compose passes it to backend, frontend, and agent; the database uses `POSTGRES_*` from the same file.
+
+1. Copy the template: `cp .env.example .env`
+2. Set at least: `POSTGRES_PASSWORD`, `NEXT_PUBLIC_API_URL`, `FRONTEND_URL`, `CORS_ORIGIN`, `TRUSTED_ORIGINS`, `SOLANA_RPC_URL`, Clerk and Stripe keys, `SECRETS_ENCRYPTION_KEY`, `WALLET_MASTER_SECRET`. For production, use live keys; leave `ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION` and `ENABLE_NARRATIVE_DEMO` unset; for VPS set `MOCK_FLY_DEPLOY=true` and do not set `FLY_*`.
+3. `DATABASE_URL` is **not** in `.env` for Docker: Compose builds it from `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` and injects it into the backend.
+4. Rebuild after changing build-time vars (e.g. `NEXT_PUBLIC_*`): `docker compose up -d --build`
+
+See `HOSTINGER_DEPLOY.md` for full deploy steps. The blocks below document each variable in detail.
+
+---
+
 ## Required for Core Functionality
 
 ### Authentication (Clerk)
@@ -11,28 +24,27 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 ```
 
 ### Database
-```
-DATABASE_URL=file:./dev.db
-```
+- **Local dev:** `DATABASE_URL=file:./dev.db` or `postgresql://user:pass@localhost:5432/vectix_nexus`
+- **VPS (Docker):** Do not set `DATABASE_URL` in `.env`. Compose sets it from `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` and the `db` service hostname.
 
 ### Stripe Payments
 ```
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_HOBBY_PRICE_ID=price_...
+STRIPE_PRO_PRICE_ID=price_...
 ```
 
 ### Solana
 ```
-SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
-HELIUS_API_KEY=your_helius_key
+SOLANA_RPC_URL=https://mainnet.helius-rpc.com/?api-key=YOUR_KEY
+WALLET_MASTER_SECRET=your_32_char_or_hex_secret
 ```
+Use a paid RPC URL (e.g. Helius) in `SOLANA_RPC_URL`. `WALLET_MASTER_SECRET` is used to encrypt/decrypt per-agent wallets (the backend generates a keypair per agent and injects it into the agent; you do not set `SOLANA_PRIVATE_KEY` in the main .env). Optional: `TREASURY_WALLET_ADDRESS` for token launch royalties. `SOLANA_PRIVATE_KEY` in env is only for standalone Eliza single-wallet use (e.g. eliza/.env), not for the Vectix platform deploy.
 
 ### Encryption
-```
-ENCRYPTION_KEY=32_byte_hex_key_for_aes_256_gcm
-```
-Required when deploying agents with API keys (Bring Your Own Keys). Backend uses `SECRETS_ENCRYPTION_KEY` for encrypting stored secrets; if unset, deploy returns 500 when secrets are provided.
+Backend uses `SECRETS_ENCRYPTION_KEY` for encrypting stored agent secrets and API keys; if unset, deploy returns 500 when secrets are provided. Must be at least 32 characters.
 ```
 SECRETS_ENCRYPTION_KEY=your_32_char_or_longer_secret_key
 ```
@@ -115,27 +127,26 @@ ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION=true
 
 ## Deployment
 
-### Fly.io (Agent Hosting)
-```
-FLY_API_TOKEN=your_fly_token
-FLY_ORG=your_org_name
-```
+### VPS (Docker Compose)
+Use a single `.env` at repo root (see top of this file). Set:
+- `NEXT_PUBLIC_API_URL`, `FRONTEND_URL`, `CORS_ORIGIN`, `TRUSTED_ORIGINS` to your public base URL. For vectixfoundry.com: `https://api.vectixfoundry.com`, `https://vectixfoundry.com`, `CORS_ORIGIN=https://vectixfoundry.com,https://www.vectixfoundry.com`. Comma-separated for multiple origins.
 
-### Simulate deploy without Fly.io (testing only)
-Set in backend `.env` to create agents in the DB without calling Fly.io. No `FLY_API_TOKEN` needed. Do not use in production.
+### VPS (no Fly.io)
+When the full stack runs on a VPS with Docker Compose, the agent runs in the `agent` container. You do **not** need Fly.io or any `FLY_*` variables. Set:
 ```
 MOCK_FLY_DEPLOY=true
 ```
+so the backend deploy flow does not call the Fly API. Leave `FLY_API_TOKEN` and other `FLY_*` vars unset.
 
-### Frontend URL & CORS
+### Fly.io (optional; only if you run agents on Fly again)
+If you later host agents on Fly.io instead of the VPS Docker agent:
 ```
-FRONTEND_URL=http://localhost:3000
-CORS_ORIGIN=http://localhost:3000
+FLY_API_TOKEN=your_fly_token
+FLY_API_HOSTNAME=https://api.machines.dev
+FLY_APP_NAME=eliza-agent
+FLY_IMAGE=registry.fly.io/eliza-agent:latest
 ```
-Comma-separated for multiple origins (e.g. `https://app.example.com,https://www.example.com`). Backend falls back to `FRONTEND_URL` then `http://localhost:3000` if unset.
-```
-NEXT_PUBLIC_API_URL=http://localhost:3002
-```
+Then set `MOCK_FLY_DEPLOY=false` (and use production env validation).
 
 ### Trade Limits (Production)
 Max live trade amount per transaction (SOL). Default: 50.
@@ -165,10 +176,12 @@ TREASURY_WALLET_ADDRESS=your_solana_wallet_address
 
 ## Production Checklist
 
-Before deploying to production (`NODE_ENV=production`), ensure:
+Before deploying to production (VPS or otherwise, `NODE_ENV=production`):
 
-1. **Never set in production:** `ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION`, `MOCK_FLY_DEPLOY`, `FORCE_MOCK_DB`
-2. **Use live keys:** Stripe `sk_live_*`, Clerk production secret key
+1. **Never set in production:** `ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION`, `FORCE_MOCK_DB`, `ENABLE_NARRATIVE_DEMO`. For VPS, set `MOCK_FLY_DEPLOY=true` and do not set `FLY_API_TOKEN`.
+2. **Use live keys:** Stripe `sk_live_*`, Clerk production secret key; set `STRIPE_WEBHOOK_SECRET` to the live webhook secret
 3. **Use paid Solana RPC:** Helius, Alchemy, or similar (not public `api.mainnet-beta.solana.com`)
-4. **Health checks:** `/health` and `/ready` (DB connectivity) for load balancers
+4. **Set URLs:** `NEXT_PUBLIC_API_URL`, `FRONTEND_URL`, `CORS_ORIGIN`, `TRUSTED_ORIGINS` to your production domain(s)
+5. **Secrets:** `SECRETS_ENCRYPTION_KEY` (32+ chars), `WALLET_MASTER_SECRET`; optionally `TREASURY_WALLET_ADDRESS` for token launch
+6. **Health checks:** `/health` and `/ready` (DB connectivity) for load balancers or monitoring
 

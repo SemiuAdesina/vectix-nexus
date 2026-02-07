@@ -14,8 +14,8 @@ interface SecretsFormProps {
   onNext: () => void;
 }
 
-const CARD = 'rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6';
-const ICON_BOX = 'w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30';
+const CARD = 'rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-900/50 p-4 sm:p-6';
+const ICON_BOX = 'w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30 shrink-0';
 const INPUT_CLASS = 'rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 font-mono transition-colors';
 
 export function SecretsForm({ onSecretsChange, secrets, onBack, onNext }: SecretsFormProps) {
@@ -28,11 +28,11 @@ export function SecretsForm({ onSecretsChange, secrets, onBack, onNext }: Secret
       <div>
         <div className="flex items-center gap-3 mb-2">
           <div className={ICON_BOX}>
-            <Shield className="w-5 h-5 text-teal-400" />
+            <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-teal-400" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white">Bring Your Own Keys</h3>
-            <p className="text-sm text-slate-400">Your keys are encrypted with AES-256 and never exposed</p>
+            <h3 className="text-base sm:text-lg font-semibold text-white">Bring Your Own Keys</h3>
+            <p className="text-xs sm:text-sm text-slate-400">Your keys are encrypted with AES-256 and never exposed</p>
           </div>
         </div>
         <div className="w-20 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500/50 mt-4" />
@@ -93,12 +93,12 @@ export function SecretsForm({ onSecretsChange, secrets, onBack, onNext }: Secret
         )}
       </div>
 
-      <div className="flex gap-3 pt-2">
-        <Button size="lg" variant="outline" onClick={onBack} className="flex-1 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-teal-400 hover:border-teal-500/30">
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back
+      <div className="flex gap-2 sm:gap-3 pt-2">
+        <Button size="default" variant="outline" onClick={onBack} className="flex-1 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-teal-400 hover:border-teal-500/30 text-sm sm:text-base">
+          <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" /> Back
         </Button>
-        <Button size="lg" onClick={onNext} className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white border-0 shadow-lg shadow-teal-500/20">
-          Review <ArrowRight className="w-4 h-4 ml-2" />
+        <Button size="default" onClick={onNext} className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white border-0 shadow-lg shadow-teal-500/20 text-sm sm:text-base">
+          Review <ArrowRight className="w-4 h-4 ml-1 sm:ml-2" />
         </Button>
       </div>
     </div>

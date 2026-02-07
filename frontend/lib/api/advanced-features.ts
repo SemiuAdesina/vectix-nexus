@@ -12,7 +12,9 @@ import type {
   ShadowPortfolio, ReportCard, TEEStatus, NarrativeCluster, NarrativeSignal, NarrativeStatus,
 } from './advanced-features.types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+import { getApiBaseUrl } from './config';
+
+const API_BASE = getApiBaseUrl();
 
 export async function getPreflightStats(agentId: string): Promise<PreflightStats> {
   const res = await fetch(`${API_BASE}/api/preflight/stats/${agentId}`);

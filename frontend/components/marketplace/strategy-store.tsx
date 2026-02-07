@@ -78,7 +78,7 @@ export function StrategyStore({ onSelectStrategy, onClose }: StrategyStoreProps)
       style={{ opacity: mounted ? 1 : 0 }}
     >
       <div
-        className="rounded-2xl border border-slate-700/50 w-full max-w-4xl flex flex-col overflow-hidden shadow-2xl bg-slate-900 transition-[opacity,transform] duration-200"
+        className="rounded-xl sm:rounded-2xl border border-slate-700/50 w-full max-w-4xl flex flex-col overflow-hidden shadow-2xl bg-slate-900 transition-[opacity,transform] duration-200 mx-1 sm:mx-0"
         style={{
           height: MODAL_HEIGHT,
           opacity: mounted ? 1 : 0,
@@ -86,39 +86,39 @@ export function StrategyStore({ onSelectStrategy, onClose }: StrategyStoreProps)
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-slate-700/80">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
-              <Store className="w-5 h-5 text-teal-400" />
+        <div className="shrink-0 flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-slate-700/80">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30 shrink-0">
+              <Store className="w-4 h-4 sm:w-5 sm:h-5 text-teal-400" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">Strategy Store</h2>
-              <p className="text-sm text-slate-400">Choose a pre-built strategy</p>
+              <h2 className="text-base sm:text-xl font-bold text-white">Strategy Store</h2>
+              <p className="text-xs sm:text-sm text-slate-400">Choose a pre-built strategy</p>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0 rounded-lg text-slate-400 hover:bg-teal-500/10 hover:text-teal-400">
+          <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0 rounded-lg text-slate-400 hover:bg-teal-500/10 hover:text-teal-400 h-8 w-8 sm:h-10 sm:w-10">
             <X className="w-4 h-4" />
           </Button>
         </div>
 
-        <div className="shrink-0 flex gap-2 px-6 py-3 border-b border-slate-700/80 overflow-x-auto">
+        <div className="shrink-0 flex gap-1.5 sm:gap-2 px-3 sm:px-6 py-2.5 sm:py-3 border-b border-slate-700/80 overflow-x-auto scrollbar-none">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setCategory(cat.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap transition-colors ${
                 category === cat.id
                   ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/20'
                   : 'bg-slate-800/80 text-slate-400 border border-slate-700 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/30'
               }`}
             >
-              <cat.icon className="w-4 h-4 shrink-0" />
+              <cat.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
               {cat.label}
             </button>
           ))}
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-6">
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-3 sm:p-6">
           {loading ? (
             <div className="flex items-center justify-center min-h-[200px]">
               <Loader2 className="w-8 h-8 text-teal-400 animate-spin" />

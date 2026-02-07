@@ -79,24 +79,33 @@ export function ConfigForm({ formData, onFormDataChange, onSubmit, selectedStrat
             )}
           </div>
           {selectedStrategy ? (
-            <div className="rounded-xl p-4 border border-slate-700/50 bg-teal-500/5">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 shrink-0 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
+            <div className="rounded-xl p-3 sm:p-4 border border-slate-700/50 bg-teal-500/5">
+              <div className="flex items-start sm:items-center gap-3 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
                   {(() => {
                     const Icon = getStrategyIcon(selectedStrategy);
-                    return <Icon className="w-6 h-6 text-teal-400" />;
+                    return <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-teal-400" />;
                   })()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-white">{selectedStrategy.name}</p>
+                  <p className="font-semibold text-sm sm:text-base text-white">{selectedStrategy.name}</p>
                   <p className="text-xs text-slate-400 mt-0.5 line-clamp-2 leading-relaxed">{selectedStrategy.description}</p>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setShowStore(true)}
+                    className="mt-2 sm:hidden border-slate-600 text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/50 text-xs"
+                  >
+                    <Replace className="w-3 h-3 mr-1" /> Change
+                  </Button>
                 </div>
                 <Button
                   type="button"
                   size="sm"
                   variant="outline"
                   onClick={() => setShowStore(true)}
-                  className="shrink-0 border-slate-600 text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/50"
+                  className="shrink-0 hidden sm:flex border-slate-600 text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/50"
                 >
                   <Replace className="w-3.5 h-3.5 mr-1.5" /> Change
                 </Button>
@@ -118,7 +127,7 @@ export function ConfigForm({ formData, onFormDataChange, onSubmit, selectedStrat
           <Label className="text-sm font-medium text-white flex items-center gap-2">
             <Gauge className="w-4 h-4 text-teal-400" /> Risk Level
           </Label>
-          <div className="grid grid-cols-3 gap-2 p-1 rounded-xl bg-slate-800/50 border border-slate-700/50">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 p-1 rounded-xl bg-slate-800/50 border border-slate-700/50">
             {RISK_OPTIONS.map((opt) => {
               const isSelected = formData.riskLevel === opt.value;
               return (
@@ -127,14 +136,14 @@ export function ConfigForm({ formData, onFormDataChange, onSubmit, selectedStrat
                   type="button"
                   onClick={() => onFormDataChange({ ...formData, riskLevel: opt.value })}
                   className={`
-                    flex flex-col items-center gap-0.5 py-3 px-2 rounded-lg text-sm font-medium transition-all duration-200 border
+                    flex flex-col items-center gap-0.5 py-2.5 sm:py-3 px-1.5 sm:px-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 border
                     ${isSelected
                       ? 'bg-teal-500 text-white border-teal-500 shadow-[0_0_16px_-6px_rgba(20,184,166,0.5)]'
                       : 'bg-transparent text-slate-400 border-transparent hover:text-white hover:bg-teal-500/10 hover:border-teal-500/20'}
                   `}
                 >
                   <span>{opt.label}</span>
-                  <span className={`text-[10px] font-normal ${isSelected ? 'text-white/80' : 'text-slate-500'}`}>
+                  <span className={`text-[9px] sm:text-[10px] font-normal ${isSelected ? 'text-white/80' : 'text-slate-500'}`}>
                     {opt.desc}
                   </span>
                 </button>

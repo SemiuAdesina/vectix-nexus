@@ -9,6 +9,7 @@ vi.mock('./auth', () => ({
 }));
 
 vi.mock('./config', () => ({
+  getApiBaseUrl: vi.fn().mockReturnValue('http://localhost:3001'),
   API_ENDPOINTS: {
     security: {
       analyze: (address: string) => `/api/security/analyze/${address}`,

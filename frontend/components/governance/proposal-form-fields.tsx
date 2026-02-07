@@ -12,8 +12,8 @@ interface ProposalFormFieldsProps {
   onChange: (field: string, value: string | number) => void;
 }
 
-const inputClass = 'w-full px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all';
-const labelClass = 'block text-sm font-medium mb-2 text-white';
+const inputClass = 'w-full px-3 sm:px-4 py-2 text-sm bg-slate-800/80 border border-slate-700 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all';
+const labelClass = 'block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-white';
 
 export function ProposalFormFields({ formData, onChange }: ProposalFormFieldsProps) {
   return (
@@ -93,7 +93,7 @@ export function ProposalFormFields({ formData, onChange }: ProposalFormFieldsPro
           placeholder="Minimum votes required"
           className={inputClass}
         />
-        <p className="text-xs text-slate-400 mt-1">Minimum number of votes required for proposal to pass</p>
+        <p className="text-[10px] sm:text-xs text-slate-400 mt-1">Minimum number of votes required for proposal to pass</p>
       </div>
     </>
   );

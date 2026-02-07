@@ -15,19 +15,19 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g pnpm@latest
+RUN npm install -g bun@1.2.21 turbo@2.3.3
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
-COPY package.json turbo.json tsconfig.json lerna.json .npmrc ./
+COPY package.json turbo.json tsconfig.json lerna.json .npmrc build-utils.ts ./
 COPY scripts ./scripts
 COPY packages ./packages
 
-RUN SKIP_POSTINSTALL=1 pnpm install --frozen-lockfile
+RUN SKIP_POSTINSTALL=1 bun install --no-cache
 
-RUN pnpm run build
+RUN bun run build
 
-FROM node:23-slim
+FROM oven/bun:1.2-debian
 
 WORKDIR /app
 
@@ -41,9 +41,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g pnpm@latest
-
-RUN ln -s /usr/bin/python3 /usr/bin/python
+RUN ln -s /usr/bin/python3 /usr/bin/python 2>/dev/null || true
 
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/turbo.json ./
@@ -53,6 +51,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/scripts ./scripts
 
+COPY default.character.json /app/default.character.json
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 

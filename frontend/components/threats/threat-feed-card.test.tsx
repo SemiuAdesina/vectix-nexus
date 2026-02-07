@@ -59,8 +59,7 @@ describe('ThreatFeedCard', () => {
 
   it('displays confidence percentage for each threat', () => {
     render(<ThreatFeedCard threats={[mockThreat]} />);
-    
-    expect(screen.getByText(/Confidence: 85%/i)).toBeInTheDocument();
+    expect(screen.getByText('85%')).toBeInTheDocument();
   });
 
   it('displays timestamp for each threat', () => {

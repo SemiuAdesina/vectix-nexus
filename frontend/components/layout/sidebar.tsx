@@ -7,12 +7,11 @@ import { useSidebar } from './sidebar-context';
 import { SidebarNav } from './sidebar-nav';
 import { SidebarUser } from './sidebar-user';
 import { getBackendUrl } from '@/lib/api/auth';
-import { Zap, Menu, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Zap, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 export function Sidebar() {
-  const { collapsed, setCollapsed } = useSidebar();
+  const { collapsed, setCollapsed, mobileOpen, setMobileOpen } = useSidebar();
   const { isLoaded, isSignedIn, getToken } = useAuth();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [plan, setPlan] = useState<'free' | 'pro'>('free');
 
   useEffect(() => {
@@ -72,16 +71,6 @@ export function Sidebar() {
     <div className="md:hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40" onClick={() => setMobileOpen(false)} />
   );
 
-  const mobileTrigger = (
-    <button
-      onClick={() => setMobileOpen(true)}
-      className="md:hidden fixed top-4 left-4 z-50 p-2.5 rounded-xl bg-slate-900/90 backdrop-blur border border-slate-700 shadow-lg text-slate-300 hover:text-teal-400 hover:border-teal-500/30"
-      aria-label="Open menu"
-    >
-      <Menu className="w-5 h-5" />
-    </button>
-  );
-
   const desktopAside = (
     <aside
       className={`
@@ -126,7 +115,6 @@ export function Sidebar() {
 
   return (
     <>
-      {mobileTrigger}
       {mobileOverlay}
       {mobileAside}
       {desktopAside}

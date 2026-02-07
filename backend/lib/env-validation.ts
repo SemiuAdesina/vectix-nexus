@@ -7,11 +7,15 @@ export function validateProductionEnv(): void {
   if (process.env.ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION === 'true') {
     errors.push('ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION must not be true in production');
   }
-  if (process.env.MOCK_FLY_DEPLOY === 'true') {
-    errors.push('MOCK_FLY_DEPLOY must not be true in production');
+  const hasFlyToken = (process.env.FLY_API_TOKEN ?? '').trim() !== '';
+  if (process.env.MOCK_FLY_DEPLOY === 'true' && hasFlyToken) {
+    errors.push('MOCK_FLY_DEPLOY must not be true in production when FLY_API_TOKEN is set (use Fly or VPS, not both)');
   }
   if (process.env.FORCE_MOCK_DB === 'true') {
     errors.push('FORCE_MOCK_DB must not be true in production');
+  }
+  if (process.env.ENABLE_NARRATIVE_DEMO === 'true') {
+    errors.push('ENABLE_NARRATIVE_DEMO must not be true in production');
   }
 
   const stripeKey = process.env.STRIPE_SECRET_KEY ?? '';

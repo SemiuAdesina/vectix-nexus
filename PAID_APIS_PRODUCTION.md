@@ -55,13 +55,12 @@
 
 ---
 
-### 4. Fly.io (required for agent hosting)
+### 4. Agent hosting (VPS or Fly.io)
 
 | Item | Action |
 |------|--------|
-| Env vars | `FLY_API_TOKEN`, `FLY_ORG` |
-| Validation | `MOCK_FLY_DEPLOY` must not be true in production |
-| To do | Create Fly org, generate API token, ensure real deploys (no mock) |
+| **VPS (recommended)** | Agent runs in Docker (`agent` service). Do not set `FLY_*`. Set `MOCK_FLY_DEPLOY=true`. No Fly.io account needed. |
+| **Fly.io (optional)** | Set `FLY_API_TOKEN`, `FLY_APP_NAME`, etc. Set `MOCK_FLY_DEPLOY=false`. Validation fails if both `MOCK_FLY_DEPLOY=true` and `FLY_API_TOKEN` are set in production. |
 
 ---
 
@@ -134,7 +133,7 @@
 1. Set `SOLANA_RPC_URL` to a paid RPC (Helius, Alchemy, etc.)
 2. Use live Stripe keys and configure webhook
 3. Use production Clerk keys
-4. Set `FLY_API_TOKEN` and `FLY_ORG`; ensure `MOCK_FLY_DEPLOY` is unset
+4. **VPS:** set `MOCK_FLY_DEPLOY=true`, do not set `FLY_*`. **Fly.io:** set `FLY_API_TOKEN`, set `MOCK_FLY_DEPLOY=false`
 5. Set `SECRETS_ENCRYPTION_KEY` (32+ chars)
 6. Set `NEXT_PUBLIC_API_URL` to production backend URL
 7. Set `TREASURY_WALLET_ADDRESS` if using token launch

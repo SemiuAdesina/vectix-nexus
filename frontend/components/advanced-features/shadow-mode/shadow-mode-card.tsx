@@ -68,19 +68,19 @@ export function ShadowModeCard({ agentId }: ShadowModeCardProps) {
   };
 
   return (
-    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
-          <Ghost className="w-5 h-5 text-teal-400" />
+    <div className="rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-900/50 p-4 sm:p-6">
+      <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30 shrink-0">
+          <Ghost className="w-4 h-4 sm:w-5 sm:h-5 text-teal-400" />
         </div>
-        <div>
-          <h3 className="font-semibold text-white">Shadow Mode</h3>
-          <p className="text-xs text-slate-400">Paper trading with live market data</p>
+        <div className="min-w-0">
+          <h3 className="font-semibold text-sm sm:text-base text-white">Shadow Mode</h3>
+          <p className="text-[10px] sm:text-xs text-slate-400">Paper trading with live market data</p>
         </div>
       </div>
 
       {error && (
-        <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 mb-4">
+        <div className="rounded-lg sm:rounded-xl border border-red-500/30 bg-red-500/10 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-red-400 mb-3 sm:mb-4">
           {error}
         </div>
       )}

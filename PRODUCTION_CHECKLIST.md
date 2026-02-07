@@ -27,7 +27,7 @@
 4. Use paid Solana RPC (Helius, Alchemy)
 5. Set `SECRETS_ENCRYPTION_KEY` (32+ chars)
 6. Set `TREASURY_WALLET_ADDRESS` for token launch
-7. Unset: `ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION`, `MOCK_FLY_DEPLOY`
+7. Unset: `ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION`, `ENABLE_NARRATIVE_DEMO`. For VPS: set `MOCK_FLY_DEPLOY=true` (no Fly); for Fly.io: unset `MOCK_FLY_DEPLOY`
 
 ### Eliza Agent Integration
 

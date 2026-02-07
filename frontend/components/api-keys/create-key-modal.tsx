@@ -40,10 +40,10 @@ export function CreateKeyModal({ config, onClose, onCreate }: CreateKeyModalProp
   const allScopes = Object.keys(config.scopes) as ApiScope[];
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50">
-      <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 w-full max-w-md p-6 shadow-[0_0_24px_-8px_rgba(20,184,166,0.12)]">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-white">Create API Key</h2>
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+      <div className="rounded-t-2xl sm:rounded-2xl border border-slate-700/50 bg-slate-900/95 sm:bg-slate-900/50 w-full max-w-md p-4 sm:p-6 shadow-[0_0_24px_-8px_rgba(20,184,166,0.12)] max-h-[85vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h2 className="text-base sm:text-xl font-bold text-white">Create API Key</h2>
           <button
             type="button"
             onClick={onClose}
@@ -53,33 +53,33 @@ export function CreateKeyModal({ config, onClose, onCreate }: CreateKeyModalProp
           </button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {error && (
-            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+            <div className="p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs sm:text-sm">
               {error}
             </div>
           )}
           <div>
-            <label className="text-sm font-medium mb-2 block text-white">Key Name</label>
+            <label className="text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 block text-white">Key Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Production Key"
-              className="w-full px-3 py-2 rounded-xl bg-slate-800/80 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500/40 transition-colors"
+              className="w-full px-3 py-2 text-sm rounded-lg sm:rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500/40 transition-colors"
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-2 block text-white">Permissions</label>
-            <div className="space-y-2">
+            <label className="text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 block text-white">Permissions</label>
+            <div className="space-y-1.5 sm:space-y-2">
               {allScopes.map(scope => {
                 const isPro = !config.tiers.free.includes(scope);
                 const selected = selectedScopes.includes(scope);
                 return (
                   <label
                     key={scope}
-                    className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${
+                    className={`flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border cursor-pointer transition-colors ${
                       selected
                         ? 'border-teal-500 bg-teal-500/10 shadow-[0_0_12px_-4px_rgba(20,184,166,0.2)]'
                         : 'border-slate-700 bg-slate-800/50 hover:border-teal-500/40'
@@ -91,17 +91,17 @@ export function CreateKeyModal({ config, onClose, onCreate }: CreateKeyModalProp
                       onChange={() => toggleScope(scope)}
                       className="sr-only"
                     />
-                    <div className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 ${
+                    <div className={`w-4 h-4 sm:w-5 sm:h-5 rounded border flex items-center justify-center shrink-0 ${
                       selected ? 'bg-teal-500 border-teal-500' : 'border-slate-500'
                     }`}>
-                      {selected && <Check className="w-3 h-3 text-white" />}
+                      {selected && <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white">{scope}</p>
-                      <p className="text-xs text-slate-400 truncate">{config.scopes[scope]}</p>
+                      <p className="text-xs sm:text-sm font-medium text-white">{scope}</p>
+                      <p className="text-[10px] sm:text-xs text-slate-400 truncate">{config.scopes[scope]}</p>
                     </div>
                     {isPro && (
-                      <span className="text-xs px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30 shrink-0">
+                      <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30 shrink-0">
                         PRO
                       </span>
                     )}
@@ -112,11 +112,11 @@ export function CreateKeyModal({ config, onClose, onCreate }: CreateKeyModalProp
           </div>
         </div>
 
-        <div className="mt-6 flex gap-3">
+        <div className="mt-4 sm:mt-6 flex gap-2 sm:gap-3">
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-4 py-2 border border-teal-500/30 rounded-lg hover:bg-teal-500/10 hover:border-teal-500/50 hover:text-teal-400 text-white transition-colors"
+            className="flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm border border-teal-500/30 rounded-lg hover:bg-teal-500/10 hover:border-teal-500/50 hover:text-teal-400 text-white transition-colors"
           >
             Cancel
           </button>
@@ -124,7 +124,7 @@ export function CreateKeyModal({ config, onClose, onCreate }: CreateKeyModalProp
             type="button"
             onClick={handleSubmit}
             disabled={creating || !name.trim()}
-            className="flex-1 px-4 py-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-teal-500/20"
+            className="flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-teal-500/20"
           >
             {creating ? 'Creating...' : 'Create Key'}
           </button>

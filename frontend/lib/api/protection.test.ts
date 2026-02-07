@@ -9,6 +9,7 @@ vi.mock('./auth', () => ({
 }));
 
 vi.mock('./config', () => ({
+  getApiBaseUrl: vi.fn().mockReturnValue('http://localhost:3001'),
   API_ENDPOINTS: {
     agents: {
       whitelist: (id: string) => `/api/agent/${id}/whitelist`,

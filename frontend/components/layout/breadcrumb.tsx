@@ -30,22 +30,22 @@ export function Breadcrumb() {
   });
 
   return (
-    <nav className="flex items-center gap-1 text-sm">
+    <nav className="flex items-center gap-0.5 sm:gap-1 text-xs sm:text-sm">
       <Link
         href="/dashboard"
         className="text-muted-foreground hover:text-foreground transition-colors"
       >
-        <Home className="w-4 h-4" />
+        <Home className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
       </Link>
       {breadcrumbs.map((crumb) => (
-        <div key={crumb.href} className="flex items-center gap-1">
-          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+        <div key={crumb.href} className="flex items-center gap-0.5 sm:gap-1">
+          <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
           {crumb.isLast ? (
-            <span className="font-medium text-foreground">{crumb.label}</span>
+            <span className="font-medium text-foreground truncate max-w-[120px] sm:max-w-none">{crumb.label}</span>
           ) : (
             <Link
               href={crumb.href}
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors truncate max-w-[80px] sm:max-w-none"
             >
               {crumb.label}
             </Link>

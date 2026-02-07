@@ -36,26 +36,26 @@ export function NarrativeClustersCard() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6 flex items-center justify-center h-48">
-        <Loader2 className="w-6 h-6 animate-spin text-teal-400" />
+      <div className="rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-900/50 p-4 sm:p-6 flex items-center justify-center h-36 sm:h-48">
+        <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin text-teal-400" />
       </div>
     );
   }
 
   if (!available) {
     return (
-      <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
-            <Layers className="w-5 h-5 text-teal-400" />
+      <div className="rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-900/50 p-4 sm:p-6">
+        <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30 shrink-0">
+            <Layers className="w-4 h-4 sm:w-5 sm:h-5 text-teal-400" />
           </div>
-          <h3 className="font-semibold text-white">Narrative Tracking</h3>
-          <span className="text-xs bg-teal-500/10 text-teal-400 border border-teal-500/20 px-2 py-0.5 rounded-lg">Coming Soon</span>
+          <h3 className="font-semibold text-sm sm:text-base text-white">Narrative Tracking</h3>
+          <span className="text-[10px] sm:text-xs bg-teal-500/10 text-teal-400 border border-teal-500/20 px-1.5 sm:px-2 py-0.5 rounded-lg">Coming Soon</span>
         </div>
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700">
-          <AlertCircle className="w-5 h-5 text-slate-400 mt-0.5 shrink-0" />
-          <p className="text-sm text-slate-400">
-            Requires LunarCrush API key. Add <code className="text-xs bg-slate-950 px-1.5 py-0.5 rounded border border-slate-700 text-slate-300">LUNARCRUSH_API_KEY</code> to enable.
+        <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg sm:rounded-xl bg-slate-800/50 border border-slate-700">
+          <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 mt-0.5 shrink-0" />
+          <p className="text-xs sm:text-sm text-slate-400">
+            Requires LunarCrush API key. Add <code className="text-[10px] sm:text-xs bg-slate-950 px-1 sm:px-1.5 py-0.5 rounded border border-slate-700 text-slate-300">LUNARCRUSH_API_KEY</code> to enable.
           </p>
         </div>
       </div>
@@ -63,26 +63,26 @@ export function NarrativeClustersCard() {
   }
 
   return (
-    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 p-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-900/50 p-4 sm:p-6">
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30">
-            <Layers className="w-5 h-5 text-teal-400" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-teal-500/15 flex items-center justify-center border border-teal-500/30 shrink-0">
+            <Layers className="w-4 h-4 sm:w-5 sm:h-5 text-teal-400" />
           </div>
-          <h3 className="font-semibold text-white">Narrative Clusters</h3>
+          <h3 className="font-semibold text-sm sm:text-base text-white">Narrative Clusters</h3>
         </div>
-        <span className="text-xs text-teal-400 bg-teal-500/10 border border-teal-500/20 px-2 py-0.5 rounded-lg font-medium">Live</span>
+        <span className="text-[10px] sm:text-xs text-teal-400 bg-teal-500/10 border border-teal-500/20 px-1.5 sm:px-2 py-0.5 rounded-lg font-medium">Live</span>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 mb-3 sm:mb-4">
         {clusters.slice(0, 6).map(cluster => (
           <ClusterCard key={cluster.id} cluster={cluster} />
         ))}
       </div>
 
       {signals.length > 0 && (
-        <div className="border-t border-slate-700 pt-4">
-          <h4 className="text-sm font-medium mb-2 text-white">Active Signals</h4>
+        <div className="border-t border-slate-700 pt-3 sm:pt-4">
+          <h4 className="text-xs sm:text-sm font-medium mb-2 text-white">Active Signals</h4>
           <div className="space-y-1">
             {signals.slice(0, 3).map(signal => (
               <SignalItem key={signal.clusterId} signal={signal} />
@@ -97,14 +97,14 @@ export function NarrativeClustersCard() {
 function ClusterCard({ cluster }: { cluster: NarrativeCluster }) {
   const isPositive = cluster.growthRate >= 0;
   return (
-    <div className="p-3 rounded-xl border border-slate-700/50 bg-slate-800/30 hover:border-teal-500/30 transition-all duration-200">
-      <div className="flex items-center justify-between mb-1">
-        <span className="font-medium text-sm text-white">{cluster.name}</span>
-        <span className={`text-xs font-medium ${isPositive ? 'text-teal-400' : 'text-red-400'}`}>
+    <div className="p-2.5 sm:p-3 rounded-lg sm:rounded-xl border border-slate-700/50 bg-slate-800/30 hover:border-teal-500/30 transition-all duration-200">
+      <div className="flex items-center justify-between mb-0.5 sm:mb-1">
+        <span className="font-medium text-xs sm:text-sm text-white truncate mr-1">{cluster.name}</span>
+        <span className={`text-[10px] sm:text-xs font-medium shrink-0 ${isPositive ? 'text-teal-400' : 'text-red-400'}`}>
           {isPositive ? '+' : ''}{cluster.growthRate.toFixed(1)}%
         </span>
       </div>
-      <div className="flex items-center gap-2 text-xs text-slate-400">
+      <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-slate-400">
         <span>{cluster.mentionCount.toLocaleString()} mentions</span>
         <span className="w-1 h-1 rounded-full bg-slate-500" />
         <span>Heat: {cluster.heatScore}</span>
@@ -117,11 +117,11 @@ function SignalItem({ signal }: { signal: NarrativeSignal }) {
   const Icon = signal.signalType === 'HEATING_UP' ? TrendingUp : TrendingDown;
   const color = signal.signalType === 'HEATING_UP' ? 'text-teal-400' : 'text-red-400';
   return (
-    <div className="flex items-center gap-3 py-2 rounded-lg px-2 hover:bg-slate-800/50 transition-colors">
-      <div className="w-8 h-8 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0 border border-teal-500/20">
-        <Icon className={`w-4 h-4 ${color}`} />
+    <div className="flex items-center gap-2 sm:gap-3 py-1.5 sm:py-2 rounded-lg px-1.5 sm:px-2 hover:bg-slate-800/50 transition-colors">
+      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0 border border-teal-500/20">
+        <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${color}`} />
       </div>
-      <span className="text-sm text-white">{signal.message}</span>
+      <span className="text-xs sm:text-sm text-white">{signal.message}</span>
     </div>
   );
 }

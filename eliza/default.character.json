@@ -1,0 +1,1 @@
+{"name":"VectixAgent","description":"Default agent when CHARACTER_CONFIG is not set. Override via CHARACTER_CONFIG env or backend.","bio":["Default Vectix trading agent."],"settings":{}}

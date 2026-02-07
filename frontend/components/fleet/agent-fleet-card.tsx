@@ -35,16 +35,16 @@ export function AgentFleetCard({ agent, onAction }: AgentFleetCardProps) {
   };
 
   return (
-    <div className="min-w-0 rounded-2xl border border-slate-700/50 bg-slate-900/50 shadow-xl transition-all hover:border-teal-500/30 hover:shadow-[0_0_28px_-8px_rgba(20,184,166,0.12)]">
-      <div className="p-5">
-        <div className="flex items-start justify-between gap-3 mb-4 min-h-0">
-          <div className="flex items-center gap-3 min-w-0 flex-1">
+    <div className="min-w-0 rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-900/50 shadow-xl transition-all hover:border-teal-500/30 hover:shadow-[0_0_28px_-8px_rgba(20,184,166,0.12)]">
+      <div className="p-3.5 sm:p-5">
+        <div className="flex items-start justify-between gap-2 sm:gap-3 mb-3 sm:mb-4 min-h-0">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
             <StatusBadge status={agent.status} />
             <div className="min-w-0">
               <Link href={`/dashboard/agents/${agent.id}`} className="hover:text-teal-400 transition-colors">
-                <h3 className="font-semibold text-white truncate">{agent.name}</h3>
+                <h3 className="font-semibold text-sm sm:text-base text-white truncate">{agent.name}</h3>
               </Link>
-              <p className="text-xs text-slate-400">{uptime}</p>
+              <p className="text-[11px] sm:text-xs text-slate-400">{uptime}</p>
             </div>
           </div>
           <div className="shrink-0">
@@ -57,8 +57,8 @@ export function AgentFleetCard({ agent, onAction }: AgentFleetCardProps) {
         </div>
 
         {agent.walletAddress && (
-          <div className="flex items-center gap-2 text-xs mb-3 p-2.5 rounded-xl border border-slate-700/50 bg-slate-950/80">
-            <Wallet className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+          <div className="flex items-center gap-2 text-[10px] sm:text-xs mb-2.5 sm:mb-3 p-2 sm:p-2.5 rounded-lg sm:rounded-xl border border-slate-700/50 bg-slate-950/80 overflow-hidden">
+            <Wallet className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-teal-400 shrink-0" />
             <span className="font-mono text-slate-400 truncate">{agent.walletAddress}</span>
           </div>
         )}
@@ -75,7 +75,7 @@ function StatusBadge({ status }: { status: string }) {
 
   return (
     <div
-      className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
+      className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center border shrink-0 ${
         isRunning
           ? 'bg-teal-500/15 border-teal-500/30'
           : isError
@@ -149,9 +149,9 @@ function ActionButtons({
 
 function MiniTerminal({ log, isRunning }: { log?: string; isRunning: boolean }) {
   return (
-    <div className="rounded-xl border border-slate-700/50 bg-slate-950/80 p-3 font-mono text-xs">
-      <div className="flex items-center gap-2 text-slate-500 mb-1.5">
-        <Terminal className="w-3.5 h-3.5 text-teal-400" />
+    <div className="rounded-lg sm:rounded-xl border border-slate-700/50 bg-slate-950/80 p-2.5 sm:p-3 font-mono text-[11px] sm:text-xs">
+      <div className="flex items-center gap-1.5 sm:gap-2 text-slate-500 mb-1 sm:mb-1.5">
+        <Terminal className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-teal-400" />
         <span>Latest Activity</span>
       </div>
       <p className={`truncate ${isRunning ? 'text-teal-400' : 'text-slate-500'}`}>

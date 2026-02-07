@@ -1,6 +1,8 @@
 'use client';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+import { getApiBaseUrl } from './config';
+
+const API_BASE = getApiBaseUrl();
 
 export interface WhitelistStatus {
   agentId: string;
