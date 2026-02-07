@@ -4,20 +4,21 @@ WORKDIR /app
 
 COPY backend/package.json backend/package-lock.json ./
 
-RUN npm install
+RUN npm ci
 
 FROM node:20-alpine AS builder
 
 WORKDIR /workspace
 
-COPY backend ./backend
-COPY onchain ./onchain
-COPY shared ./shared
+COPY --from=deps /app/node_modules ./node_modules
 
-COPY --from=deps /app/node_modules ./backend/node_modules
-COPY --from=deps /app/package-lock.json ./backend/
+COPY shared ./shared
+COPY onchain ./onchain
+COPY backend ./backend
 
 WORKDIR /workspace/backend
+
+RUN ln -sf /workspace/node_modules ./node_modules
 
 RUN npx prisma generate
 RUN npm run build
@@ -32,7 +33,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 backend
 
 COPY --from=builder /workspace/backend/dist ./dist
-COPY --from=builder /workspace/backend/node_modules ./node_modules
+COPY --from=builder /workspace/node_modules ./node_modules
 COPY --from=builder /workspace/backend/package.json ./
 COPY --from=builder /workspace/backend/prisma ./prisma
 
