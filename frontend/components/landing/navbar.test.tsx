@@ -13,10 +13,29 @@ vi.mock('@clerk/nextjs', () => ({
   UserButton: () => <div data-testid="user-button">UserButton</div>,
 }));
 
-vi.mock('next/link', () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+vi.mock('@/i18n/navigation', () => ({
+  Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   ),
+  usePathname: () => '/',
+  useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
+  redirect: vi.fn(),
+  getPathname: vi.fn(),
+}));
+
+vi.mock('next-intl', () => ({
+  useTranslations: (ns: string) => (key: string) => {
+    const map: Record<string, Record<string, string>> = {
+      Common: { signIn: 'Sign In', pricing: 'Pricing', dashboard: 'Dashboard' },
+      HomePage: { title: 'Vectix Foundry' },
+    };
+    return map[ns]?.[key] ?? key;
+  },
+  useLocale: () => 'en',
+}));
+
+vi.mock('@/components/layout/language-switcher', () => ({
+  LanguageSwitcher: () => null,
 }));
 
 describe('Navbar', () => {
