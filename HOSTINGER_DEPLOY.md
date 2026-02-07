@@ -6,7 +6,7 @@ Run the full stack (PostgreSQL, Express backend, Next.js frontend, ElizaOS agent
 
 - **Frontend** talks only to the **backend** (one base URL). All API calls use `NEXT_PUBLIC_API_URL` (or `NEXT_PUBLIC_BACKEND_URL`): agents, wallet, subscription, marketplace, security, protection, advanced-features, **onchain** (audit, governance, threats, circuit-breaker, multisig, timelock, etc.) are all on the same Express server at `/api/*` and `/v1/*`.
 - **Backend** connects to **PostgreSQL** via `DATABASE_URL` (set by Compose from `POSTGRES_*`). The frontend never talks to Postgres.
-- **Onchain** is not a separate service: it is mounted on the same backend at `/api/onchain/*`. Set `NEXT_PUBLIC_API_URL` to your API URL (e.g. `https://api.vectixfoundry.com`) and the frontend will reach backend and onchain correctly.
+- **Onchain** is not a separate service: it is mounted on the same backend at `/api/onchain/*`. Set `NEXT_PUBLIC_API_URL` to your site URL (e.g. `https://vectixfoundry.com`) so the frontend calls the same domain at `/api/*`.
 
 ## VPS plan (Hostinger KVM)
 
@@ -36,7 +36,7 @@ cp .env.example .env
 Edit `.env` in the repo root (this single file is used by all four services):
 
 - **Required:** `POSTGRES_PASSWORD`, `SOLANA_RPC_URL`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `SECRETS_ENCRYPTION_KEY`, `WALLET_MASTER_SECRET` (and Stripe price IDs if using billing). Agent wallets are per-agent (backend generates and encrypts with `WALLET_MASTER_SECRET`); do not set `SOLANA_PRIVATE_KEY` in root .env.
-- **URLs (domain: vectixfoundry.com):** set `NEXT_PUBLIC_API_URL=https://api.vectixfoundry.com`, `FRONTEND_URL=https://vectixfoundry.com`, `CORS_ORIGIN=https://vectixfoundry.com,https://www.vectixfoundry.com`, `TRUSTED_ORIGINS=https://vectixfoundry.com,https://www.vectixfoundry.com`. Use a reverse proxy (Nginx) + Let’s Encrypt so the backend is on port 443 at api.vectixfoundry.com and the frontend at vectixfoundry.com.
+- **URLs (domain: vectixfoundry.com):** set `NEXT_PUBLIC_API_URL=https://vectixfoundry.com`, `FRONTEND_URL=https://vectixfoundry.com`, `CORS_ORIGIN=https://vectixfoundry.com,https://www.vectixfoundry.com`, `TRUSTED_ORIGINS=https://vectixfoundry.com,https://www.vectixfoundry.com`. Use Nginx so `/api` proxies to the backend; one domain only (no api subdomain).
 - **Production:** use live Clerk/Stripe keys; leave `ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION`, `ENABLE_NARRATIVE_DEMO` unset or false. For VPS, set `MOCK_FLY_DEPLOY=true` (agent runs in Docker; Fly.io is not used). Do not set any `FLY_*` variables.
 
 Full variable list and optional keys: see `.env.example` and `ENV_REFERENCE.md`.
@@ -57,10 +57,10 @@ docker compose exec backend npx prisma migrate deploy
 
 **With domain vectixfoundry.com (after Nginx + SSL):**
 - Frontend: `https://vectixfoundry.com`
-- Backend API: `https://api.vectixfoundry.com`
-- Agent: internal or `https://agent.vectixfoundry.com` if you expose it
+- Backend API: `https://vectixfoundry.com/api`
+- Agent: internal (port 3001) or expose if needed
 
-**Before DNS/SSL (direct to VPS):** `http://YOUR_VPS_IP:3000`, `http://YOUR_VPS_IP:3002`, `http://YOUR_VPS_IP:3001`. Point DNS for vectixfoundry.com and api.vectixfoundry.com to your VPS IP, then add Nginx + Let’s Encrypt for HTTPS.
+**Before DNS/SSL (direct to VPS):** `http://YOUR_VPS_IP:3000`, `http://YOUR_VPS_IP:3002`, `http://YOUR_VPS_IP:3001`. Point DNS for vectixfoundry.com (and www) to your VPS IP, then add Nginx + Let’s Encrypt for HTTPS.
 
 ## 5. Optional env (see ENV_REFERENCE.md)
 

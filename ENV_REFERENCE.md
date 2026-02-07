@@ -129,7 +129,7 @@ ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION=true
 
 ### VPS (Docker Compose)
 Use a single `.env` at repo root (see top of this file). Set:
-- `NEXT_PUBLIC_API_URL`, `FRONTEND_URL`, `CORS_ORIGIN`, `TRUSTED_ORIGINS` to your public base URL. For vectixfoundry.com: `https://api.vectixfoundry.com`, `https://vectixfoundry.com`, `CORS_ORIGIN=https://vectixfoundry.com,https://www.vectixfoundry.com`. Comma-separated for multiple origins.
+- `NEXT_PUBLIC_API_URL`, `FRONTEND_URL`, `CORS_ORIGIN`, `TRUSTED_ORIGINS` to your public URL. For vectixfoundry.com (single domain, API at /api): `NEXT_PUBLIC_API_URL=https://vectixfoundry.com`, `FRONTEND_URL=https://vectixfoundry.com`, `CORS_ORIGIN=https://vectixfoundry.com,https://www.vectixfoundry.com`. Comma-separated for multiple origins.
 
 ### VPS (no Fly.io)
 When the full stack runs on a VPS with Docker Compose, the agent runs in the `agent` container. You do **not** need Fly.io or any `FLY_*` variables. Set:

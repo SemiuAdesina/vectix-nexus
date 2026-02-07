@@ -54,7 +54,7 @@ nano .env
 In nano, paste your production values. Minimum to set:
 
 - `POSTGRES_PASSWORD` – strong password for the DB
-- `NEXT_PUBLIC_API_URL=https://api.vectixfoundry.com`
+- `NEXT_PUBLIC_API_URL=https://vectixfoundry.com`
 - `FRONTEND_URL=https://vectixfoundry.com`
 - `CORS_ORIGIN=https://vectixfoundry.com,https://www.vectixfoundry.com`
 - `TRUSTED_ORIGINS=https://vectixfoundry.com,https://www.vectixfoundry.com`
@@ -107,13 +107,13 @@ nginx -t && systemctl reload nginx
 Obtain SSL certificates (Certbot will prompt for email and agree to terms):
 
 ```bash
-certbot --nginx -d vectixfoundry.com -d www.vectixfoundry.com -d api.vectixfoundry.com
+certbot --nginx -d vectixfoundry.com -d www.vectixfoundry.com
 ```
 
 Follow the prompts. After success, Nginx will serve HTTPS. Test:
 
 - https://vectixfoundry.com (frontend)
-- https://api.vectixfoundry.com/health (backend health)
+- https://vectixfoundry.com/api/health (backend API)
 
 ---
 
@@ -137,7 +137,7 @@ certbot renew --dry-run
 | Migrations      | `docker compose exec backend npx prisma migrate deploy` |
 | Logs            | `docker compose logs -f` |
 | Frontend        | https://vectixfoundry.com |
-| Backend API     | https://api.vectixfoundry.com |
+| Backend API     | https://vectixfoundry.com/api |
 
 If you change `.env` (especially `NEXT_PUBLIC_*`), rebuild and restart:
 
