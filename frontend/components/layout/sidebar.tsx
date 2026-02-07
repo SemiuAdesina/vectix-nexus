@@ -7,10 +7,11 @@ import { useSidebar } from './sidebar-context';
 import { SidebarNav } from './sidebar-nav';
 import { SidebarUser } from './sidebar-user';
 import { getBackendUrl } from '@/lib/api/auth';
-import { Zap, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { useAuthEnabled } from '@/contexts/auth-enabled';
+import { Zap, X, PanelLeftClose, PanelLeftOpen, LogIn } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-export function Sidebar() {
-  const { collapsed, setCollapsed, mobileOpen, setMobileOpen } = useSidebar();
+function SidebarAuthBlock({ collapsed }: { collapsed: boolean }) {
   const { isLoaded, isSignedIn, getToken } = useAuth();
   const [plan, setPlan] = useState<'free' | 'pro'>('free');
 
@@ -35,12 +36,42 @@ export function Sidebar() {
     return () => { cancelled = true; };
   }, [isLoaded, isSignedIn, getToken]);
 
+  return <SidebarUser collapsed={collapsed} plan={plan} />;
+}
+
+function SidebarSignInFallback({ collapsed }: { collapsed: boolean }) {
+  return (
+    <div
+      className={`shrink-0 border-t border-slate-800/80 p-4 ${collapsed ? 'flex flex-col items-center' : ''}`}
+    >
+      <Link href="/sign-in">
+        <Button
+          variant="outline"
+          size={collapsed ? 'icon' : 'sm'}
+          className="w-full justify-start gap-2 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-teal-400"
+        >
+          <LogIn className="w-4 h-4" />
+          {!collapsed && <span>Sign In</span>}
+        </Button>
+      </Link>
+    </div>
+  );
+}
+
+export function Sidebar() {
+  const { collapsed, setCollapsed, mobileOpen, setMobileOpen } = useSidebar();
+  const authEnabled = useAuthEnabled();
+
   useEffect(() => { setMobileOpen(false); }, []);
 
   const sidebarContent = (
     <>
       <SidebarNav collapsed={collapsed} onItemClick={() => setMobileOpen(false)} />
-      <SidebarUser collapsed={collapsed} plan={plan} />
+      {authEnabled ? (
+        <SidebarAuthBlock collapsed={collapsed} />
+      ) : (
+        <SidebarSignInFallback collapsed={collapsed} />
+      )}
     </>
   );
 
