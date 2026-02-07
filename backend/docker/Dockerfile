@@ -35,6 +35,7 @@ RUN adduser --system --uid 1001 backend
 COPY --from=builder /workspace/backend/dist ./dist
 COPY --from=builder /workspace/node_modules ./node_modules
 COPY --from=builder /workspace/backend/package.json ./
+COPY --from=builder /workspace/backend/prisma.config.ts ./
 COPY --from=builder /workspace/backend/prisma ./prisma
 
 USER backend
