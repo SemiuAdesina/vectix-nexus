@@ -18,13 +18,14 @@ export function validateProductionEnv(): void {
     errors.push('ENABLE_NARRATIVE_DEMO must not be true in production');
   }
 
+  const allowTestKeys = process.env.ALLOW_TEST_KEYS_IN_PRODUCTION === 'true';
   const stripeKey = process.env.STRIPE_SECRET_KEY ?? '';
-  if (stripeKey.startsWith('sk_test_')) {
+  if (!allowTestKeys && stripeKey.startsWith('sk_test_')) {
     errors.push('Use live Stripe keys (sk_live_*) in production, not test keys');
   }
 
   const clerkKey = process.env.CLERK_SECRET_KEY ?? '';
-  if (clerkKey.startsWith('sk_test_')) {
+  if (!allowTestKeys && clerkKey.startsWith('sk_test_')) {
     errors.push('Use production Clerk secret key in production, not test key');
   }
 
