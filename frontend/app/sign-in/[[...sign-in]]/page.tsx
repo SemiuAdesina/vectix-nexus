@@ -1,15 +1,46 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { SignIn } from '@clerk/nextjs';
 import Link from 'next/link';
 import { useAuthEnabled } from '@/contexts/auth-enabled';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 
 export default function SignInPage() {
   const authEnabled = useAuthEnabled();
+  const [checking, setChecking] = useState(false);
+
+  useEffect(() => {
+    if (authEnabled && typeof window !== 'undefined') {
+      sessionStorage.removeItem('signin-reload');
+    }
+  }, [authEnabled]);
+
+  useEffect(() => {
+    if (!authEnabled && !checking && typeof window !== 'undefined' && !sessionStorage.getItem('signin-reload')) {
+      setChecking(true);
+      fetch('/env-check')
+        .then((r) => r.json())
+        .then((data) => {
+          if (data?.clerkConfigured) {
+            sessionStorage.setItem('signin-reload', '1');
+            window.location.reload();
+          }
+        })
+        .catch(() => {})
+        .finally(() => setChecking(false));
+    }
+  }, [authEnabled, checking]);
 
   if (!authEnabled) {
+    if (checking) {
+      return (
+        <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-4">
+          <Loader2 className="w-10 h-10 text-teal-400 animate-spin" />
+        </div>
+      );
+    }
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-4 max-w-md mx-auto text-center">
         <p className="text-slate-400 mb-2">Sign-in is not configured.</p>

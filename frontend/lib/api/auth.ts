@@ -1,4 +1,4 @@
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3002';
+import { getApiBaseUrl } from './config';
 
 type TokenGetter = () => Promise<string | null>;
 
@@ -59,5 +59,5 @@ export async function getAuthHeaders(): Promise<Record<string, string>> {
 }
 
 export function getBackendUrl(): string {
-  return BACKEND_URL;
+  return getApiBaseUrl();
 }
