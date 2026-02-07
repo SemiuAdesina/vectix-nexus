@@ -1,35 +1,22 @@
-function getDefaultApiUrl(): string {
-  if (typeof window !== 'undefined') {
-    const origin = window.location?.origin ?? '';
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-      return 'http://localhost:3002';
-    }
-    return '';
-  }
-  return process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3002';
+function isLocalOrigin(origin: string): boolean {
+  return origin.includes('localhost') || origin.includes('127.0.0.1');
 }
 
 function resolveApiBaseUrl(): string {
   const fromEnv = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
-  if (fromEnv) return fromEnv;
-  return getDefaultApiUrl();
-}
 
-const API_BASE_URL = resolveApiBaseUrl();
+  if (typeof window !== 'undefined') {
+    if (isLocalOrigin(window.location?.origin ?? '')) {
+      return fromEnv || 'http://localhost:3002';
+    }
+    return fromEnv && !fromEnv.includes('localhost') ? fromEnv : '';
+  }
 
-if (!process.env.NEXT_PUBLIC_API_URL && !process.env.NEXT_PUBLIC_BACKEND_URL && typeof window !== 'undefined') {
-  console.warn('[API Config] No API URL configured. Using default:', API_BASE_URL);
-  console.warn('[API Config] Set NEXT_PUBLIC_API_URL environment variable to override.');
+  return fromEnv || 'http://localhost:3002';
 }
 
 export function getApiBaseUrl(): string {
-  if (typeof window !== 'undefined') {
-    const origin = window.location?.origin ?? '';
-    if (!origin.includes('localhost') && !origin.includes('127.0.0.1')) {
-      return '';
-    }
-  }
-  return API_BASE_URL;
+  return resolveApiBaseUrl();
 }
 
 export const API_ENDPOINTS = {
