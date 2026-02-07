@@ -57,16 +57,33 @@ const clerkAppearance = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+function LayoutContent({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider appearance={clerkAppearance} dynamic>
-      <html lang="en" className="dark">
-        <body>
-          <OwnershipWatermark />
-          <AuthTokenBridge />
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <>
+      <OwnershipWatermark />
+      <AuthTokenBridge />
+      {children}
+    </>
   );
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.trim();
+  const body = (
+    <html lang="en" className="dark">
+      <body>
+        {clerkKey ? (
+          <ClerkProvider appearance={clerkAppearance} dynamic>
+            <LayoutContent>{children}</LayoutContent>
+          </ClerkProvider>
+        ) : (
+          <>
+            <OwnershipWatermark />
+            {children}
+          </>
+        )}
+      </body>
+    </html>
+  );
+  return body;
 }
