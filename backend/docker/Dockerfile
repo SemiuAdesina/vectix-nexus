@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY backend/package.json backend/package-lock.json ./
 
-RUN npm ci
+RUN npm install
 
 FROM node:20-alpine AS builder
 
