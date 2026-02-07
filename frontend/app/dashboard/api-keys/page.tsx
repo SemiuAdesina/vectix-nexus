@@ -5,8 +5,10 @@ import { useAuth } from '@clerk/nextjs';
 import { Key, Plus, Copy, Trash2, Eye, EyeOff, Check, Loader2 } from 'lucide-react';
 import { getApiKeys, createApiKey, revokeApiKey, getApiConfig, ApiKeyData, ApiScope, ApiConfig } from '@/lib/api/api-keys';
 import { CreateKeyModal } from '@/components/api-keys/create-key-modal';
+import { useAuthEnabled } from '@/contexts/auth-enabled';
+import { AuthGate } from '@/components/auth-gate';
 
-export default function ApiKeysPage() {
+function ApiKeysPageContent() {
   const { getToken } = useAuth();
   const [keys, setKeys] = useState<ApiKeyData[]>([]);
   const [config, setConfig] = useState<ApiConfig | null>(null);
@@ -178,4 +180,10 @@ export default function ApiKeysPage() {
       )}
     </div>
   );
+}
+
+export default function ApiKeysPage() {
+  const authEnabled = useAuthEnabled();
+  if (!authEnabled) return <AuthGate />;
+  return <ApiKeysPageContent />;
 }

@@ -6,18 +6,17 @@ import { useAuth } from '@clerk/nextjs';
 import Link from 'next/link';
 import { Zap, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAuthEnabled } from '@/contexts/auth-enabled';
 
-export default function Pricing() {
-  const { isSignedIn } = useAuth();
+function PricingSignedIn() {
+  return (
+    <AppShell>
+      <PricingPage />
+    </AppShell>
+  );
+}
 
-  if (isSignedIn) {
-    return (
-      <AppShell>
-        <PricingPage />
-      </AppShell>
-    );
-  }
-
+function PricingPublic() {
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl">
@@ -42,4 +41,16 @@ export default function Pricing() {
       </div>
     </>
   );
+}
+
+function PricingWithClerk() {
+  const { isSignedIn } = useAuth();
+  if (isSignedIn) return <PricingSignedIn />;
+  return <PricingPublic />;
+}
+
+export default function Pricing() {
+  const authEnabled = useAuthEnabled();
+  if (!authEnabled) return <PricingPublic />;
+  return <PricingWithClerk />;
 }

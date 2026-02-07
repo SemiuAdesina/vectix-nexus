@@ -5,8 +5,10 @@ import { Users, Copy, DollarSign, TrendingUp, Check, Loader2 } from 'lucide-reac
 import { Button } from '@/components/ui/button';
 import { getAffiliateStats, generateReferralCode, AffiliateStats } from '@/lib/api/protection';
 import { useUser } from '@clerk/nextjs';
+import { useAuthEnabled } from '@/contexts/auth-enabled';
+import { AuthGate } from '@/components/auth-gate';
 
-export default function AffiliatesPage() {
+function AffiliatesPageContent() {
   const { user } = useUser();
   const [stats, setStats] = useState<AffiliateStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -123,6 +125,12 @@ export default function AffiliatesPage() {
       </div>
     </div>
   );
+}
+
+export default function AffiliatesPage() {
+  const authEnabled = useAuthEnabled();
+  if (!authEnabled) return <AuthGate />;
+  return <AffiliatesPageContent />;
 }
 
 function StatCard({ icon, label, value, accent }: { icon: React.ReactNode; label: string; value: string; accent?: boolean }) {
