@@ -56,14 +56,19 @@ export function CurvedFooter() {
               </div>
             </div>
 
-            <div className="border-t border-slate-700/50 mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <span className="text-slate-500 text-sm">Vectix Foundry - Institutional AI Trading</span>
-              <Link
-                href="/create"
-                className="flex items-center gap-1.5 text-teal-400 hover:text-teal-300 transition-colors text-sm font-medium"
-              >
-                Get Started <ArrowRight className="w-4 h-4" />
-              </Link>
+            <div className="border-t border-slate-700/50 mt-10 pt-8 space-y-4">
+              <p className="text-slate-500 text-xs sm:text-sm text-center sm:text-left max-w-2xl">
+                This software is protected under the Business Source License 1.1. Commercial reproduction or production use without a license is prohibited.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <span className="text-slate-500 text-sm">Vectix Foundry - Institutional AI Trading</span>
+                <Link
+                  href="/create"
+                  className="flex items-center gap-1.5 text-teal-400 hover:text-teal-300 transition-colors text-sm font-medium"
+                >
+                  Get Started <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
