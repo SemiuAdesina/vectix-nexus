@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
 import { StrategyCard } from './strategy-card';
 import { getStrategies, getPurchasedStrategies, purchaseStrategy, Strategy } from '@/lib/api/marketplace';
@@ -22,6 +23,7 @@ const CATEGORIES = [
 ];
 
 export function StrategyStore({ onSelectStrategy, onClose }: StrategyStoreProps) {
+  const { isLoaded, isSignedIn } = useAuth();
   const [strategies, setStrategies] = useState<Strategy[]>([]);
   const [ownedIds, setOwnedIds] = useState<Set<string>>(new Set());
   const [category, setCategory] = useState('all');
@@ -29,23 +31,28 @@ export function StrategyStore({ onSelectStrategy, onClose }: StrategyStoreProps)
   const [purchasing, setPurchasing] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!isLoaded) return;
+    let cancelled = false;
     const fetchData = async () => {
       setLoading(true);
       try {
         const [all, owned] = await Promise.all([
           getStrategies(category !== 'all' ? { category } : undefined),
-          getPurchasedStrategies(),
+          isSignedIn ? getPurchasedStrategies() : Promise.resolve([]),
         ]);
-        setStrategies(all);
-        setOwnedIds(new Set(owned.map((s) => s.id)));
+        if (!cancelled) {
+          setStrategies(all);
+          setOwnedIds(new Set(owned.map((s) => s.id)));
+        }
       } catch (error) {
-        console.error('Failed to fetch strategies:', error);
+        if (!cancelled) console.error('Failed to fetch strategies:', error);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     fetchData();
-  }, [category]);
+    return () => { cancelled = true; };
+  }, [isLoaded, isSignedIn, category]);
 
   const handlePurchase = async (strategy: Strategy) => {
     setPurchasing(strategy.id);

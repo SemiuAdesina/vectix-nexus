@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { Store, Search } from 'lucide-react';
 import { StrategyCard } from '@/components/marketplace/strategy-card';
 import { getStrategies, getPurchasedStrategies, purchaseStrategy, Strategy } from '@/lib/api/marketplace';
 import { useRouter } from 'next/navigation';
 
 export default function MarketplacePage() {
+  const { isLoaded, isSignedIn } = useAuth();
   const [strategies, setStrategies] = useState<Strategy[]>([]);
   const [ownedIds, setOwnedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -15,19 +17,27 @@ export default function MarketplacePage() {
   const router = useRouter();
 
   useEffect(() => {
+    if (!isLoaded) return;
+    let cancelled = false;
     const fetchData = async () => {
       try {
-        const [all, owned] = await Promise.all([getStrategies(), getPurchasedStrategies()]);
-        setStrategies(all);
-        setOwnedIds(new Set(owned.map(s => s.id)));
+        const [all, owned] = await Promise.all([
+          getStrategies(),
+          isSignedIn ? getPurchasedStrategies() : Promise.resolve([]),
+        ]);
+        if (!cancelled) {
+          setStrategies(all);
+          setOwnedIds(new Set(owned.map(s => s.id)));
+        }
       } catch (error) {
-        console.error('Failed to fetch strategies:', error);
+        if (!cancelled) console.error('Failed to fetch strategies:', error);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     fetchData();
-  }, []);
+    return () => { cancelled = true; };
+  }, [isLoaded, isSignedIn]);
 
   const handlePurchase = async (strategy: Strategy) => {
     setPurchasing(strategy.id);

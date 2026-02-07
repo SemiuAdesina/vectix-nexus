@@ -1,35 +1,50 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { CreditCard, Check, Zap, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getSubscriptionStatus, openBillingPortal } from '@/lib/api/subscription';
 import type { SubscriptionStatus } from '@/lib/api/types';
 import Link from 'next/link';
 
+const BYPASS_SUBSCRIPTION = process.env.NEXT_PUBLIC_ALLOW_SUBSCRIPTION_BYPASS === 'true';
 const PLAN_FEATURES: Record<string, string[]> = {
   hobby: ['1 AI Agent', 'Basic support', '10GB logs', 'Standard monitoring'],
   pro: ['5 AI Agents', 'Priority support', '100GB logs', 'Advanced analytics', 'Token launching', 'Strategy marketplace'],
 };
 
 export default function BillingPage() {
+  const { isLoaded, isSignedIn } = useAuth();
   const [subscription, setSubscription] = useState<SubscriptionStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [portalLoading, setPortalLoading] = useState(false);
 
   useEffect(() => {
+    if (!isLoaded) return;
+    if (BYPASS_SUBSCRIPTION) {
+      setSubscription({ hasActiveSubscription: true, plan: 'pro', planName: 'Pro Plan' });
+      setLoading(false);
+      return;
+    }
+    if (!isSignedIn) {
+      setSubscription({ hasActiveSubscription: false });
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
     const fetchSubscription = async () => {
       try {
         const status = await getSubscriptionStatus();
-        setSubscription(status);
-      } catch (error) {
-        console.error('Failed to fetch subscription:', error);
+        if (!cancelled) setSubscription(status);
+      } catch {
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     fetchSubscription();
-  }, []);
+    return () => { cancelled = true; };
+  }, [isLoaded, isSignedIn]);
 
   const handleManageBilling = async () => {
     setPortalLoading(true);

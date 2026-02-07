@@ -2,28 +2,44 @@
 
 import { FleetGrid } from '@/components/fleet';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { getSubscriptionStatus, SubscriptionStatus } from '@/lib/api/client';
 import { Button } from '@/components/ui/button';
 import { Lock, CreditCard, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
+const BYPASS_SUBSCRIPTION = process.env.NEXT_PUBLIC_ALLOW_SUBSCRIPTION_BYPASS === 'true';
+
 export function AgentDashboard() {
+  const { isLoaded, isSignedIn } = useAuth();
   const [subscription, setSubscription] = useState<SubscriptionStatus | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isLoaded) return;
+    if (BYPASS_SUBSCRIPTION) {
+      setSubscription({ hasActiveSubscription: true });
+      setLoading(false);
+      return;
+    }
+    if (!isSignedIn) {
+      setSubscription({ hasActiveSubscription: false });
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
     const checkSubscription = async () => {
       try {
         const status = await getSubscriptionStatus();
-        setSubscription(status);
-      } catch (error) {
-        console.error('Failed to check subscription:', error);
+        if (!cancelled) setSubscription(status);
+      } catch {
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     checkSubscription();
-  }, []);
+    return () => { cancelled = true; };
+  }, [isLoaded, isSignedIn]);
 
   if (loading) {
     return (

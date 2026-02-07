@@ -13,12 +13,14 @@ import { useAuthEnabled } from '@/contexts/auth-enabled';
 import { Zap, X, PanelLeftClose, PanelLeftOpen, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+const BYPASS_SUBSCRIPTION = process.env.NEXT_PUBLIC_ALLOW_SUBSCRIPTION_BYPASS === 'true';
+
 function SidebarAuthBlock({ collapsed }: { collapsed: boolean }) {
   const { isLoaded, isSignedIn, getToken } = useAuth();
-  const [plan, setPlan] = useState<'free' | 'pro'>('free');
+  const [plan, setPlan] = useState<'free' | 'pro'>(BYPASS_SUBSCRIPTION ? 'pro' : 'free');
 
   useEffect(() => {
-    if (!isLoaded || !isSignedIn) return;
+    if (!isLoaded || !isSignedIn || BYPASS_SUBSCRIPTION) return;
     let cancelled = false;
     (async () => {
       try {
@@ -33,7 +35,8 @@ function SidebarAuthBlock({ collapsed }: { collapsed: boolean }) {
           const data = await r.json();
           if (data?.plan === 'pro') setPlan('pro');
         }
-      } catch { /* ignore */ }
+      } catch {
+      }
     })();
     return () => { cancelled = true; };
   }, [isLoaded, isSignedIn, getToken]);

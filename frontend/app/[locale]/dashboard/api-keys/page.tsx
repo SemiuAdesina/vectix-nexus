@@ -9,7 +9,7 @@ import { useAuthEnabled } from '@/contexts/auth-enabled';
 import { AuthGate } from '@/components/auth-gate';
 
 function ApiKeysPageContent() {
-  const { getToken } = useAuth();
+  const { isLoaded, isSignedIn, getToken } = useAuth();
   const [keys, setKeys] = useState<ApiKeyData[]>([]);
   const [config, setConfig] = useState<ApiConfig | null>(null);
   const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
@@ -19,22 +19,27 @@ function ApiKeysPageContent() {
   const [newKey, setNewKey] = useState<string | null>(null);
 
   useEffect(() => {
-    loadData();
-  }, []);
-
-  async function loadData() {
-    setLoading(true);
-    try {
-      const [keysData, configData] = await Promise.all([getApiKeys(), getApiConfig()]);
-      setKeys(Array.isArray(keysData) ? keysData.filter((k): k is ApiKeyData => k != null && typeof k?.name === 'string') : []);
-      setConfig(configData ?? null);
-    } catch {
-      setKeys([]);
-      setConfig(null);
-    } finally {
-      setLoading(false);
+    if (!isLoaded) return;
+    let cancelled = false;
+    async function run() {
+      try {
+        const [keysData, configData] = await Promise.all([
+          isSignedIn ? getApiKeys() : Promise.resolve([]),
+          getApiConfig(),
+        ]);
+        if (!cancelled) {
+          setKeys(Array.isArray(keysData) ? keysData.filter((k): k is ApiKeyData => k != null && typeof k?.name === 'string') : []);
+          setConfig(configData ?? null);
+        }
+      } catch {
+        if (!cancelled) setKeys([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     }
-  }
+    run();
+    return () => { cancelled = true; };
+  }, [isLoaded, isSignedIn]);
 
   async function handleCreate(name: string, scopes: ApiScope[]) {
     const token = await getToken();
