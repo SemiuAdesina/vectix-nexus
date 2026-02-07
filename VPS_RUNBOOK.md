@@ -42,9 +42,11 @@ cd vectix-nexus
 
 ---
 
-## Step 4 – Create production .env
+## Step 4 – Create production .env (root only)
 
-Create the env file from the example:
+Use **one** `.env` at the **repo root** (next to `docker-compose.yml`). Docker Compose reads it and passes variables to backend, frontend, and agent. Do not edit `backend/.env` or `frontend/.env` for Docker deploys.
+
+Create the root env from the example:
 
 ```bash
 cp .env.example .env
@@ -54,7 +56,7 @@ nano .env
 In nano, paste your production values. Minimum to set:
 
 - `POSTGRES_PASSWORD` – strong password for the DB
-- `NEXT_PUBLIC_API_URL=https://vectixfoundry.com`
+- `NEXT_PUBLIC_API_URL=` (leave **empty**; this is for the frontend—empty makes the browser use relative `/api/*` and Nginx proxies to the backend)
 - `FRONTEND_URL=https://vectixfoundry.com`
 - `CORS_ORIGIN=https://vectixfoundry.com,https://www.vectixfoundry.com`
 - `TRUSTED_ORIGINS=https://vectixfoundry.com,https://www.vectixfoundry.com`
