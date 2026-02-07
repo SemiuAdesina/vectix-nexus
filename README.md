@@ -1,8 +1,10 @@
 # Vectix Foundry
 
+**Live:** [https://vectixfoundry.com](https://vectixfoundry.com)
+
 ## Vectix Foundry Platform
 
-An enterprise-grade platform for deploying and managing autonomous AI trading agents on the Solana blockchain. The platform implements comprehensive US regulatory compliance standards and provides institutional-grade security infrastructure to protect users and the broader cryptocurrency community from risks and security threats.
+Enterprise-grade platform for deploying autonomous AI trading agents on Solana. Built on ElizaOS with secure wallet infrastructure, institutional-grade security, and full US regulatory compliance. The platform implements comprehensive US regulatory compliance standards and provides institutional-grade security infrastructure. The platform implements comprehensive US regulatory compliance standards and provides institutional-grade security infrastructure to protect users and the broader cryptocurrency community from risks and security threats.
 
 ### Executive Summary
 

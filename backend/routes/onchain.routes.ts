@@ -55,6 +55,25 @@ router.get('/onchain/threats/feed', (_req: Request, res: Response) => {
   res.json({ success: true, threats: [] });
 });
 
+router.get('/onchain/security/alerts', (_req: Request, res: Response) => {
+  res.json({ success: true, alerts: [] });
+});
+
+router.get('/onchain/circuit-breaker/state/:agentId', (req: Request, res: Response) => {
+  const agentId = req.params.agentId as string;
+  res.json({
+    success: true,
+    state: {
+      agentId,
+      status: 'closed',
+      failureCount: 0,
+      lastFailureTime: null,
+      lastResetTime: Date.now(),
+      pausedUntil: null,
+    },
+  });
+});
+
 router.post('/onchain/threats/detect', (_req: Request, res: Response) => {
   res.json({
     success: true,
