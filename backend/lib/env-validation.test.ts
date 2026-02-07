@@ -28,15 +28,29 @@ describe('validateProductionEnv', () => {
     expect(() => validateProductionEnv()).not.toThrow();
   });
 
-  it('throws when production and ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION is true', () => {
+  it('throws when production and ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION is true without ALLOW_TEST_KEYS', () => {
     process.env.NODE_ENV = 'production';
     process.env.ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION = 'true';
+    process.env.ALLOW_TEST_KEYS_IN_PRODUCTION = 'false';
     process.env.MOCK_FLY_DEPLOY = 'false';
     process.env.STRIPE_SECRET_KEY = 'sk_live_xxx';
     process.env.CLERK_SECRET_KEY = 'sk_live_xxx';
     process.env.SOLANA_RPC_URL = 'https://mainnet.helius-rpc.com';
     process.env.SECRETS_ENCRYPTION_KEY = 'a'.repeat(32);
     expect(() => validateProductionEnv()).toThrow(/ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION/);
+  });
+
+  it('passes when production has ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION and ALLOW_TEST_KEYS_IN_PRODUCTION', () => {
+    process.env.NODE_ENV = 'production';
+    process.env.ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION = 'true';
+    process.env.ALLOW_TEST_KEYS_IN_PRODUCTION = 'true';
+    process.env.MOCK_FLY_DEPLOY = 'true';
+    delete process.env.FLY_API_TOKEN;
+    process.env.STRIPE_SECRET_KEY = 'sk_test_xxx';
+    process.env.CLERK_SECRET_KEY = 'sk_test_xxx';
+    process.env.SOLANA_RPC_URL = 'https://mainnet.helius-rpc.com';
+    process.env.SECRETS_ENCRYPTION_KEY = 'a'.repeat(32);
+    expect(() => validateProductionEnv()).not.toThrow();
   });
 
   it('throws when production has both MOCK_FLY_DEPLOY and FLY_API_TOKEN set', () => {

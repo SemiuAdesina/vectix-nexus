@@ -117,13 +117,20 @@ TWITTER_ACCESS_TOKEN=your_token
 TWITTER_ACCESS_TOKEN_SECRET=your_token_secret
 ```
 
-## Testing
+## Testing / Demo Mode
 
-### Deploy without subscription (local only)
-Set in backend `.env` to allow deploying agents without an active paid subscription. Do not use in production.
+### Deploy without subscription (local or demo)
+Set in backend `.env` to allow deploying agents without an active paid subscription. In production, also set `ALLOW_TEST_KEYS_IN_PRODUCTION=true` to enable.
 ```
 ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION=true
 ```
+
+### Subscription bypass (demo mode)
+Set in frontend (build-time) to skip Stripe checkout on pricing page; Get Started redirects to /create instead.
+```
+NEXT_PUBLIC_ALLOW_SUBSCRIPTION_BYPASS=true
+```
+Use with `ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION=true` and `ALLOW_TEST_KEYS_IN_PRODUCTION=true` for demo.
 
 ## Deployment
 

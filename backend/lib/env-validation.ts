@@ -4,8 +4,9 @@ export function validateProductionEnv(): void {
 
   const errors: string[] = [];
 
-  if (process.env.ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION === 'true') {
-    errors.push('ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION must not be true in production');
+  const allowTestKeys = process.env.ALLOW_TEST_KEYS_IN_PRODUCTION === 'true';
+  if (process.env.ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION === 'true' && !allowTestKeys) {
+    errors.push('ALLOW_DEPLOY_WITHOUT_SUBSCRIPTION must not be true in production (except when ALLOW_TEST_KEYS_IN_PRODUCTION)');
   }
   const hasFlyToken = (process.env.FLY_API_TOKEN ?? '').trim() !== '';
   if (process.env.MOCK_FLY_DEPLOY === 'true' && hasFlyToken) {
@@ -18,7 +19,6 @@ export function validateProductionEnv(): void {
     errors.push('ENABLE_NARRATIVE_DEMO must not be true in production');
   }
 
-  const allowTestKeys = process.env.ALLOW_TEST_KEYS_IN_PRODUCTION === 'true';
   const stripeKey = process.env.STRIPE_SECRET_KEY ?? '';
   if (!allowTestKeys && stripeKey.startsWith('sk_test_')) {
     errors.push('Use live Stripe keys (sk_live_*) in production, not test keys');

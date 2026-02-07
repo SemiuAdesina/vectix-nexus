@@ -6,6 +6,8 @@ import { createCheckoutSession, PricingPlan } from '@/lib/api/client';
 import { Check, Loader2, Sparkles } from 'lucide-react';
 import { useRouter } from '@/i18n/navigation';
 
+const BYPASS_SUBSCRIPTION = process.env.NEXT_PUBLIC_ALLOW_SUBSCRIPTION_BYPASS === 'true';
+
 const DEFAULT_PLANS: Record<string, PricingPlan> = {
   hobby: {
     name: 'Hobby Agent',
@@ -21,22 +23,34 @@ const DEFAULT_PLANS: Record<string, PricingPlan> = {
   },
 };
 
-export function PricingPage() {
+interface PricingPageProps {
+  isSignedIn?: boolean;
+}
+
+export function PricingPage({ isSignedIn = false }: PricingPageProps) {
   const [subscribing, setSubscribing] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubscribe = async (planKey: string) => {
     setSubscribing(planKey);
+    if (BYPASS_SUBSCRIPTION) {
+      if (isSignedIn) {
+        router.push('/create');
+        return;
+      }
+      router.push(`/sign-in?redirect_url=${encodeURIComponent('/create')}`);
+      return;
+    }
     try {
       const url = await createCheckoutSession(planKey as 'hobby' | 'pro');
       window.location.href = url;
     } catch (error) {
-      console.error('Failed to create checkout session:', error);
       const msg = error instanceof Error ? error.message : '';
       if (/unauthorized|sign in/i.test(msg)) {
         router.push(`/sign-in?redirect_url=${encodeURIComponent(window.location.pathname)}`);
         return;
       }
+      console.error('Failed to create checkout session:', error);
       if (error instanceof TypeError || /fetch|network/i.test(msg)) {
         alert('Backend not connected. Please start the backend server.');
         return;

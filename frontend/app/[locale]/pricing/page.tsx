@@ -11,12 +11,12 @@ import { useAuthEnabled } from '@/contexts/auth-enabled';
 function PricingSignedIn() {
   return (
     <AppShell>
-      <PricingPage />
+      <PricingPage isSignedIn />
     </AppShell>
   );
 }
 
-function PricingPublic() {
+function PricingPublic({ isSignedIn = false }: { isSignedIn?: boolean }) {
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl">
@@ -37,7 +37,7 @@ function PricingPublic() {
         </div>
       </nav>
       <div className="pt-16">
-        <PricingPage />
+        <PricingPage isSignedIn={isSignedIn} />
       </div>
     </>
   );
@@ -46,7 +46,7 @@ function PricingPublic() {
 function PricingWithClerk() {
   const { isSignedIn } = useAuth();
   if (isSignedIn) return <PricingSignedIn />;
-  return <PricingPublic />;
+  return <PricingPublic isSignedIn={false} />;
 }
 
 export default function Pricing() {

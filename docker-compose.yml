@@ -41,6 +41,7 @@ services:
       args:
         NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:-}
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+        NEXT_PUBLIC_ALLOW_SUBSCRIPTION_BYPASS: ${NEXT_PUBLIC_ALLOW_SUBSCRIPTION_BYPASS:-}
     container_name: vectix-frontend
     restart: unless-stopped
     depends_on:
