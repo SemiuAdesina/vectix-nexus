@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { createCheckoutSession, PricingPlan } from '@/lib/api/client';
 import { Check, Loader2, Sparkles } from 'lucide-react';
+import { useRouter } from '@/i18n/navigation';
 
 const DEFAULT_PLANS: Record<string, PricingPlan> = {
   hobby: {
@@ -22,6 +23,7 @@ const DEFAULT_PLANS: Record<string, PricingPlan> = {
 
 export function PricingPage() {
   const [subscribing, setSubscribing] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubscribe = async (planKey: string) => {
     setSubscribing(planKey);
@@ -30,7 +32,16 @@ export function PricingPage() {
       window.location.href = url;
     } catch (error) {
       console.error('Failed to create checkout session:', error);
-      alert('Backend not connected. Please start the backend server.');
+      const msg = error instanceof Error ? error.message : '';
+      if (/unauthorized|sign in/i.test(msg)) {
+        router.push(`/sign-in?redirect_url=${encodeURIComponent(window.location.pathname)}`);
+        return;
+      }
+      if (error instanceof TypeError || /fetch|network/i.test(msg)) {
+        alert('Backend not connected. Please start the backend server.');
+        return;
+      }
+      alert(msg || 'Failed to create checkout session');
     } finally {
       setSubscribing(null);
     }
