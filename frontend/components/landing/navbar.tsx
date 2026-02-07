@@ -1,12 +1,15 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
+import { LanguageSwitcher } from '@/components/layout/language-switcher';
 import { Zap, Rocket, Wallet, LogIn, Loader2 } from 'lucide-react';
 import { SignInButton, SignedIn, SignedOut, UserButton, useAuth } from '@clerk/nextjs';
 import { useAuthEnabled } from '@/contexts/auth-enabled';
 
 function NavbarAuthActions() {
+  const t = useTranslations('Common');
   const { isLoaded } = useAuth();
   if (!isLoaded) {
     return <Loader2 className="w-5 h-5 animate-spin text-slate-500" />;
@@ -16,14 +19,14 @@ function NavbarAuthActions() {
       <SignedOut>
         <SignInButton mode="modal">
           <Button variant="outline" className="gap-2 border-slate-700 text-white hover:bg-slate-800">
-            <LogIn className="w-4 h-4" /> Sign In
+            <LogIn className="w-4 h-4" /> {t('signIn')}
           </Button>
         </SignInButton>
       </SignedOut>
       <SignedIn>
         <Link href="/dashboard">
           <Button className="gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white border-0">
-            <Rocket className="w-4 h-4" /> Dashboard
+            <Rocket className="w-4 h-4" /> {t('dashboard')}
           </Button>
         </Link>
         <UserButton afterSignOutUrl="/" />
@@ -33,6 +36,8 @@ function NavbarAuthActions() {
 }
 
 export function Navbar() {
+  const t = useTranslations('Common');
+  const tHome = useTranslations('HomePage');
   const authEnabled = useAuthEnabled();
 
   return (
@@ -42,22 +47,23 @@ export function Navbar() {
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-teal-500/20">
             <Zap className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold text-lg text-white tracking-tight">Vectix Foundry</span>
+          <span className="font-bold text-lg text-white tracking-tight">{tHome('title')}</span>
         </Link>
         <div className="flex items-center gap-4">
+          <LanguageSwitcher />
           <Link
             href="/pricing"
             className="text-slate-400 hover:text-white transition-colors hidden sm:flex items-center gap-2 text-sm"
           >
             <Wallet className="w-4 h-4" />
-            Pricing
+            {t('pricing')}
           </Link>
           {authEnabled ? (
             <NavbarAuthActions />
           ) : (
             <Link href="/sign-in">
               <Button variant="outline" className="gap-2 border-slate-700 text-white hover:bg-slate-800">
-                <LogIn className="w-4 h-4" /> Sign In
+                <LogIn className="w-4 h-4" /> {t('signIn')}
               </Button>
             </Link>
           )}

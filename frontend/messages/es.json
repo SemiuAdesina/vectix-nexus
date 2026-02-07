@@ -1,0 +1,69 @@
+{
+  "Common": {
+    "signIn": "Iniciar sesión",
+    "home": "Inicio",
+    "backToHome": "Volver al inicio",
+    "dashboard": "Panel",
+    "pricing": "Precios",
+    "language": "Idioma"
+  },
+  "Nav": {
+    "sectionCommandCenter": "CENTRO DE MANDO",
+    "sectionIntelligence": "INTELIGENCIA",
+    "sectionTreasury": "TESORERÍA",
+    "sectionConfiguration": "CONFIGURACIÓN",
+    "dashboard": "Panel",
+    "myAgents": "Mis agentes",
+    "deployAgent": "Desplegar agente",
+    "marketplace": "Mercado",
+    "analysis": "Análisis",
+    "trending": "Tendencias",
+    "billing": "Facturación",
+    "affiliates": "Afiliados",
+    "security": "Seguridad",
+    "onChain": "On-Chain",
+    "auditDashboard": "Panel de auditoría",
+    "governance": "Gobernanza",
+    "threatIntel": "Amenazas",
+    "publicApi": "API pública",
+    "apiKeys": "Claves API",
+    "documentation": "Documentación",
+    "bugBounty": "Bug Bounty",
+    "badgeNew": "NUEVO",
+    "badgeLive": "EN VIVO"
+  },
+  "HomePage": {
+    "title": "Vectix Foundry",
+    "tagline": "Fábrica de agentes IA",
+    "showcaseIntelligence": {
+      "title": "La inteligencia",
+      "highlight": "Fábrica",
+      "description": "Despliega y gestiona agentes IA con ElizaOS. Cada agente opera de forma autónoma con estrategias personalizables, análisis de mercado en tiempo real y control del ciclo de vida desde un panel unificado."
+    },
+    "showcaseShadow": {
+      "title": "Modo sombra:",
+      "highlight": "Pruebas sin riesgo",
+      "description": "Prueba estrategias con datos de mercado en vivo antes de desplegar capital. El modo sombra ofrece informes detallados para validar y optimizar estrategias sin riesgo financiero."
+    },
+    "showcaseCompliance": {
+      "title": "Escudo de",
+      "highlight": "Cumplimiento",
+      "description": "Cumplimiento normativo financiero en EE. UU.: FinCEN/BSA, screening OFAC, monitorización AML y autenticación NIST 800-63B con trazabilidad de auditoría."
+    },
+    "showcaseApi": {
+      "title": "API M2M e",
+      "highlight": "Inteligencia pública",
+      "description": "API REST con límites por nivel y autorización por alcance. APIs de inteligencia de seguridad públicas con acceso gratuito a puntuaciones y datos de amenazas."
+    }
+  },
+  "NotFoundPage": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no existe.",
+    "backHome": "Volver al inicio"
+  },
+  "SignIn": {
+    "notConfigured": "Inicio de sesión no configurado.",
+    "envHint": "Configura NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY y CLERK_SECRET_KEY en el .env raíz (junto a docker-compose.yml) y ejecuta: docker compose up -d --force-recreate frontend",
+    "backToHome": "Volver al inicio"
+  }
+}

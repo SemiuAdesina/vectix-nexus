@@ -1,0 +1,69 @@
+{
+  "Common": {
+    "signIn": "Sign In",
+    "home": "Home",
+    "backToHome": "Back to Home",
+    "dashboard": "Dashboard",
+    "pricing": "Pricing",
+    "language": "Language"
+  },
+  "Nav": {
+    "sectionCommandCenter": "COMMAND CENTER",
+    "sectionIntelligence": "INTELLIGENCE",
+    "sectionTreasury": "TREASURY",
+    "sectionConfiguration": "CONFIGURATION",
+    "dashboard": "Dashboard",
+    "myAgents": "My Agents",
+    "deployAgent": "Deploy Agent",
+    "marketplace": "Marketplace",
+    "analysis": "Analysis",
+    "trending": "Trending",
+    "billing": "Billing",
+    "affiliates": "Affiliates",
+    "security": "Security",
+    "onChain": "On-Chain",
+    "auditDashboard": "Audit Dashboard",
+    "governance": "Governance",
+    "threatIntel": "Threat Intel",
+    "publicApi": "Public API",
+    "apiKeys": "API Keys",
+    "documentation": "Documentation",
+    "bugBounty": "Bug Bounty",
+    "badgeNew": "NEW",
+    "badgeLive": "LIVE"
+  },
+  "HomePage": {
+    "title": "Vectix Foundry",
+    "tagline": "AI Agent Factory",
+    "showcaseIntelligence": {
+      "title": "The Intelligence",
+      "highlight": "Factory",
+      "description": "Deploy and manage AI agents powered by ElizaOS. Each agent operates autonomously with customizable strategies, real-time market analysis, and full lifecycle control from a unified dashboard."
+    },
+    "showcaseShadow": {
+      "title": "Shadow Mode:",
+      "highlight": "Risk-Free Testing",
+      "description": "Test strategies with live market data before deploying capital. Shadow mode provides detailed performance reports, allowing you to validate and optimize trading strategies without financial risk."
+    },
+    "showcaseCompliance": {
+      "title": "Shield of",
+      "highlight": "Compliance",
+      "description": "Full adherence to US financial regulations including FinCEN/BSA compliance, OFAC sanctions screening, AML transaction monitoring, and NIST 800-63B authentication with comprehensive audit trails."
+    },
+    "showcaseApi": {
+      "title": "M2M API &",
+      "highlight": "Public Intelligence",
+      "description": "RESTful API with tiered rate limits and scope-based authorization. Public security intelligence APIs provide free access to security scores and threat data for the entire community."
+    }
+  },
+  "NotFoundPage": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist.",
+    "backHome": "Back to Home"
+  },
+  "SignIn": {
+    "notConfigured": "Sign-in is not configured.",
+    "envHint": "Set NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY in the root .env (next to docker-compose.yml), then run: docker compose up -d --force-recreate frontend",
+    "backToHome": "Back to Home"
+  }
+}

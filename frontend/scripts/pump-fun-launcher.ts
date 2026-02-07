@@ -27,6 +27,8 @@ interface TokenLaunchResult {
   treasuryPercentage: number;
 }
 
+/** Reserved for future token metadata usage. */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- reserved
 function createTokenMetadata(params: TokenLaunchParams): Buffer {
   const metadata = {
     name: params.tokenName,

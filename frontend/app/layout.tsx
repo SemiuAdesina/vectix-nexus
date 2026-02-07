@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from '@clerk/nextjs';
 import "./globals.css";
-import { OwnershipWatermark, AuthTokenBridge } from "@/components/layout";
 import { AuthEnabledProvider } from "@/contexts/auth-enabled";
 
 export const metadata: Metadata = {
@@ -68,15 +67,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthEnabledProvider value={useClerk}>
           {useClerk ? (
             <ClerkProvider publishableKey={publishableKey} appearance={clerkAppearance} dynamic>
-              <OwnershipWatermark />
-              <AuthTokenBridge />
               {children}
             </ClerkProvider>
           ) : (
-            <>
-              <OwnershipWatermark />
-              {children}
-            </>
+            <>{children}</>
           )}
         </AuthEnabledProvider>
       </body>

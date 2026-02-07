@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Webhook, Plus, Trash2, Check, Copy, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getWebhooks, createWebhook, deleteWebhook, WebhookData } from '@/lib/api/api-keys';
@@ -16,16 +16,18 @@ export default function WebhooksPage() {
   const [newSecret, setNewSecret] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    loadWebhooks();
-  }, []);
-
-  async function loadWebhooks() {
+  const loadWebhooks = useCallback(async () => {
     setLoading(true);
     const data = await getWebhooks();
     setWebhooks(data);
     setLoading(false);
-  }
+  }, []);
+
+  /* eslint-disable react-hooks/set-state-in-effect -- initial data fetch */
+  useEffect(() => {
+    loadWebhooks();
+  }, [loadWebhooks]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   async function handleCreate() {
     if (!newUrl || newEvents.length === 0) return;

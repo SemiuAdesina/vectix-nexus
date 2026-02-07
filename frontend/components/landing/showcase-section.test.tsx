@@ -5,6 +5,7 @@ import { ShowcaseSection } from './showcase-section';
 
 vi.mock('next/image', () => ({
   default: ({ src, alt }: { src: string; alt: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element -- test mock of next/image
     <img src={src} alt={alt} data-testid="showcase-image" />
   ),
 }));

@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@clerk/nextjs';
 import { useSidebar } from './sidebar-context';
 import { SidebarNav } from './sidebar-nav';
 import { SidebarUser } from './sidebar-user';
+import { LanguageSwitcher } from './language-switcher';
 import { getBackendUrl } from '@/lib/api/auth';
 import { useAuthEnabled } from '@/contexts/auth-enabled';
 import { Zap, X, PanelLeftClose, PanelLeftOpen, LogIn } from 'lucide-react';
@@ -31,7 +33,7 @@ function SidebarAuthBlock({ collapsed }: { collapsed: boolean }) {
           const data = await r.json();
           if (data?.plan === 'pro') setPlan('pro');
         }
-      } catch (_) {}
+      } catch { /* ignore */ }
     })();
     return () => { cancelled = true; };
   }, [isLoaded, isSignedIn, getToken]);
@@ -40,6 +42,7 @@ function SidebarAuthBlock({ collapsed }: { collapsed: boolean }) {
 }
 
 function SidebarSignInFallback({ collapsed }: { collapsed: boolean }) {
+  const t = useTranslations('Common');
   return (
     <div
       className={`shrink-0 border-t border-slate-800/80 p-4 ${collapsed ? 'flex flex-col items-center' : ''}`}
@@ -51,7 +54,7 @@ function SidebarSignInFallback({ collapsed }: { collapsed: boolean }) {
           className="w-full justify-start gap-2 border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-teal-400"
         >
           <LogIn className="w-4 h-4" />
-          {!collapsed && <span>Sign In</span>}
+          {!collapsed && <span>{t('signIn')}</span>}
         </Button>
       </Link>
     </div>
@@ -62,7 +65,7 @@ export function Sidebar() {
   const { collapsed, setCollapsed, mobileOpen, setMobileOpen } = useSidebar();
   const authEnabled = useAuthEnabled();
 
-  useEffect(() => { setMobileOpen(false); }, []);
+  useEffect(() => { setMobileOpen(false); }, [setMobileOpen]);
 
   const sidebarContent = (
     <>
@@ -88,13 +91,16 @@ export function Sidebar() {
           </div>
         )}
       </Link>
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="p-2 rounded-lg hover:bg-slate-800/80 hover:text-teal-400 text-slate-400 shrink-0 transition-colors"
-        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-      >
-        {collapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
-      </button>
+      <div className="flex items-center gap-1">
+        {!collapsed && <LanguageSwitcher />}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="p-2 rounded-lg hover:bg-slate-800/80 hover:text-teal-400 text-slate-400 shrink-0 transition-colors"
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          {collapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
+        </button>
+      </div>
     </div>
   );
 

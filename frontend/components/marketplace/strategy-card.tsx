@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint-disable react-hooks/static-components -- getStrategyIcon returns a stable icon from a fixed map */
+import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import type { Strategy } from '@/lib/api/marketplace';
 import {
@@ -35,7 +37,7 @@ interface StrategyCardProps {
 
 export function StrategyCard({ strategy, owned, onSelect, onPurchase, isPurchasing }: StrategyCardProps) {
   const isFree = strategy.priceUsd === 0;
-  const IconComponent = getStrategyIcon(strategy);
+  const IconComponent = useMemo(() => getStrategyIcon(strategy), [strategy]);
 
   const handleButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation();

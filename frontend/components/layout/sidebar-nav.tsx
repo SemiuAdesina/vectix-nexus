@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link, usePathname } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { NAV_SECTIONS } from './sidebar-config';
 
 interface SidebarNavProps {
@@ -11,16 +11,17 @@ interface SidebarNavProps {
 
 export function SidebarNav({ collapsed, onItemClick }: SidebarNavProps) {
   const pathname = usePathname();
+  const t = useTranslations('Nav');
 
   return (
     <nav className="flex-1 overflow-y-auto py-5 px-3 scrollbar-thin">
       {NAV_SECTIONS.map((section, idx) => (
-        <div key={section.title} className={idx > 0 ? 'mt-6' : ''}>
+        <div key={section.titleKey} className={idx > 0 ? 'mt-6' : ''}>
           {!collapsed && (
             <div className="flex items-center gap-2 px-2 mb-2">
               <div className="w-1 h-3 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500" />
               <span className="text-[10px] font-semibold text-slate-500 tracking-[0.18em] uppercase">
-                {section.title}
+                {t(section.titleKey)}
               </span>
             </div>
           )}
@@ -46,7 +47,7 @@ export function SidebarNav({ collapsed, onItemClick }: SidebarNavProps) {
                   />
                   {!collapsed && (
                     <>
-                      <span className="text-[13px] font-medium truncate flex-1">{item.label}</span>
+                      <span className="text-[13px] font-medium truncate flex-1">{t(item.labelKey)}</span>
                       {item.badge && (
                         <span
                           className={`
@@ -57,7 +58,7 @@ export function SidebarNav({ collapsed, onItemClick }: SidebarNavProps) {
                             }
                           `}
                         >
-                          {item.badge}
+                          {t(item.badge === 'LIVE' ? 'badgeLive' : 'badgeNew')}
                         </span>
                       )}
                     </>

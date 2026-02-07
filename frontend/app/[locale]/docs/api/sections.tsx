@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Link } from '@/i18n/navigation';
 import { Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CodeBlock } from './code-block';
@@ -14,7 +15,7 @@ export function QuickStart() {
         <div>
           <h3 className="font-semibold mb-2">1. Get your API Key</h3>
           <p className="text-muted-foreground mb-3">
-            Create a key at <a href="/dashboard/api-keys" className="text-primary hover:underline">/dashboard/api-keys</a>
+            Create a key at <Link href="/dashboard/api-keys" className="text-primary hover:underline">/dashboard/api-keys</Link>
           </p>
         </div>
         <div>
@@ -117,7 +118,7 @@ export function SdksSection() {
       <h2 className="text-2xl font-bold mb-6">SDKs & Libraries</h2>
       <p className="text-muted-foreground mb-4">Coming soon: Official SDKs for Python, JavaScript, and Go.</p>
       <Button variant="outline" asChild>
-        <a href="/dashboard/api-keys">Get Your API Key</a>
+        <Link href="/dashboard/api-keys">Get Your API Key</Link>
       </Button>
     </section>
   );
