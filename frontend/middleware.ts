@@ -17,8 +17,9 @@ const clerkGuarded = clerkMiddleware((auth, request) => {
 });
 
 export default function middleware(request: NextRequest, event: NextFetchEvent) {
-  const key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-  if (!key || key.trim() === '') {
+  const publishableKey = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? '').trim();
+  const secretKey = (process.env.CLERK_SECRET_KEY ?? '').trim();
+  if (publishableKey.length === 0 || secretKey.length === 0) {
     return NextResponse.next();
   }
   return clerkGuarded(request, event);

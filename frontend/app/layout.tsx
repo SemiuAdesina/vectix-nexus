@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ClerkProvider } from '@clerk/nextjs';
 import "./globals.css";
 import { OwnershipWatermark, AuthTokenBridge } from "@/components/layout";
+import { AuthEnabledProvider } from "@/contexts/auth-enabled";
 
 export const metadata: Metadata = {
   title: "Vectix Foundry | AI Agent Factory",
@@ -59,22 +60,25 @@ const clerkAppearance = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const publishableKey = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? '').trim();
-  const useClerk = publishableKey.length > 0;
+  const secretKey = (process.env.CLERK_SECRET_KEY ?? '').trim();
+  const useClerk = publishableKey.length > 0 && secretKey.length > 0;
   return (
     <html lang="en" className="dark">
       <body>
-        {useClerk ? (
-          <ClerkProvider publishableKey={publishableKey} appearance={clerkAppearance} dynamic>
-            <OwnershipWatermark />
-            <AuthTokenBridge />
-            {children}
-          </ClerkProvider>
-        ) : (
-          <>
-            <OwnershipWatermark />
-            {children}
-          </>
-        )}
+        <AuthEnabledProvider value={useClerk}>
+          {useClerk ? (
+            <ClerkProvider publishableKey={publishableKey} appearance={clerkAppearance} dynamic>
+              <OwnershipWatermark />
+              <AuthTokenBridge />
+              {children}
+            </ClerkProvider>
+          ) : (
+            <>
+              <OwnershipWatermark />
+              {children}
+            </>
+          )}
+        </AuthEnabledProvider>
       </body>
     </html>
   );
