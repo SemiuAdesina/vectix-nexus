@@ -1,6 +1,7 @@
 'use client';
 
 import useSWR from 'swr';
+import { useAuth } from '@clerk/nextjs';
 import { getAgents, getAgentStatus, getAgentLogs } from '@/lib/api/agents';
 import type { Agent, AgentStatus, LogEntry } from '@/lib/api/types';
 
@@ -13,8 +14,9 @@ export interface AgentWithLiveData extends Agent {
 }
 
 export function useAgents() {
+  const { isLoaded, isSignedIn } = useAuth();
   const { data, error, isLoading, mutate } = useSWR<Agent[]>(
-    'agents',
+    isLoaded && isSignedIn ? 'agents' : null,
     getAgents,
     { refreshInterval: POLL_INTERVAL, revalidateOnFocus: true }
   );

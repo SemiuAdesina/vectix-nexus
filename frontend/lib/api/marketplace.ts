@@ -56,6 +56,7 @@ export async function getPurchasedStrategies(): Promise<Strategy[]> {
       credentials: 'include',
       headers,
     });
+    if (response.status === 401) return [];
     const data = await response.json();
     return data.strategies || [];
   } catch {
@@ -72,10 +73,19 @@ export interface PurchaseResult {
 }
 
 export async function purchaseStrategy(id: string): Promise<PurchaseResult> {
+  const headers = await getAuthHeaders();
+  if (!headers.Authorization) {
+    return { success: false, error: 'Sign in required' };
+  }
   const response = await fetch(`${marketplaceBase()}/marketplace/strategies/${id}/purchase`, {
     method: 'POST',
-    headers: await getAuthHeaders(),
+    credentials: 'include',
+    headers,
   });
-  return response.json();
+  const data = (await response.json()) as PurchaseResult;
+  if (response.status === 401) {
+    return { success: false, error: data.error || 'Sign in required' };
+  }
+  return data;
 }
 

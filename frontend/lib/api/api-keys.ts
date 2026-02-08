@@ -40,6 +40,7 @@ export async function getApiKeys(): Promise<ApiKeyData[]> {
   if (!headers.Authorization) return [];
   const url = apiKeysBase() ? `${apiKeysBase()}/api/api-keys` : '/api/api-keys';
   const res = await fetch(url, { headers, credentials: 'include' });
+  if (res.status === 401) return [];
   const data = await res.json();
   return data.keys || [];
 }
