@@ -101,11 +101,11 @@ export function validateSecrets(secrets: AgentSecrets): { valid: boolean; errors
   const openaiKey = secrets.openaiApiKey?.trim();
   const anthropicKey = secrets.anthropicApiKey?.trim();
 
-  if (openaiKey && !openaiKey.startsWith('sk-')) {
+  if (openaiKey && !openaiKey.toLowerCase().startsWith('sk-')) {
     errors.push('Invalid OpenAI API key format (must start with sk-)');
   }
 
-  if (anthropicKey && !anthropicKey.startsWith('sk-ant-')) {
+  if (anthropicKey && !anthropicKey.toLowerCase().startsWith('sk-ant-')) {
     errors.push('Invalid Anthropic API key format (must start with sk-ant-)');
   }
 
