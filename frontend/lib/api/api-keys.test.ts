@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach, type Mock, type MockedFunction } from 'vitest';
 import * as apiKeys from './api-keys';
+import * as auth from './auth';
 
 global.fetch = vi.fn() as MockedFunction<typeof fetch>;
 
 vi.mock('./auth', () => ({
-  getAuthHeaders: vi.fn().mockResolvedValue({ 'Content-Type': 'application/json' }),
+  getAuthHeaders: vi.fn(),
   getBackendUrl: vi.fn().mockReturnValue('http://localhost:3001'),
 }));
 
@@ -23,13 +24,26 @@ vi.mock('./config', () => ({
   },
 }));
 
+const authHeadersWithToken = {
+  'Content-Type': 'application/json',
+  Authorization: 'Bearer test-token',
+};
+
 describe('api-keys', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(auth.getAuthHeaders).mockResolvedValue(authHeadersWithToken);
   });
 
   describe('getApiKeys', () => {
-    it('fetches API keys', async () => {
+    it('returns empty when no token', async () => {
+      vi.mocked(auth.getAuthHeaders).mockResolvedValue({ 'Content-Type': 'application/json' });
+      const keys = await apiKeys.getApiKeys();
+      expect(keys).toEqual([]);
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
+    it('fetches API keys when token present', async () => {
       const mockKeys = [{ id: 'key1', name: 'Test Key' }];
       (global.fetch as Mock).mockResolvedValue({
         json: async () => ({ keys: mockKeys }),
@@ -50,6 +64,14 @@ describe('api-keys', () => {
 
       const result = await apiKeys.createApiKey('Test Key', ['read:agents']);
       expect(result).toEqual(mockResponse);
+    });
+
+    it('throws when no token', async () => {
+      vi.mocked(auth.getAuthHeaders).mockResolvedValue({ 'Content-Type': 'application/json' });
+      await expect(apiKeys.createApiKey('Test', ['read:agents'])).rejects.toThrow(
+        'Please sign in to create API keys'
+      );
+      expect(global.fetch).not.toHaveBeenCalled();
     });
   });
 

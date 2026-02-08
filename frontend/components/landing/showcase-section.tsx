@@ -41,6 +41,7 @@ export function ShowcaseSection({
             width={600}
             height={400}
             className="relative rounded-xl border border-slate-700/50 shadow-xl shadow-teal-500/5 w-full h-auto"
+            unoptimized
           />
         </div>
       </div>

@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach, type Mock, type MockedFunction } from 'vitest';
 import * as subscription from './subscription';
+import * as auth from './auth';
 
 global.fetch = vi.fn() as MockedFunction<typeof fetch>;
 
 vi.mock('./auth', () => ({
-  getAuthHeaders: vi.fn().mockResolvedValue({ 'Content-Type': 'application/json' }),
+  getAuthHeaders: vi.fn(),
   getBackendUrl: vi.fn().mockReturnValue('http://localhost:3001'),
 }));
 
@@ -22,11 +23,23 @@ vi.mock('./config', () => ({
 describe('subscription', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(auth.getAuthHeaders).mockResolvedValue({ 'Content-Type': 'application/json' });
   });
 
   describe('getSubscriptionStatus', () => {
-    it('fetches subscription status', async () => {
-      const mockStatus = { active: true, plan: 'pro', currentPeriodEnd: new Date().toISOString() };
+    it('returns default when no token', async () => {
+      vi.mocked(auth.getAuthHeaders).mockResolvedValue({ 'Content-Type': 'application/json' });
+      const status = await subscription.getSubscriptionStatus();
+      expect(status).toEqual({ hasActiveSubscription: false });
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
+    it('fetches subscription status when token present', async () => {
+      vi.mocked(auth.getAuthHeaders).mockResolvedValue({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer test-token',
+      });
+      const mockStatus = { hasActiveSubscription: true, plan: 'pro', currentPeriodEnd: new Date().toISOString() };
       (global.fetch as Mock).mockResolvedValue({
         ok: true,
         json: async () => mockStatus,
@@ -34,9 +47,14 @@ describe('subscription', () => {
 
       const status = await subscription.getSubscriptionStatus();
       expect(status).toEqual(mockStatus);
+      expect(global.fetch).toHaveBeenCalled();
     });
 
     it('returns default status on failure', async () => {
+      vi.mocked(auth.getAuthHeaders).mockResolvedValue({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer test-token',
+      });
       (global.fetch as Mock).mockResolvedValue({
         ok: false,
         status: 500,

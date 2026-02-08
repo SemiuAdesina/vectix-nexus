@@ -8,7 +8,9 @@ const DEFAULT_SUBSCRIPTION: SubscriptionStatus = { hasActiveSubscription: false 
 export async function getSubscriptionStatus(): Promise<SubscriptionStatus> {
   try {
     const headers = await getAuthHeaders();
-    const response = await fetch(`${BACKEND_URL}/api/subscription/status`, { headers });
+    if (!headers.Authorization) return DEFAULT_SUBSCRIPTION;
+    const base = BACKEND_URL || '';
+    const response = await fetch(`${base}/api/subscription/status`, { headers });
     if (!response.ok) return DEFAULT_SUBSCRIPTION;
     return (await response.json()) as SubscriptionStatus;
   } catch {

@@ -95,6 +95,7 @@ export function HeroSection() {
             height={600}
             className="relative rounded-xl border border-slate-700/50 shadow-2xl shadow-teal-500/10"
             priority
+            unoptimized
           />
         </div>
       </div>

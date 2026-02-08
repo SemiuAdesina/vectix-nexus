@@ -26,7 +26,8 @@ function SidebarAuthBlock({ collapsed }: { collapsed: boolean }) {
       try {
         const token = await getToken();
         if (cancelled || !token) return;
-        const r = await fetch(`${getBackendUrl()}/api/subscription/status`, {
+        const base = getBackendUrl() || '';
+        const r = await fetch(`${base}/api/subscription/status`, {
           credentials: 'include',
           headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         });

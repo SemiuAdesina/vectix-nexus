@@ -37,6 +37,7 @@ export interface ApiConfig {
 
 export async function getApiKeys(): Promise<ApiKeyData[]> {
   const headers = await getAuthHeaders();
+  if (!headers.Authorization) return [];
   const url = apiKeysBase() ? `${apiKeysBase()}/api/api-keys` : '/api/api-keys';
   const res = await fetch(url, { headers, credentials: 'include' });
   const data = await res.json();
@@ -59,6 +60,7 @@ export async function createApiKey(
   token?: string | null
 ): Promise<{ key: string; data: ApiKeyData }> {
   const headers = await authHeaders(token);
+  if (!headers.Authorization) throw new Error('Please sign in to create API keys.');
   const url = apiKeysBase() ? `${apiKeysBase()}/api/api-keys` : '/api/api-keys';
   const res = await fetch(url, {
     method: 'POST',
