@@ -2,6 +2,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { AlertTriangle, CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
+
+function formatDate(value: string | Date): string {
+  return new Date(value).toLocaleString();
+}
 import { checkCircuitBreaker, resetCircuitBreaker, getCircuitBreakerState } from '@/lib/api/onchain';
 import type { CircuitBreakerState } from '@/lib/api/onchain/types';
 
@@ -106,12 +110,12 @@ export function CircuitBreakerCard({ agentId, state: propState, onStateChange }:
         {state.pausedUntil && (
           <div className="flex justify-between text-sm p-3 rounded-xl border border-slate-700/50 bg-slate-800/50">
             <span className="text-slate-400">Paused Until</span>
-            <span className="text-white">{new Date(state.pausedUntil).toLocaleString()}</span>
+            <span className="text-white">{formatDate(state.pausedUntil)}</span>
           </div>
         )}
         <div className="flex justify-between text-sm p-3 rounded-xl border border-slate-700/50 bg-slate-800/50">
           <span className="text-slate-400">Last Reset</span>
-          <span className="text-white">{new Date(state.lastResetTime).toLocaleString()}</span>
+          <span className="text-white">{formatDate(state.lastResetTime)}</span>
         </div>
       </div>
 

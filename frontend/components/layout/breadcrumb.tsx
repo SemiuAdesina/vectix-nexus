@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronRight, Home } from 'lucide-react';
@@ -15,17 +16,19 @@ const ROUTE_LABELS: Record<string, string> = {
   affiliates: 'Affiliates',
   advanced: 'Security',
   'api-keys': 'API Keys',
+  onchain: 'On-Chain',
 };
 
 export function Breadcrumb() {
   const pathname = usePathname();
-  const segments = pathname.split('/').filter(Boolean);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
+  const segments = mounted ? pathname.split('/').filter(Boolean) : [];
   const breadcrumbs = segments.map((segment, index) => {
     const href = '/' + segments.slice(0, index + 1).join('/');
     const label = ROUTE_LABELS[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
     const isLast = index === segments.length - 1;
-
     return { href, label, isLast };
   });
 

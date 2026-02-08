@@ -14,12 +14,12 @@ function AppShellContent({ children }: AppShellProps) {
   const { collapsed, setMobileOpen } = useSidebar();
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="h-screen overflow-hidden bg-slate-950">
       <Sidebar />
       <div
-        className={`transition-all duration-300 ml-0 min-w-0 ${collapsed ? 'md:ml-[72px]' : 'md:ml-64'}`}
+        className={`h-screen flex flex-col overflow-hidden transition-all duration-300 ml-0 min-w-0 ${collapsed ? 'md:ml-[72px]' : 'md:ml-64'}`}
       >
-        <header className="sticky top-0 z-30 h-14 md:h-16 border-b border-slate-800/80 bg-slate-950/95 backdrop-blur-sm">
+        <header className="shrink-0 z-30 h-14 md:h-16 border-b border-slate-800/80 bg-slate-950 sm:bg-slate-950/95 sm:backdrop-blur-sm">
           <div className="h-full flex items-center gap-2.5 px-3 md:px-6 lg:px-8 max-w-7xl">
             <button
               onClick={() => setMobileOpen(true)}
@@ -32,7 +32,7 @@ function AppShellContent({ children }: AppShellProps) {
             <Breadcrumb />
           </div>
         </header>
-        <main className="p-3 sm:p-4 md:p-6 lg:p-8 min-h-[calc(100vh-3.5rem)] md:min-h-[calc(100vh-4rem)] bg-slate-950">
+        <main className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 md:p-6 lg:p-8 bg-slate-950">
           <div className="max-w-7xl mx-auto w-full min-w-0">{children}</div>
         </main>
       </div>
