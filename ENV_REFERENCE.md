@@ -9,6 +9,17 @@ On a VPS (e.g. Hostinger) you run the stack with one `.env` at the **repo root**
 3. `DATABASE_URL` is **not** in `.env` for Docker: Compose builds it from `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` and injects it into the backend.
 4. Rebuild after changing build-time vars (e.g. `NEXT_PUBLIC_*`): `docker compose up -d --build`
 
+**Full stack update (VPS):** To deploy the latest code for every service (backend, frontend, agent), run:
+```bash
+cd /opt/vectix-nexus && git pull && docker compose build --no-cache && docker compose up -d --force-recreate
+```
+This pulls code, rebuilds all images, and recreates all containers.
+
+**Backend + frontend only (skip agent):** If the agent image build fails (e.g. eliza core browser build), update only backend and frontend and leave the existing agent container running:
+```bash
+cd /opt/vectix-nexus && git pull && docker compose build --no-cache backend frontend && docker compose up -d --force-recreate backend frontend
+```
+
 See `HOSTINGER_DEPLOY.md` for full deploy steps. The blocks below document each variable in detail.
 
 ---

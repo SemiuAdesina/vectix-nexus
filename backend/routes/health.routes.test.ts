@@ -10,6 +10,10 @@ vi.mock('../lib/prisma', () => ({
   },
 }));
 
+vi.mock('../lib/opik', () => ({
+  getOpik: vi.fn(),
+}));
+
 const app = express();
 app.use(healthRoutes);
 
@@ -39,5 +43,24 @@ describe('health routes', () => {
     expect(res.status).toBe(503);
     expect(res.body.ready).toBe(false);
     expect(res.body.database).toBe('disconnected');
+  });
+
+  it('GET /opik-test returns ok false when Opik disabled', async () => {
+    const { getOpik } = await import('../lib/opik');
+    vi.mocked(getOpik).mockReturnValue(null);
+    const res = await request(app).get('/opik-test');
+    expect(res.status).toBe(200);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toContain('OPIK_API_KEY');
+  });
+
+  it('GET /opik-test sends trace and returns ok when Opik enabled', async () => {
+    const { getOpik } = await import('../lib/opik');
+    const end = vi.fn();
+    vi.mocked(getOpik).mockReturnValue({ trace: () => ({ end }) } as never);
+    const res = await request(app).get('/opik-test');
+    expect(res.status).toBe(200);
+    expect(res.body.ok).toBe(true);
+    expect(end).toHaveBeenCalled();
   });
 });

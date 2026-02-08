@@ -1,7 +1,18 @@
 import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
+import { getOpik } from '../lib/opik';
 
 const router = Router();
+
+router.get('/opik-test', (_req: Request, res: Response) => {
+  const opik = getOpik();
+  if (!opik) {
+    return res.status(200).json({ ok: false, message: 'Opik disabled (OPIK_API_KEY not set)' });
+  }
+  const trace = opik.trace({ name: 'opik-test', input: {} });
+  trace.end();
+  res.status(200).json({ ok: true, message: 'Trace sent. Refresh Opik dashboard.' });
+});
 
 router.get('/health', (_req: Request, res: Response) => {
   res.status(200).json({
