@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ClerkProvider } from '@clerk/nextjs';
 import "./globals.css";
 import { AuthEnabledProvider } from "@/contexts/auth-enabled";
+import { ClerkLoadedGate } from "@/components/layout/clerk-loaded-gate";
 
 export const metadata: Metadata = {
   title: "Vectix Foundry | AI Agent Factory",
@@ -60,14 +61,15 @@ const clerkAppearance = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const publishableKey = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? '').trim();
   const secretKey = (process.env.CLERK_SECRET_KEY ?? '').trim();
-  const useClerk = publishableKey.length > 0 && secretKey.length > 0;
+  const authEnabled = publishableKey.length > 0 && secretKey.length > 0;
+  const hasClerkKey = publishableKey.length > 0;
   return (
     <html lang="en" className="dark">
       <body>
-        <AuthEnabledProvider value={useClerk}>
-          {useClerk ? (
+        <AuthEnabledProvider value={authEnabled}>
+          {hasClerkKey ? (
             <ClerkProvider publishableKey={publishableKey} appearance={clerkAppearance} dynamic>
-              {children}
+              <ClerkLoadedGate>{children}</ClerkLoadedGate>
             </ClerkProvider>
           ) : (
             <>{children}</>
