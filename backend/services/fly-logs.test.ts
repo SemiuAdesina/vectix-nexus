@@ -59,4 +59,27 @@ describe('fly-logs', () => {
       expect(result.logs[2].level).toBe('info');
     });
   });
+
+  describe('mock / Docker path', () => {
+    it('returns synthetic log when MOCK_FLY_DEPLOY and no stored activity', async () => {
+      vi.stubEnv('MOCK_FLY_DEPLOY', 'true');
+      const { getMachineLogs } = await import('./fly-logs');
+      const result = await getMachineLogs('mock-abc');
+      expect(result.logs).toHaveLength(1);
+      expect(result.logs[0].message).toContain('VPS (Docker)');
+      expect(result.logs[0].source).toBe('system');
+      vi.unstubAllEnvs();
+    });
+
+    it('returns stored activity when appendDockerActivity was called', async () => {
+      vi.stubEnv('MOCK_FLY_DEPLOY', 'true');
+      const { getMachineLogs, appendDockerActivity } = await import('./fly-logs');
+      appendDockerActivity('mock-xyz', { message: 'Task completed' });
+      const result = await getMachineLogs('mock-xyz');
+      expect(result.logs.length).toBeGreaterThanOrEqual(1);
+      expect(result.logs[0].message).toBe('Task completed');
+      expect(result.logs[0].source).toBe('agent');
+      vi.unstubAllEnvs();
+    });
+  });
 });

@@ -33,13 +33,45 @@ export interface LogsResponse {
   nextToken?: string;
 }
 
+const DOCKER_ACTIVITY_STORE = new Map<string, LogEntry[]>();
+const DOCKER_ACTIVITY_MAX = 50;
+
+export function appendDockerActivity(machineId: string, entry: Omit<LogEntry, 'timestamp' | 'level' | 'source'>): void {
+  if (!machineId || machineId.length === 0) return;
+  const list = DOCKER_ACTIVITY_STORE.get(machineId) ?? [];
+  const full: LogEntry = {
+    timestamp: new Date().toISOString(),
+    message: entry.message,
+    level: 'info',
+    source: 'agent',
+  };
+  list.unshift(full);
+  if (list.length > DOCKER_ACTIVITY_MAX) list.length = DOCKER_ACTIVITY_MAX;
+  DOCKER_ACTIVITY_STORE.set(machineId, list);
+}
+
+function getDockerActivity(machineId: string, limit: number): LogEntry[] {
+  const list = DOCKER_ACTIVITY_STORE.get(machineId) ?? [];
+  return list.slice(0, limit);
+}
+
 export async function getMachineLogs(
   machineId: string,
   appName: string = DEFAULT_APP_NAME,
   options: { limit?: number; nextToken?: string } = {}
 ): Promise<LogsResponse> {
   if (useMockDeploy() || machineId.startsWith('mock-')) {
-    return { logs: [] };
+    const limit = options.limit ?? 50;
+    const stored = getDockerActivity(machineId, limit);
+    if (stored.length > 0) return { logs: stored };
+    return {
+      logs: [{
+        timestamp: new Date().toISOString(),
+        message: 'Agent running on VPS (Docker). Activity will appear here when reported.',
+        level: 'info',
+        source: 'system',
+      }],
+    };
   }
   const headers = getAuthHeaders();
   const limit = options.limit || 50;

@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { getUserIdFromRequest } from '../lib/auth';
 import { prisma } from '../lib/prisma';
 import { startMachine, stopMachine, restartMachine, getMachineStatus, destroyMachine } from '../services/fly-lifecycle';
-import { getMachineLogs } from '../services/fly-logs';
+import { getMachineLogs, appendDockerActivity } from '../services/fly-logs';
 import { getParam } from '../lib/route-helpers';
 
 const router = Router();
@@ -98,6 +98,21 @@ router.get('/agents/:id/logs', async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 50;
     const logs = await getMachineLogs(agent.machineId, undefined, { limit, nextToken: req.query.nextToken as string });
     return res.json(logs);
+  } catch (error) { return res.status(500).json({ error: err(error) }); }
+});
+
+router.post('/agents/:id/activity', async (req: Request, res: Response) => {
+  try {
+    const userId = await getUserIdFromRequest(req);
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    const agent = await prisma.agent.findFirst({ where: { id: getParam(req, 'id'), userId } });
+    if (!agent?.machineId) return res.status(404).json({ error: 'Agent not found' });
+    const message = typeof (req.body as { message?: string }).message === 'string'
+      ? (req.body as { message: string }).message.trim()
+      : '';
+    if (!message) return res.status(400).json({ error: 'message is required' });
+    appendDockerActivity(agent.machineId, { message });
+    return res.status(204).send();
   } catch (error) { return res.status(500).json({ error: err(error) }); }
 });
 

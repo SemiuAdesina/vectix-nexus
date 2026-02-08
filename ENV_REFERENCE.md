@@ -165,6 +165,8 @@ MOCK_FLY_DEPLOY=true
 ```
 so the backend deploy flow does not call the Fly API. Leave `FLY_API_TOKEN` and other `FLY_*` vars unset.
 
+**Fleet "Latest Activity":** With `MOCK_FLY_DEPLOY=true`, the Fleet card shows a system message instead of empty "Awaiting next action...". To show live activity, POST to `POST /api/agents/:id/activity` with the same auth (Bearer) and body `{ "message": "Your activity text" }`; the backend stores it and the next logs fetch returns it. The Docker agent (or any script with a user token) can call this to surface activity in the UI.
+
 ### Fly.io (optional; only if you run agents on Fly again)
 If you later host agents on Fly.io instead of the VPS Docker agent:
 ```

@@ -24,17 +24,19 @@ vi.mock('../services/fly-lifecycle', () => ({
 }));
 
 vi.mock('../services/fly-logs', () => ({
-    getMachineLogs: vi.fn()
+    getMachineLogs: vi.fn(),
+    appendDockerActivity: vi.fn()
 }));
 
 import { getUserIdFromRequest } from '../lib/auth';
 import { prisma } from '../lib/prisma';
 import { startMachine, stopMachine, restartMachine, getMachineStatus, destroyMachine } from '../services/fly-lifecycle';
-import { getMachineLogs } from '../services/fly-logs';
+import { getMachineLogs, appendDockerActivity } from '../services/fly-logs';
 
 const mockRequest = (overrides = {}) => ({
     params: {},
     query: {},
+    body: {},
     ...overrides
 });
 
@@ -42,6 +44,7 @@ const mockResponse = () => {
     const res: any = {};
     res.status = vi.fn().mockReturnValue(res);
     res.json = vi.fn().mockReturnValue(res);
+    res.send = vi.fn().mockReturnValue(res);
     return res;
 };
 
@@ -131,6 +134,35 @@ describe('agents.routes', () => {
             await handler(req, res);
             expect(destroyMachine).toHaveBeenCalledWith('machine-1');
             expect(res.json).toHaveBeenCalledWith({ success: true });
+        });
+    });
+
+    describe('POST /agents/:id/activity', () => {
+        it('appends activity and returns 204', async () => {
+            vi.mocked(getUserIdFromRequest).mockResolvedValue('user-123');
+            vi.mocked(prisma.agent.findFirst).mockResolvedValue({ id: 'agent-1', machineId: 'mock-xyz' } as any);
+            const req = mockRequest({ params: { id: 'agent-1' }, body: { message: 'Task completed' } });
+            const res = mockResponse();
+            const { default: router } = await import('./agents.routes');
+            const route = (router as any).stack.find((r: any) => r.route?.path === '/agents/:id/activity' && r.route.methods.post);
+            const handler = route?.route.stack[0].handle;
+            await handler(req, res);
+            expect(appendDockerActivity).toHaveBeenCalledWith('mock-xyz', { message: 'Task completed' });
+            expect(res.status).toHaveBeenCalledWith(204);
+            expect(res.send).toHaveBeenCalled();
+        });
+
+        it('returns 400 when message is empty', async () => {
+            vi.mocked(getUserIdFromRequest).mockResolvedValue('user-123');
+            vi.mocked(prisma.agent.findFirst).mockResolvedValue({ id: 'agent-1', machineId: 'mock-xyz' } as any);
+            const req = mockRequest({ params: { id: 'agent-1' }, body: { message: '   ' } });
+            const res = mockResponse();
+            const { default: router } = await import('./agents.routes');
+            const route = (router as any).stack.find((r: any) => r.route?.path === '/agents/:id/activity' && r.route.methods.post);
+            const handler = route?.route.stack[0].handle;
+            await handler(req, res);
+            expect(appendDockerActivity).not.toHaveBeenCalled();
+            expect(res.status).toHaveBeenCalledWith(400);
         });
     });
 });
