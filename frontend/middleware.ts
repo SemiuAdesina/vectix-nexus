@@ -6,10 +6,10 @@ import { routing } from '@/i18n/routing';
 const handleI18n = createMiddleware(routing);
 
 const isPublicRoute = createRouteMatcher([
-  '/:locale',
-  '/:locale/pricing',
-  '/:locale/sign-in(.*)',
-  '/:locale/sign-up(.*)',
+  '/',
+  '/pricing',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
   '/api/webhooks(.*)',
 ]);
 

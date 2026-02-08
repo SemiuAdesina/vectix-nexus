@@ -34,10 +34,6 @@ vi.mock('next-intl', () => ({
   useLocale: () => 'en',
 }));
 
-vi.mock('@/components/layout/language-switcher', () => ({
-  LanguageSwitcher: () => null,
-}));
-
 describe('Navbar', () => {
   beforeEach(() => {
     mockUseAuth.mockReturnValue({ isLoaded: true });

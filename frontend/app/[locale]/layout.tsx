@@ -8,7 +8,7 @@ import { OwnershipWatermark, AuthTokenBridgeWrapper, SetLocaleLang } from '@/com
 type Props = { children: React.ReactNode; params: Promise<{ locale: string }> };
 
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
+  return [{ locale: 'en' }];
 }
 
 export default async function LocaleLayout({ children, params }: Props) {

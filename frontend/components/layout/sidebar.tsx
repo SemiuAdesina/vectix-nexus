@@ -7,7 +7,6 @@ import { useAuth } from '@clerk/nextjs';
 import { useSidebar } from './sidebar-context';
 import { SidebarNav } from './sidebar-nav';
 import { SidebarUser } from './sidebar-user';
-import { LanguageSwitcher } from './language-switcher';
 import { getBackendUrl } from '@/lib/api/auth';
 import { useAuthEnabled } from '@/contexts/auth-enabled';
 import { Zap, X, PanelLeftClose, PanelLeftOpen, LogIn } from 'lucide-react';
@@ -96,7 +95,6 @@ export function Sidebar() {
         )}
       </Link>
       <div className="flex items-center gap-1">
-        {!collapsed && <LanguageSwitcher />}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="p-2 rounded-lg hover:bg-slate-800/80 hover:text-teal-400 text-slate-400 shrink-0 transition-colors"

@@ -3,7 +3,6 @@
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
-import { LanguageSwitcher } from '@/components/layout/language-switcher';
 import { Zap, Rocket, Wallet, LogIn, Loader2 } from 'lucide-react';
 import { SignInButton, SignedIn, SignedOut, UserButton, useAuth } from '@clerk/nextjs';
 import { useAuthEnabled } from '@/contexts/auth-enabled';
@@ -50,7 +49,6 @@ export function Navbar() {
           <span className="font-bold text-lg text-white tracking-tight">{tHome('title')}</span>
         </Link>
         <div className="flex items-center gap-4">
-          <LanguageSwitcher />
           <Link
             href="/pricing"
             className="text-slate-400 hover:text-white transition-colors hidden sm:flex items-center gap-2 text-sm"
