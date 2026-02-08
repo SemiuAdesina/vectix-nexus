@@ -67,6 +67,9 @@ services:
       SOLANA_RPC_URL: ${SOLANA_RPC_URL:?Set SOLANA_RPC_URL in .env}
       SERVER_HOST: 0.0.0.0
       PORT: 3000
+      OPIK_API_KEY: ${OPIK_API_KEY:-}
+      OPIK_PROJECT_NAME: ${OPIK_PROJECT_NAME:-vectix-foundry}
+      OPIK_WORKSPACE_NAME: ${OPIK_WORKSPACE_NAME:-semiuadesina}
     ports:
       - "3001:3000"
 

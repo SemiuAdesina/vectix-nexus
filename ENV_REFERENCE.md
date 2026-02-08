@@ -117,6 +117,22 @@ TWITTER_ACCESS_TOKEN=your_token
 TWITTER_ACCESS_TOKEN_SECRET=your_token_secret
 ```
 
+## Optional - Opik (Comet ML) observability
+
+**Backend:** Reads from root `.env` (or `backend/.env` locally). When set, every `POST /deploy-agent` is traced to Comet (project/workspace below).
+
+**Agent (Eliza):** The `agent` service in Docker Compose receives these from the same root `.env`. When set, every `generateText()` in the Eliza runtime is traced so you see agent "thinking" and token usage in the Opik dashboard.
+
+Set in root `.env` for VPS (Docker passes them to backend and agent):
+
+```
+OPIK_API_KEY=your_comet_opik_api_key
+OPIK_PROJECT_NAME=vectix-foundry
+OPIK_WORKSPACE_NAME=semiuadesina
+```
+
+If unset, Opik is disabled (no errors). See [README § Opik Observability Workflow](README.md#opik-observability-workflow).
+
 ## Testing / Demo Mode
 
 ### Deploy without subscription (local or demo)

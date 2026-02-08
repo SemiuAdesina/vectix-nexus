@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { getUserIdFromRequest } from '../lib/auth';
+import { getOpik } from '../lib/opik';
 import { requireActiveSubscription } from '../lib/subscription';
 import { prisma } from '../lib/prisma';
 import { createFlyMachine, getMachineIP } from '../services/fly';
@@ -16,6 +17,11 @@ interface DeployAgentRequest {
 }
 
 router.post('/deploy-agent', async (req: Request, res: Response) => {
+  const opik = getOpik();
+  const trace = opik?.trace({
+    name: 'deploy-agent',
+    input: { appName: (req.body as DeployAgentRequest)?.appName, hasCharacterJson: !!(req.body as DeployAgentRequest)?.characterJson, hasSecrets: !!(req.body as DeployAgentRequest)?.secrets },
+  });
   try {
     const userId = await getUserIdFromRequest(req);
     if (!userId) return res.status(401).json({ success: false, error: 'Unauthorized' });
@@ -68,6 +74,8 @@ router.post('/deploy-agent', async (req: Request, res: Response) => {
       },
     });
 
+    trace?.update({ output: { success: true, agentId: agent.id, machineId: machine.id } });
+    trace?.end();
     return res.status(200).json({
       success: true,
       agentId: agent.id,
@@ -77,6 +85,8 @@ router.post('/deploy-agent', async (req: Request, res: Response) => {
     });
   } catch (error) {
     const err = error instanceof Error ? error : new Error('Unknown error occurred');
+    trace?.update({ output: { success: false, error: err.message } });
+    trace?.end();
     console.error('[deploy-agent]', err.message, err.stack);
     const errorMessage = err.message;
     if (errorMessage.includes('subscription required')) {

@@ -50,8 +50,11 @@ export async function getStrategy(id: string): Promise<Strategy | null> {
 
 export async function getPurchasedStrategies(): Promise<Strategy[]> {
   try {
+    const headers = await getAuthHeaders();
+    if (!headers.Authorization) return [];
     const response = await fetch(`${marketplaceBase()}/marketplace/purchased`, {
-      headers: await getAuthHeaders(),
+      credentials: 'include',
+      headers,
     });
     const data = await response.json();
     return data.strategies || [];

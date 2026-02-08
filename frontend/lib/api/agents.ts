@@ -19,7 +19,8 @@ export async function deployAgent(request: DeployAgentRequest): Promise<DeployAg
 
 export async function getAgents(): Promise<Agent[]> {
   const headers = await getAuthHeaders();
-  const response = await fetch(`${BACKEND_URL}/api/agents`, { headers });
+  if (!headers.Authorization) return [];
+  const response = await fetch(`${BACKEND_URL}/api/agents`, { credentials: 'include', headers });
   if (!response.ok) throw new Error(`Failed to fetch agents: ${response.status}`);
   const data = (await response.json()) as { agents: Agent[] };
   return data.agents;

@@ -3,8 +3,14 @@ import * as marketplace from './marketplace';
 
 global.fetch = vi.fn() as MockedFunction<typeof fetch>;
 
+const { mockAuthHeaders } = vi.hoisted(() => ({
+  mockAuthHeaders: vi.fn().mockResolvedValue({
+    'Content-Type': 'application/json',
+    Authorization: 'Bearer mock-token',
+  }),
+}));
 vi.mock('./auth', () => ({
-  getAuthHeaders: vi.fn().mockResolvedValue({ 'Content-Type': 'application/json' }),
+  getAuthHeaders: mockAuthHeaders,
   getBackendUrl: vi.fn().mockReturnValue('http://localhost:3001'),
 }));
 
@@ -60,7 +66,18 @@ describe('marketplace', () => {
   });
 
   describe('getPurchasedStrategies', () => {
-    it('fetches purchased strategies', async () => {
+    it('returns [] without fetching when no auth token', async () => {
+      mockAuthHeaders.mockResolvedValueOnce({ 'Content-Type': 'application/json' });
+      const strategies = await marketplace.getPurchasedStrategies();
+      expect(strategies).toEqual([]);
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
+    it('fetches purchased strategies when token present', async () => {
+      mockAuthHeaders.mockResolvedValue({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer token',
+      });
       const mockStrategies = [{ id: 'strategy1', name: 'Test Strategy' }];
       (global.fetch as Mock).mockResolvedValue({
         json: async () => ({ strategies: mockStrategies }),

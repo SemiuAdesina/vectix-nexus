@@ -3,8 +3,14 @@ import * as agents from './agents';
 
 global.fetch = vi.fn() as MockedFunction<typeof fetch>;
 
+const { mockAuthHeaders } = vi.hoisted(() => ({
+  mockAuthHeaders: vi.fn().mockResolvedValue({
+    'Content-Type': 'application/json',
+    Authorization: 'Bearer mock-token',
+  }),
+}));
 vi.mock('./auth', () => ({
-  getAuthHeaders: vi.fn().mockResolvedValue({ 'Content-Type': 'application/json' }),
+  getAuthHeaders: mockAuthHeaders,
   getBackendUrl: vi.fn().mockReturnValue('http://localhost:3001'),
 }));
 
@@ -52,7 +58,18 @@ describe('agents', () => {
   });
 
   describe('getAgents', () => {
-    it('fetches agents list', async () => {
+    it('returns [] without fetching when no auth token', async () => {
+      mockAuthHeaders.mockResolvedValueOnce({ 'Content-Type': 'application/json' });
+      const agentsList = await agents.getAgents();
+      expect(agentsList).toEqual([]);
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
+    it('fetches agents list when token present', async () => {
+      mockAuthHeaders.mockResolvedValue({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer token',
+      });
       const mockAgents = [{ id: 'agent1', name: 'Agent 1' }];
       (global.fetch as Mock).mockResolvedValue({
         ok: true,

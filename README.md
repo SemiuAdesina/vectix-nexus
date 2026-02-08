@@ -95,8 +95,9 @@ cd backend && npm install && cd ..
 | 10 | [US Regulatory Compliance](#us-regulatory-compliance) |
 | 11 | [API Reference](#api-reference) |
 | 12 | [Security Architecture](#security-architecture) |
-| 13 | [Deployment Guide](#deployment-guide) |
-| 14 | [Implementation Verification](#implementation-verification) |
+| 13 | [Observability (Opik)](#opik-observability-workflow) |
+| 14 | [Deployment Guide](#deployment-guide) |
+| 15 | [Implementation Verification](#implementation-verification) |
 
 **End matter:** [License](#license) · [Support](#support) · [Development Principles](#development-principles)
 
@@ -1482,6 +1483,65 @@ sequenceDiagram
 - Shadow Mode: `backend/services/shadow/shadow-portfolio.ts`, `backend/services/shadow/shadow-metrics.ts`
 - TEE Service: `backend/services/tee/secure-enclave.ts`, `backend/services/tee/enclave-config.ts`
 - Phala Integration: `backend/services/tee/tee.types.ts` (supports Phala Network provider)
+
+**[↑ Table of Contents](#table-of-contents)**
+
+---
+
+## Opik Observability Workflow
+
+We use [Opik (Comet ML)](https://www.comet.com/docs/opik/) for observability and outcome-aware auditing. Every agent deployment and every LLM call is traced so you can inspect reasoning, token usage, and latency in the Comet dashboard (project: **vectix-foundry**).
+
+### Flow
+
+```mermaid
+flowchart LR
+  subgraph Backend["Backend"]
+    A[POST /deploy-agent]
+    B[getOpik]
+    C[trace: deploy-agent]
+  end
+  subgraph Agent["ElizaOS Agent"]
+    D[generateText]
+    E[getOpikClient]
+    F[trace: generateText]
+  end
+  subgraph Comet["Comet / Opik"]
+    G[(Traces & Spans)]
+  end
+
+  A --> B
+  B --> C
+  C -->|input/output, end| G
+  D --> E
+  E --> F
+  F -->|input/output, end| G
+```
+
+### Trace points
+
+| Location | Trace name | Input | Output |
+|----------|------------|--------|--------|
+| Backend | `deploy-agent` | `appName`, `hasCharacterJson`, `hasSecrets` | `success`, `agentId`, `machineId` or `error` |
+| ElizaOS core | `generateText` | `modelType`, `promptLength` | `textLength` or `error` |
+
+### Configuration
+
+Set in `backend/.env` (and in the agent process env when running ElizaOS) so traces are sent:
+
+```env
+OPIK_API_KEY=your-comet-opik-api-key
+OPIK_PROJECT_NAME=vectix-foundry
+OPIK_WORKSPACE_NAME=your-workspace
+```
+
+**Code locations:** `backend/lib/opik.ts`, `backend/routes/deploy.routes.ts`, `eliza/packages/core/src/opik.ts`, `eliza/packages/core/src/runtime.ts` (generateText wrapper).
+
+### Final confirmation checklist (VPS / Docker)
+
+1. **Agent env:** Root `docker-compose.yml` passes `OPIK_API_KEY`, `OPIK_PROJECT_NAME`, `OPIK_WORKSPACE_NAME` into the `agent` service. Ensure they are set in root `.env` (see [ENV_REFERENCE.md](ENV_REFERENCE.md#optional---opik-comet-ml-observability)).
+2. **Eliza dependency:** The agent image is built from `eliza/` (Dockerfile.agent runs `bun install` in the repo that includes `eliza/packages/core` with `opik` in package.json). No extra install on the host needed for Docker. For local Eliza dev: `cd eliza && bun install`.
+3. **Smoke test:** Deploy an agent from the site → open Opik Projects Dashboard → you should see **Backend trace** (agent creation) and **Eliza trace** (generateText / agent "thinking") for project **vectix-foundry**.
 
 **[↑ Table of Contents](#table-of-contents)**
 

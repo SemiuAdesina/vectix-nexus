@@ -80,7 +80,8 @@
     "pdfjs-dist": "^5.2.133",
     "unique-names-generator": "^4.7.1",
     "uuid": "^13.0.0",
-    "zod": "^4.1.13"
+    "zod": "^4.1.13",
+    "opik": "^1.7.36"
   },
   "publishConfig": {
     "access": "public"

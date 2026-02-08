@@ -14,6 +14,7 @@ import { decryptSecret, getSalt } from './index';
 import { ActionStreamFilter } from './utils/streaming';
 import { getStreamingContext, runWithStreamingContext } from './streaming-context';
 import { createLogger } from './logger';
+import { getOpikClient } from './opik';
 import { DefaultMessageService } from './services/default-message-service';
 import type { IMessageService } from './services/message-service';
 import {
@@ -2427,35 +2428,29 @@ export class AgentRuntime implements IAgentRuntime {
       throw new Error('Input cannot be empty');
     }
 
-    // Set defaults
     const includeCharacter = options?.includeCharacter ?? true;
     const modelType = options?.modelType ?? ModelType.TEXT_LARGE;
 
     let prompt = input;
 
-    // Add character context if requested
     if (includeCharacter && this.character) {
       const c = this.character;
       const parts: string[] = [];
 
-      // Add bio
       const bioText = Array.isArray(c.bio) ? c.bio.join(' ') : c.bio;
       if (bioText) {
         parts.push(`# About ${c.name}\n${bioText}`);
       }
 
-      // Add system prompt
       if (c.system) {
         parts.push(c.system);
       }
 
-      // Add style directives (all + chat)
       const styles = [...(c.style?.all || []), ...(c.style?.chat || [])];
       if (styles.length > 0) {
         parts.push(`Style:\n${styles.map((s) => `- ${s}`).join('\n')}`);
       }
 
-      // Combine character context with input
       if (parts.length > 0) {
         prompt = `${parts.join('\n\n')}\n\n${input}`;
       }
@@ -2474,17 +2469,27 @@ export class AgentRuntime implements IAgentRuntime {
       frequencyPenalty: options?.frequencyPenalty,
       presencePenalty: options?.presencePenalty,
       stopSequences: options?.stopSequences,
-      // User identifier for provider tracking/analytics - auto-populates from character name if not provided
-      // Explicitly set empty string or null will be preserved (not overridden)
       user: options?.user !== undefined ? options.user : this.character?.name,
       responseFormat: options?.responseFormat,
     };
 
-    const response = await this.useModel(modelType, params);
+    const opik = await getOpikClient();
+    const span = opik?.trace({
+      name: 'generateText',
+      input: { modelType, promptLength: prompt.length },
+    });
 
-    return {
-      text: response as string,
-    };
+    try {
+      const response = await this.useModel(modelType, params);
+      const text = response as string;
+      span?.update({ output: { textLength: text.length } });
+      span?.end();
+      return { text };
+    } catch (err) {
+      span?.update({ output: { error: err instanceof Error ? err.message : String(err) } });
+      span?.end();
+      throw err;
+    }
   }
 
   registerEvent<T extends keyof EventPayloadMap>(event: T, handler: EventHandler<T>): void;
