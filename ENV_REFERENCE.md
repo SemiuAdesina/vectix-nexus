@@ -25,6 +25,8 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 
 The app reads `CLERK_PUBLISHABLE_KEY` at runtime (fallback: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`). Docker Compose sets `CLERK_PUBLISHABLE_KEY` from your root `.env`, so sign-in works after CI builds that inline empty `NEXT_PUBLIC_*` at build time. If sign-in shows "not configured" after a deploy, ensure both keys are in root `.env` and run: `docker compose up -d --force-recreate frontend`.
 
+**401 Unauthorized after login:** Frontend and backend must use the same Clerk environment. If your site is production (e.g. vectixfoundry.com), set **live** keys in root `.env`: `CLERK_SECRET_KEY=sk_live_...` and `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...`. If the backend still has `sk_test_...`, it will reject every token from the production frontend. To verify: (1) Browser Network tab → pick a failing request → Headers: confirm `Authorization: Bearer ...` is present. (2) Backend: `docker compose logs backend` and look for "Token verification failed" or "Unable to find a signing key"; then switch to live keys and restart backend/frontend.
+
 ### Database
 - **Local dev:** `DATABASE_URL=file:./dev.db` or `postgresql://user:pass@localhost:5432/vectix_nexus`
 - **VPS (Docker):** Do not set `DATABASE_URL` in `.env`. Compose sets it from `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` and the `db` service hostname.

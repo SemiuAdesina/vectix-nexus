@@ -30,7 +30,9 @@ export async function getUserIdFromRequest(req: { headers: { [key: string]: stri
     const payload = await verifyToken(token, { secretKey }) as ClerkPayload;
     return payload.sub || null;
   } catch (error) {
-    console.error('Token verification failed:', error);
+    const sk = process.env.CLERK_SECRET_KEY ?? '';
+    const hint = sk.startsWith('sk_test_') ? ' (Production frontend requires CLERK_SECRET_KEY=sk_live_... in backend .env)' : '';
+    console.error('Token verification failed:', error, hint);
     return null;
   }
 }
@@ -87,7 +89,9 @@ export async function getOrCreateUser(
 
     return { userId, user };
   } catch (error) {
-    console.error('[Auth] 401: Token verification failed.', error);
+    const sk = process.env.CLERK_SECRET_KEY ?? '';
+    const hint = sk.startsWith('sk_test_') ? ' If frontend uses production (pk_live_), set CLERK_SECRET_KEY=sk_live_... in backend .env.' : '';
+    console.error('[Auth] 401: Token verification failed.', error, hint);
     return null;
   }
 }
