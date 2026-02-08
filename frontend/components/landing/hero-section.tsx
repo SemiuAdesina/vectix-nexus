@@ -63,7 +63,7 @@ export function HeroSection() {
   const authEnabled = useAuthEnabled();
 
   return (
-    <section className="relative pt-16 overflow-hidden">
+    <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(20,184,166,0.08)_0%,_transparent_60%)]" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 relative">
         <div className="text-center max-w-4xl mx-auto mb-16">

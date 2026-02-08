@@ -71,10 +71,11 @@ describe('Navbar', () => {
     expect(spinner).toBeInTheDocument();
   });
 
-  it('has fixed positioning and backdrop blur', () => {
+  it('has sticky positioning and stays at top when scrolling', () => {
     render(<Navbar />);
     const nav = screen.getByRole('navigation');
-    expect(nav.className).toContain('fixed');
-    expect(nav.className).toContain('backdrop-blur');
+    expect(nav.className).toContain('sticky');
+    expect(nav.className).toContain('top-0');
+    expect(nav.className).toContain('z-50');
   });
 });

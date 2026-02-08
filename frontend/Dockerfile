@@ -24,6 +24,7 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_ALLOW_SUBSCRIPTION_BYPASS=$NEXT_PUBLIC_ALLOW_SUBSCRIPTION_BYPASS
 
 RUN npm run build
+RUN cp -r /app/public /app/.next/standalone/public
 
 FROM node:20-alpine AS runner
 
@@ -35,7 +36,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/package.json ./package.json
