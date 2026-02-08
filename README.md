@@ -4,6 +4,8 @@
 
 **Demos:** [Demo 1](https://www.loom.com/share/375633aa4dac4518a7a994c2ee2dc980) · [Demo 2](https://www.loom.com/share/51ac8b4f4e044b7e9f82860a119331c9)
 
+**Presentation deck:** [PDF](https://github.com/SemiuAdesina/vectix-nexus/raw/main/docs/vectix-foundry-deck.pdf) · [HTML](https://github.com/SemiuAdesina/vectix-nexus/blob/main/docs/vectix-foundry-deck.html)
+
 ## Vectix Foundry Platform
 
 Enterprise-grade platform for deploying autonomous AI trading agents on Solana. Built on ElizaOS with secure wallet infrastructure, institutional-grade security, and full US regulatory compliance. The platform implements comprehensive US regulatory compliance standards and provides institutional-grade security infrastructure. The platform implements comprehensive US regulatory compliance standards and provides institutional-grade security infrastructure to protect users and the broader cryptocurrency community from risks and security threats.
