@@ -6,6 +6,7 @@ import {
   Authentication,
   EndpointsSection,
   TradeExample,
+  ReportActivitySection,
   RateLimitsSection,
   SdksSection,
 } from './sections';
@@ -20,6 +21,7 @@ export default function ApiDocsPage() {
         <Authentication />
         <EndpointsSection />
         <TradeExample />
+        <ReportActivitySection />
         <RateLimitsSection />
         <SdksSection />
       </div>

@@ -31,6 +31,7 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-vectix}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-vectix_nexus}
       NODE_ENV: production
       PORT: 3002
+      AGENT_ACTIVITY_SECRET: ${AGENT_ACTIVITY_SECRET:-}
     ports:
       - "3002:3002"
 
@@ -71,6 +72,7 @@ services:
       OPIK_API_KEY: ${OPIK_API_KEY:-}
       OPIK_PROJECT_NAME: ${OPIK_PROJECT_NAME:-vectix-foundry}
       OPIK_WORKSPACE_NAME: ${OPIK_WORKSPACE_NAME:-semiuadesina}
+      AGENT_ACTIVITY_SECRET: ${AGENT_ACTIVITY_SECRET:-}
     ports:
       - "3001:3000"
 

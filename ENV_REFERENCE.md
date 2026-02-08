@@ -165,7 +165,16 @@ MOCK_FLY_DEPLOY=true
 ```
 so the backend deploy flow does not call the Fly API. Leave `FLY_API_TOKEN` and other `FLY_*` vars unset.
 
-**Fleet "Latest Activity":** With `MOCK_FLY_DEPLOY=true`, the Fleet card shows a system message instead of empty "Awaiting next action...". To show live activity, POST to `POST /api/agents/:id/activity` with the same auth (Bearer) and body `{ "message": "Your activity text" }`; the backend stores it and the next logs fetch returns it. The Docker agent (or any script with a user token) can call this to surface activity in the UI.
+**Fleet "Latest Activity":** With `MOCK_FLY_DEPLOY=true`, the Fleet card shows a system message instead of empty "Awaiting next action...". To show live activity, use either method (see API docs → Report agent activity):
+
+1. **User-authenticated:** `POST /api/agents/:id/activity` with `Authorization: Bearer <user_token>` and body `{ "message": "Your activity text" }`.
+2. **Service-to-service (Docker agent):** Set `AGENT_ACTIVITY_SECRET` in root `.env` and pass it to the agent container. Call `POST /api/agent-activity` with header `X-Agent-Activity-Secret: <AGENT_ACTIVITY_SECRET>` and body `{ "agentId": "<agent_id>", "message": "Your activity text" }`. The agent container needs `BACKEND_URL` (or your API base URL) and the secret; use the agent’s DB id for `agentId`.
+
+**Optional – Agent activity reporting (VPS/Docker):** To let the Docker agent report activity to Fleet "Latest Activity", set in root `.env`:
+```
+AGENT_ACTIVITY_SECRET=your_strong_secret_here
+```
+Pass it to the agent container (e.g. in docker-compose `environment: AGENT_ACTIVITY_SECRET: ${AGENT_ACTIVITY_SECRET:-}`). The agent (or a sidecar) then calls `POST /api/agent-activity` with header `X-Agent-Activity-Secret` and body `{ agentId, message }`. If unset, that endpoint returns 501.
 
 ### Fly.io (optional; only if you run agents on Fly again)
 If you later host agents on Fly.io instead of the VPS Docker agent:

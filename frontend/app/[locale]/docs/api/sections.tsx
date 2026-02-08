@@ -84,6 +84,39 @@ export function TradeExample() {
   );
 }
 
+export function ReportActivitySection() {
+  return (
+    <section className="mb-10 sm:mb-16">
+      <h2 className="text-2xl font-bold mb-6">Report Agent Activity (Fleet Latest Activity)</h2>
+      <p className="text-muted-foreground mb-4">
+        On VPS/Docker, Fleet "Latest Activity" can show real messages. Use one of these methods (best practice: service-to-service for the agent container, Bearer for scripts/dashboards).
+      </p>
+      <div className="space-y-6">
+        <div>
+          <h3 className="font-semibold mb-2">1. User-authenticated (Bearer token)</h3>
+          <p className="text-sm text-muted-foreground mb-2">
+            Use when calling from a script or dashboard that has a user session (e.g. Clerk JWT).
+          </p>
+          <CodeBlock>{`curl -X POST https://your-api.com/api/agents/:id/activity \\
+  -H "Authorization: Bearer <user_token>" \\
+  -H "Content-Type: application/json" \\
+  -d '{"message": "Task completed"}'`}</CodeBlock>
+        </div>
+        <div>
+          <h3 className="font-semibold mb-2">2. Service-to-service (Docker agent)</h3>
+          <p className="text-sm text-muted-foreground mb-2">
+            Use when the agent container reports activity. Set <code className="bg-secondary px-2 py-0.5 rounded">AGENT_ACTIVITY_SECRET</code> in root .env and pass it to the container.
+          </p>
+          <CodeBlock>{`curl -X POST https://your-api.com/api/agent-activity \\
+  -H "X-Agent-Activity-Secret: <AGENT_ACTIVITY_SECRET>" \\
+  -H "Content-Type: application/json" \\
+  -d '{"agentId": "<agent_id>", "message": "Checking market"}'`}</CodeBlock>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function RateLimitsSection() {
   return (
     <section className="mb-16">

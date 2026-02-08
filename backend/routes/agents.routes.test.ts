@@ -9,6 +9,7 @@ vi.mock('../lib/prisma', () => ({
         agent: {
             findMany: vi.fn(),
             findFirst: vi.fn(),
+            findUnique: vi.fn(),
             update: vi.fn(),
             delete: vi.fn()
         }
@@ -163,6 +164,53 @@ describe('agents.routes', () => {
             await handler(req, res);
             expect(appendDockerActivity).not.toHaveBeenCalled();
             expect(res.status).toHaveBeenCalledWith(400);
+        });
+    });
+
+    describe('POST /agent-activity (service-to-service)', () => {
+        it('returns 501 when AGENT_ACTIVITY_SECRET is not set', async () => {
+            vi.stubEnv('AGENT_ACTIVITY_SECRET', '');
+            const req = mockRequest({ body: { agentId: 'agent-1', message: 'Done' }, headers: {} });
+            const res = mockResponse();
+            const { default: router } = await import('./agents.routes');
+            const route = (router as any).stack.find((r: any) => r.route?.path === '/agent-activity' && r.route.methods.post);
+            const handler = route?.route.stack[0].handle;
+            await handler(req, res);
+            expect(res.status).toHaveBeenCalledWith(501);
+            vi.unstubAllEnvs();
+        });
+
+        it('returns 401 when X-Agent-Activity-Secret is wrong', async () => {
+            vi.stubEnv('AGENT_ACTIVITY_SECRET', 'correct-secret');
+            const req = mockRequest({
+                body: { agentId: 'agent-1', message: 'Done' },
+                headers: { 'x-agent-activity-secret': 'wrong-secret' },
+            });
+            const res = mockResponse();
+            const { default: router } = await import('./agents.routes');
+            const route = (router as any).stack.find((r: any) => r.route?.path === '/agent-activity' && r.route.methods.post);
+            const handler = route?.route.stack[0].handle;
+            await handler(req, res);
+            expect(res.status).toHaveBeenCalledWith(401);
+            expect(appendDockerActivity).not.toHaveBeenCalled();
+            vi.unstubAllEnvs();
+        });
+
+        it('appends activity and returns 204 when secret matches', async () => {
+            vi.stubEnv('AGENT_ACTIVITY_SECRET', 'correct-secret');
+            vi.mocked(prisma.agent.findUnique).mockResolvedValue({ id: 'agent-1', machineId: 'mock-abc' } as any);
+            const req = mockRequest({
+                body: { agentId: 'agent-1', message: 'Task completed' },
+                headers: { 'x-agent-activity-secret': 'correct-secret' },
+            });
+            const res = mockResponse();
+            const { default: router } = await import('./agents.routes');
+            const route = (router as any).stack.find((r: any) => r.route?.path === '/agent-activity' && r.route.methods.post);
+            const handler = route?.route.stack[0].handle;
+            await handler(req, res);
+            expect(appendDockerActivity).toHaveBeenCalledWith('mock-abc', { message: 'Task completed' });
+            expect(res.status).toHaveBeenCalledWith(204);
+            vi.unstubAllEnvs();
         });
     });
 });

@@ -7,6 +7,7 @@ import {
   Authentication,
   EndpointsSection,
   TradeExample,
+  ReportActivitySection,
   RateLimitsSection,
   SdksSection,
 } from './sections';
@@ -101,6 +102,25 @@ describe('TradeExample', () => {
     render(<TradeExample />);
     expect(screen.getByText(/Free tier keys/)).toBeInTheDocument();
     expect(screen.getAllByText(/paper/).length).toBeGreaterThan(0);
+  });
+});
+
+describe('ReportActivitySection', () => {
+  it('renders section title', () => {
+    render(<ReportActivitySection />);
+    expect(screen.getByText('Report Agent Activity (Fleet Latest Activity)')).toBeInTheDocument();
+  });
+
+  it('shows Bearer token example', () => {
+    render(<ReportActivitySection />);
+    expect(screen.getByText(/Authorization: Bearer/)).toBeInTheDocument();
+    expect(screen.getByText(/\/api\/agents\/:id\/activity/)).toBeInTheDocument();
+  });
+
+  it('shows service-to-service example', () => {
+    render(<ReportActivitySection />);
+    expect(screen.getByText(/X-Agent-Activity-Secret/)).toBeInTheDocument();
+    expect(screen.getByText(/\/api\/agent-activity/)).toBeInTheDocument();
   });
 });
 

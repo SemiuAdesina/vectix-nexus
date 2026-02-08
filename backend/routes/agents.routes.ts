@@ -8,6 +8,23 @@ import { getParam } from '../lib/route-helpers';
 const router = Router();
 const err = (e: unknown) => (e instanceof Error ? e.message : 'Unknown error');
 
+router.post('/agent-activity', async (req: Request, res: Response) => {
+  try {
+    const secret = process.env.AGENT_ACTIVITY_SECRET ?? '';
+    if (!secret.trim()) return res.status(501).json({ error: 'Agent activity reporting is not configured (AGENT_ACTIVITY_SECRET)' });
+    const headerSecret = (req.headers['x-agent-activity-secret'] as string) ?? '';
+    if (headerSecret.trim() !== secret.trim()) return res.status(401).json({ error: 'Unauthorized' });
+    const body = req.body as { agentId?: string; message?: string };
+    const agentId = typeof body.agentId === 'string' ? body.agentId.trim() : '';
+    const message = typeof body.message === 'string' ? body.message.trim() : '';
+    if (!agentId || !message) return res.status(400).json({ error: 'agentId and message are required' });
+    const agent = await prisma.agent.findUnique({ where: { id: agentId }, select: { machineId: true } });
+    if (!agent?.machineId) return res.status(404).json({ error: 'Agent not found' });
+    appendDockerActivity(agent.machineId, { message });
+    return res.status(204).send();
+  } catch (error) { return res.status(500).json({ error: err(error) }); }
+});
+
 router.get('/agents', async (req: Request, res: Response) => {
   try {
     const userId = await getUserIdFromRequest(req);
