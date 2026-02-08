@@ -24,7 +24,7 @@ export default async function middleware(request: NextRequest, event: NextFetchE
   if (i18nResponse.status === 307 || i18nResponse.status === 302) {
     return i18nResponse;
   }
-  const publishableKey = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? '').trim();
+  const publishableKey = (process.env.CLERK_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? '').trim();
   const secretKey = (process.env.CLERK_SECRET_KEY ?? '').trim();
   if (publishableKey.length === 0 || secretKey.length === 0) {
     return i18nResponse;

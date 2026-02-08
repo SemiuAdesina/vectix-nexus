@@ -58,8 +58,12 @@ const clerkAppearance = {
   },
 };
 
+function getClerkPublishableKey(): string {
+  return (process.env.CLERK_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? '').trim();
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const publishableKey = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? '').trim();
+  const publishableKey = getClerkPublishableKey();
   const secretKey = (process.env.CLERK_SECRET_KEY ?? '').trim();
   const authEnabled = publishableKey.length > 0 && secretKey.length > 0;
   const hasClerkKey = publishableKey.length > 0;

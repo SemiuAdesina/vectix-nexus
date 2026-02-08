@@ -3,10 +3,12 @@ import { GET } from './route';
 
 describe('env-check API (Clerk)', () => {
   const origPublishable = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  const origClerkPublishable = process.env.CLERK_PUBLISHABLE_KEY;
   const origSecret = process.env.CLERK_SECRET_KEY;
 
   afterEach(() => {
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = origPublishable;
+    process.env.CLERK_PUBLISHABLE_KEY = origClerkPublishable;
     process.env.CLERK_SECRET_KEY = origSecret;
   });
 
@@ -20,6 +22,7 @@ describe('env-check API (Clerk)', () => {
   });
 
   it('returns clerkConfigured false when publishable key is missing', async () => {
+    delete process.env.CLERK_PUBLISHABLE_KEY;
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = '';
     process.env.CLERK_SECRET_KEY = 'sk_test_xyz';
     const res = await GET();
@@ -44,5 +47,15 @@ describe('env-check API (Clerk)', () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data).toEqual({ clerkConfigured: false });
+  });
+
+  it('prefers CLERK_PUBLISHABLE_KEY over NEXT_PUBLIC_ at runtime', async () => {
+    process.env.CLERK_PUBLISHABLE_KEY = 'pk_test_runtime';
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = '';
+    process.env.CLERK_SECRET_KEY = 'sk_test_xyz';
+    const res = await GET();
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data).toEqual({ clerkConfigured: true });
   });
 });

@@ -23,6 +23,8 @@ CLERK_SECRET_KEY=sk_test_...
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 ```
 
+The app reads `CLERK_PUBLISHABLE_KEY` at runtime (fallback: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`). Docker Compose sets `CLERK_PUBLISHABLE_KEY` from your root `.env`, so sign-in works after CI builds that inline empty `NEXT_PUBLIC_*` at build time. If sign-in shows "not configured" after a deploy, ensure both keys are in root `.env` and run: `docker compose up -d --force-recreate frontend`.
+
 ### Database
 - **Local dev:** `DATABASE_URL=file:./dev.db` or `postgresql://user:pass@localhost:5432/vectix_nexus`
 - **VPS (Docker):** Do not set `DATABASE_URL` in `.env`. Compose sets it from `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` and the `db` service hostname.
