@@ -18,7 +18,7 @@
     "@prisma/client": "^7.3.0",
     "@solana/web3.js": "^1.98.4",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.2.4",
     "express": "^4.19.2",
     "ioredis": "^5.9.2",
     "opik": "^1.10.8",
