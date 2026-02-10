@@ -11,7 +11,7 @@
     "monetization": "tsx scripts/monetization.ts"
   },
   "dependencies": {
-    "@clerk/express": "^1.7.65",
+    "@clerk/express": "^1.7.69",
     "@libsql/client": "^0.17.0",
     "@prisma/adapter-libsql": "^7.2.0",
     "@prisma/adapter-pg": "^7.3.0",
