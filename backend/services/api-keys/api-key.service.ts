@@ -4,7 +4,7 @@ import { ApiScope, ApiTier, ApiKeyData, CreateApiKeyResponse, FREE_TIER_SCOPES, 
 
 const PBKDF2_ITERATIONS = 100000;
 const PBKDF2_KEYLEN = 32;
-const HASH_SALT = process.env.API_KEY_HASH_SALT || 'vectix-nexus-api-key-v1';
+const HASH_SALT = process.env.API_KEY_HASH_SALT || 'vectix-nexus-hash-salt-v1';
 
 function generateApiKey(): string {
   const randomPart = randomBytes(24).toString('base64url');

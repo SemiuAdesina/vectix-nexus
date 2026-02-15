@@ -10,6 +10,9 @@ paths = [
   '''ROADMAP\.md''',
   '''.*\.test\.(ts|tsx|js|mjs)$''',
   '''.*\.spec\.(ts|tsx|js)$''',
+  '''frontend/.*/docs/''',
+  '''colosseum_docs\.md''',
+  '''eliza/packages/cli/.*report_template\.html''',
 ]
 regexes = [
   '''32_byte_hex_key_for_aes_256_gcm''',

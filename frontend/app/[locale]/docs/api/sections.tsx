@@ -21,7 +21,7 @@ export function QuickStart() {
         <div>
           <h3 className="font-semibold mb-2">2. Make your first request</h3>
           <CodeBlock>{`curl -X GET https://api.vectix.com/v1/agents \\
-  -H "x-api-key: vx_your_key_here"`}</CodeBlock>
+  -H "x-api-key: vx_replace_with_your_key"`}</CodeBlock>
         </div>
         <div>
           <h3 className="font-semibold mb-2">3. Example Response</h3>
@@ -48,7 +48,7 @@ export function Authentication() {
       <p className="text-muted-foreground mb-4">
         Include your API key in the <code className="bg-secondary px-2 py-0.5 rounded">x-api-key</code> header:
       </p>
-      <CodeBlock>{`curl -H "x-api-key: vx_your_key_here" https://api.vectix.com/v1/agents`}</CodeBlock>
+      <CodeBlock>{`curl -H "x-api-key: vx_replace_with_your_key" https://api.vectix.com/v1/agents`}</CodeBlock>
     </section>
   );
 }
@@ -67,7 +67,7 @@ export function TradeExample() {
     <section className="mb-16">
       <h2 className="text-2xl font-bold mb-6">Execute a Trade</h2>
       <CodeBlock>{`curl -X POST https://api.vectix.com/v1/agents/abc123/trade \\
-  -H "x-api-key: vx_your_key" \\
+  -H "x-api-key: vx_replace_with_your_key" \\
   -H "Content-Type: application/json" \\
   -d '{
     "action": "buy",
