@@ -15,7 +15,7 @@
     "@libsql/client": "^0.17.0",
     "@prisma/adapter-libsql": "^7.2.0",
     "@prisma/adapter-pg": "^7.3.0",
-    "@prisma/client": "^7.3.0",
+    "@prisma/client": "^7.4.0",
     "@solana/web3.js": "^1.98.4",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
