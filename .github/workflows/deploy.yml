@@ -22,7 +22,7 @@ jobs:
       - name: Set lowercase repo
         run: echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
 
       - name: Login to Registry
         if: inputs.push_images
